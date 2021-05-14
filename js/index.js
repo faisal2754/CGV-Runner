@@ -18,7 +18,7 @@ function init() {
 
     //creating floor
     const floorGeometry = new THREE.BoxGeometry()
-    const floorMaterial = new THREE.MeshPhongMaterial({ color: 0xffdd00 })
+    const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd00 })
     floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
     floor.translateZ(1.5)
@@ -27,7 +27,7 @@ function init() {
 
     //create player
     const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-    const playerMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 })
+    const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 })
     player = new THREE.Mesh(playerGeometry, playerMaterial)
     player.translateY(0.5)
 
@@ -36,6 +36,7 @@ function init() {
 
     //create directional light
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+    directionalLight.position.set(-1, 2, 0)
 
     //light helper
     // const spheresize = 0.2
