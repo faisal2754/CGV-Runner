@@ -160,11 +160,11 @@ function cameraMovement() {
     }
     if (keyboard[85]) {
         // U key
-        camera.rotateY(-0.025)
+        camera.rotateY(0.025)
     }
     if (keyboard[79]) {
         // O key
-        camera.rotateY(0.025)
+        camera.rotateY(-0.025)
     }
 }
 
