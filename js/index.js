@@ -1,68 +1,57 @@
 const keyboard = {}
+let scene, camera, renderer, player, floor, floorWireframe
 
-//Scene: What's there
-const scene = new THREE.Scene()
+function init() {
+    //Scene: What's there
+    scene = new THREE.Scene()
+    //Camera: Our eyes
+    const fov = 75
+    const aspectRatio = window.innerWidth / window.innerHeight
+    const near = 0.1
+    const far = 1000
+    camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far)
 
-//Camera: Our eyes
-const fov = 75
-const aspectRatio = window.innerWidth / window.innerHeight
-const near = 0.1
-const far = 1000
-const camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far)
+    //Renderer: Renders scene and objects
+    renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    document.body.appendChild(renderer.domElement)
 
-//Renderer: Renders scene and objects
-const renderer = new THREE.WebGLRenderer({ antialias: true })
-renderer.setSize(window.innerWidth, window.innerHeight)
-document.body.appendChild(renderer.domElement)
+    //creating floor
+    const floorGeometry = new THREE.BoxGeometry()
+    const floorMaterial = new THREE.MeshPhongMaterial({ color: 0xffdd00 })
+    floor = new THREE.Mesh(floorGeometry, floorMaterial)
+    floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
+    floor.translateZ(1.5)
+    floor.scale.set(3, 0.25, 1)
+    //const wire = new THREE.WireframeHelper(floor, 0x000000)
 
-//random
-// const cube = new THREE.BoxGeometry()
-// const object = new THREE.Mesh(cube, new THREE.MeshBasicMaterial(0xff0000))
-// const box = new THREE.BoxHelper(object, 0xffff00)
-// object.translateX(3)
-// box.setFromObject(object)
-// scene.add(object)
-// scene.add(box)
-//
+    //create player
+    const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
+    const playerMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 })
+    player = new THREE.Mesh(playerGeometry, playerMaterial)
+    player.translateY(0.5)
 
-//creating floor
-const floorGeometry = new THREE.BoxGeometry()
-const floorMaterial = new THREE.MeshPhongMaterial({ color: 0xffdd00 })
-const floor = new THREE.Mesh(floorGeometry, floorMaterial)
-const floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
-floor.translateZ(1.5)
-floor.scale.set(3, 0.25, 1)
-//const height = floor.geometry.vertices[4].y - cube.geometry.vertices[0].y
-//console.log(floor.geometry.vertices)
-//const wire = new THREE.WireframeHelper(floor, 0x000000)
+    //ambient light
+    const ambLight = new THREE.AmbientLight(0x404040) // soft white light
 
-//create player
-const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-const playerMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 })
-const player = new THREE.Mesh(playerGeometry, playerMaterial)
-player.translateY(0.5)
+    //create directional light
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
 
-//ambient light
-const ambLight = new THREE.AmbientLight(0x404040) // soft white light
-scene.add(ambLight)
+    //light helper
+    // const spheresize = 0.2
+    // const pointLightHelper = new THREE.PointLightHelper(light, spheresize)
 
-//create point light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
-//directionalLight.castShadow = true
-//light.position.set(0, 2, 0)
+    scene.add(player)
+    //scene.add(pointLightHelper)
+    scene.add(ambLight)
+    scene.add(directionalLight)
+    scene.add(floor)
+    scene.add(floorWireframe)
 
-//light helper
-// const spheresize = 0.2
-// const pointLightHelper = new THREE.PointLightHelper(light, spheresize)
+    camera.position.set(0, 2, 5)
 
-//scene.add(wire)
-scene.add(player)
-//scene.add(pointLightHelper)
-scene.add(directionalLight)
-scene.add(floor)
-scene.add(floorWireframe)
-
-camera.position.set(0, 2, 5)
+    animate()
+}
 
 const animate = function () {
     requestAnimationFrame(animate)
@@ -70,36 +59,20 @@ const animate = function () {
     floor.scale.add(new THREE.Vector3(0, 0, 0.01))
     floor.translateZ(-0.005)
     floorWireframe.setFromObject(floor)
-    //console.log(floor.floorGeometry.parameters.width)
-    //floor.translateZ()
-    // player.rotation.x += 0.01
-    // player.rotation.y += 0.01
 
-    //floor.floorMaterial =
+    //console.log(floor.floorGeometry.parameters.width)
+
     playerMovement()
     cameraMovement()
+
     renderer.render(scene, camera)
 }
-
-window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    camera.aspect = window.innerWidth / window.innerHeight
-
-    camera.updateProjectionMatrix()
-})
-
-// this.tl = new TimelineMax().delay(0.3)
-// this.tl.to(this.floor.scale, 1, { x: 2, ease: Expo.easeOut })
-
-animate()
 
 function playerMovement() {
     // Keyboard movement inputs
     if (keyboard[87]) {
         // W key
         player.translateZ(-0.05)
-        // player.position.x -= Math.sin(player.rotation.y) * player.speed
-        // player.position.z -= -Math.cos(player.rotation.y) * player.speed
     }
     if (keyboard[83]) {
         // S key
@@ -178,3 +151,11 @@ function keyUp(event) {
 
 window.addEventListener('keydown', keyDown)
 window.addEventListener('keyup', keyUp)
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    camera.aspect = window.innerWidth / window.innerHeight
+
+    camera.updateProjectionMatrix()
+})
+
+window.onload = init
