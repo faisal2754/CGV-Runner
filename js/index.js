@@ -1,9 +1,14 @@
+Physijs.scripts.worker = './modules/physijs_worker.js'
+Physijs.scripts.ammo = './ammo.js'
+
 const keyboard = {}
-let scene, camera, renderer, player, floor, floorWireframe, skyboxGeometry, skybox
+let scene, camera, renderer, player, obstacle, floor, floorWireframe, skyboxGeometry, skybox, controls
 
 function init() {
     //Scene: What's there
-    scene = new THREE.Scene()
+    scene = new Physijs.Scene()
+    scene.setGravity(new THREE.Vector3(0, -5, 0))
+
     //Camera: Our eyes
     const fov = 75
     const aspectRatio = window.innerWidth / window.innerHeight
@@ -15,6 +20,11 @@ function init() {
     renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(renderer.domElement)
+
+    //controls
+    controls = new THREE.OrbitControls(camera, renderer.domElement)
+    controls.enabled = true
+    controls.minDistance = 0
 
     //skybox
     skyboxGeometry = new THREE.BoxGeometry(250, 250, 250)
@@ -45,22 +55,31 @@ function init() {
         }) //left side
     ]
     skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
-    scene.add(skybox)
 
     //creating floor
     const floorGeometry = new THREE.BoxGeometry()
     const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd00 })
-    floor = new THREE.Mesh(floorGeometry, floorMaterial)
+    floor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
     floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
-    floor.translateZ(1.5)
-    floor.scale.set(3, 0.25, 1)
+    floor.translateZ(-47)
+    floor.scale.set(3, 0.25, 100)
     //const wire = new THREE.WireframeHelper(floor, 0x000000)
 
     //create player
     const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
     const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 })
-    player = new THREE.Mesh(playerGeometry, playerMaterial)
+    player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
+    player.translateZ(1)
     player.translateY(0.5)
+
+    //obstacle
+    const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
+    const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 })
+    obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial, 0)
+    obstacle.translateZ(-7)
+    obstacle.translateY(0.5)
+    // const player1 = new THREE.Mesh(playerGeometry, playerMaterial)
+    // player1.worldToLocal()
 
     //ambient light
     const ambLight = new THREE.AmbientLight(0x404040) // soft white light
@@ -74,6 +93,8 @@ function init() {
     // const pointLightHelper = new THREE.PointLightHelper(light, spheresize)
 
     scene.add(player)
+    scene.add(obstacle)
+    scene.add(skybox)
     //scene.add(pointLightHelper)
     scene.add(ambLight)
     scene.add(directionalLight)
@@ -88,8 +109,9 @@ function init() {
 const animate = function () {
     requestAnimationFrame(animate)
 
-    floor.scale.add(new THREE.Vector3(0, 0, 0.01))
-    floor.translateZ(-0.005)
+    // floor.scale.add(new THREE.Vector3(0, 0, 0.01))
+    floor.translateZ(-0.01)
+    floor.__dirtyPosition = true
     floorWireframe.setFromObject(floor)
 
     //console.log(floor.floorGeometry.parameters.width)
@@ -97,6 +119,12 @@ const animate = function () {
     playerMovement()
     cameraMovement()
 
+    player.position.z -= 0.01
+    camera.position.z -= 0.01
+
+    //player.lookAt(new THREE.Vector3(0, 0, player.position.z))
+
+    scene.simulate()
     renderer.render(scene, camera)
 }
 
@@ -104,20 +132,25 @@ function playerMovement() {
     // Keyboard movement inputs
     if (keyboard[87]) {
         // W key
-        player.translateZ(-0.05)
+        player.position.z -= 0.05
     }
     if (keyboard[83]) {
         // S key
-        player.translateZ(0.05)
+        player.position.z += 0.05
     }
     if (keyboard[65]) {
         // A key
-        player.translateX(-0.05)
+        player.position.x -= 0.05
     }
     if (keyboard[68]) {
         // D key
-        player.translateX(0.05)
+        player.position.x += 0.05
     }
+    if (keyboard[32]) {
+        // Space key
+        player.position.y += 0.1
+    }
+    player.__dirtyPosition = true
 }
 
 function cameraMovement() {
