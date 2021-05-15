@@ -1,7 +1,11 @@
 const keyboard = {}
+//essentials
 let scene, camera, renderer
+//lights
 let ambLight, directionalLight
+//world objects
 let player, obstacle, floor, floorWireframe
+//miscellaneous
 let skyboxGeometry, skybox, controls
 
 function init() {
@@ -130,12 +134,12 @@ function init() {
     animate()
 }
 
-const animate = function () {
+function animate() {
     requestAnimationFrame(animate)
 
     //console.log(floor.floorGeometry.parameters.width)
 
-    obstacle.position.z += 0.01
+    obstacle.position.z += 0.025
     obstacle.__dirtyPosition = true
 
     playerMovement()
