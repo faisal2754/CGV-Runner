@@ -1,5 +1,41 @@
 const keyboard = {}
-let scene, camera, renderer, player, floor, floorWireframe
+let scene, camera, renderer, player, floor, floorWireframe, skyboxGeo, skybox
+let skyboxImage = 'corona'
+
+function createPathStrings(filename) {
+    var path = window.location.href
+    var directory = path + 'skybox'
+    const basePath = `${directory}/`
+    const baseFilename = basePath + filename
+    const fileType = '.png'
+    const sides = ['ft', 'bk', 'up', 'dn', 'rt', 'lf']
+    const pathStings = sides.map((side) => {
+        return baseFilename + '_' + side + fileType
+    })
+
+    return pathStings
+}
+
+function createMaterialArray(filename) {
+    const skyboxImagepaths = createPathStrings(filename)
+    const materialArray = skyboxImagepaths.map((image) => {
+        let bruh
+        new THREE.TextureLoader().load(
+            'skybox/corona_bk.png',
+            (texture) => {
+                console.log(texture)
+                bruh = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide })
+            },
+            (err) => {
+                console.log(err)
+            }
+        )
+        //console.log(texture)
+        return bruh
+    })
+
+    return materialArray
+}
 
 function init() {
     //Scene: What's there
@@ -15,6 +51,12 @@ function init() {
     renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(renderer.domElement)
+
+    //skybox
+    // const materialArray = createMaterialArray(skyboxImage)
+    // skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000)
+    // skybox = new THREE.Mesh(skyboxGeo, materialArray)
+    // scene.add(skybox)
 
     //creating floor
     const floorGeometry = new THREE.BoxGeometry()
