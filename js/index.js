@@ -1,5 +1,5 @@
 const keyboard = {}
-let scene, camera, renderer, player, floor, floorWireframe, skyboxGeo, skybox
+let scene, camera, renderer, player, floor, floorWireframe, skyboxGeometry, skybox
 let skyboxImage = 'corona'
 
 function createPathStrings(filename) {
@@ -53,10 +53,35 @@ function init() {
     document.body.appendChild(renderer.domElement)
 
     //skybox
-    // const materialArray = createMaterialArray(skyboxImage)
-    // skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000)
-    // skybox = new THREE.Mesh(skyboxGeo, materialArray)
-    // scene.add(skybox)
+    skyboxGeometry = new THREE.BoxGeometry(250, 250, 250)
+    const skyboxMaterials = [
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skybox/corona_ft.png'),
+            side: THREE.DoubleSide
+        }), //front side
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skybox/corona_bk.png'),
+            side: THREE.DoubleSide
+        }), //back side
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skybox/corona_up.png'),
+            side: THREE.DoubleSide
+        }), //up side
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skybox/corona_dn.png'),
+            side: THREE.DoubleSide
+        }), //down side
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skybox/corona_rt.png'),
+            side: THREE.DoubleSide
+        }), //right side
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skybox/corona_lf.png'),
+            side: THREE.DoubleSide
+        }) //left side
+    ]
+    skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
+    scene.add(skybox)
 
     //creating floor
     const floorGeometry = new THREE.BoxGeometry()
