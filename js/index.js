@@ -1,41 +1,5 @@
 const keyboard = {}
 let scene, camera, renderer, player, floor, floorWireframe, skyboxGeometry, skybox
-let skyboxImage = 'corona'
-
-function createPathStrings(filename) {
-    var path = window.location.href
-    var directory = path + 'skybox'
-    const basePath = `${directory}/`
-    const baseFilename = basePath + filename
-    const fileType = '.png'
-    const sides = ['ft', 'bk', 'up', 'dn', 'rt', 'lf']
-    const pathStings = sides.map((side) => {
-        return baseFilename + '_' + side + fileType
-    })
-
-    return pathStings
-}
-
-function createMaterialArray(filename) {
-    const skyboxImagepaths = createPathStrings(filename)
-    const materialArray = skyboxImagepaths.map((image) => {
-        let bruh
-        new THREE.TextureLoader().load(
-            'skybox/corona_bk.png',
-            (texture) => {
-                console.log(texture)
-                bruh = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide })
-            },
-            (err) => {
-                console.log(err)
-            }
-        )
-        //console.log(texture)
-        return bruh
-    })
-
-    return materialArray
-}
 
 function init() {
     //Scene: What's there
