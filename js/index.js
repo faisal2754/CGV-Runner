@@ -4,9 +4,9 @@ let scene, camera, renderer
 //lights
 let ambLight, directionalLight
 //world objects
-let player, obstacle, floor, floorWireframe
+let player, obstacle, floor, floorWireframe, group, newFloor
 //miscellaneous
-let skyboxGeometry, skybox, controls
+let skyboxGeometry, skybox, controls, deltaFloorX, deltaFloorY, deltaFloorZ
 
 function init() {
     //Setup Physijs
@@ -28,7 +28,7 @@ function init() {
         const near = 0.1
         const far = 1000
         camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far)
-        camera.position.set(0, 2, 5)
+        camera.position.set(-1, 3, 15)
     })()
 
     //Renderer: Renders scene and objects
@@ -46,7 +46,7 @@ function init() {
 
     //skybox
     const initSkybox = (function () {
-        skyboxGeometry = new THREE.BoxGeometry(250, 250, 250)
+        skyboxGeometry = new THREE.BoxGeometry(500, 500, 500)
         const skyboxMaterials = [
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_ft.png'),
@@ -76,14 +76,39 @@ function init() {
         skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
     })()
 
+    //obstacle
+    const initObstacle = (function () {
+        const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
+        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 })
+        obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
+        obstacle.name = 'Obstacle'
+        obstacle.translateZ(-15)
+        obstacle.translateY(0.5)
+    })()
+
     //creating floor
     const initFloor = (function () {
-        const floorGeometry = new THREE.BoxGeometry()
+        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 100)
         const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd00 })
         floor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
-        floor.translateZ(-47)
-        floor.scale.set(3, 0.25, 100)
-        floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
+        floor.name = 'Floor'
+        floor.translateZ(-50)
+        // floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
+        //const wire = new THREE.WireframeHelper(floor, 0x000000)
+    })()
+
+    const createFloor = (function (x, y, z) {
+        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 100)
+        const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
+        newFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
+        newFloor.name = 'Floor'
+        newFloor.translateY(50)
+        newFloor.translateX(50)
+        newFloor.translateZ(-170)
+        deltaFloorX = -newFloor.position.x
+        deltaFloorY = -newFloor.position.y
+        deltaFloorZ = -150 + 950 * 0.1 - newFloor.position.z
+        // floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
         //const wire = new THREE.WireframeHelper(floor, 0x000000)
     })()
 
@@ -92,17 +117,14 @@ function init() {
         const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
         const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 })
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
-        player.translateZ(1)
+        player.name = 'Player'
+        player.translateZ(-5)
         player.translateY(0.5)
-    })()
-
-    //obstacle
-    const initObstacle = (function () {
-        const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 })
-        obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
-        obstacle.translateZ(-7)
-        obstacle.translateY(0.5)
+        player.addEventListener('collision', function (object) {
+            if (object.name === 'Obstacle') {
+                console.log('Game Over bruh.')
+            }
+        })
     })()
 
     //ambient light
@@ -128,7 +150,8 @@ function init() {
         scene.add(ambLight)
         scene.add(directionalLight)
         scene.add(floor)
-        scene.add(floorWireframe)
+        scene.add(newFloor)
+        // scene.add(floorWireframe)
     })()
 
     animate()
@@ -137,9 +160,27 @@ function init() {
 function animate() {
     requestAnimationFrame(animate)
 
-    //console.log(floor.floorGeometry.parameters.width)
+    // console.log(floor.position)
 
-    obstacle.position.z += 0.025
+    floor.position.z += 0.1
+    floor.__dirtyPosition = true
+
+    if (newFloor.position.x < deltaFloorX / 950 || newFloor.position.x > -deltaFloorX / 950) {
+        newFloor.position.x += deltaFloorX / 950
+    }
+    if (newFloor.position.y < deltaFloorY / 950 || newFloor.position.y > -deltaFloorY / 950) {
+        newFloor.position.y += deltaFloorY / 950
+    }
+    if (newFloor.position.z < -150 + 950 * 0.1 - 1 || newFloor.position.z > -150 + 950 * 0.1 + 1) {
+        newFloor.position.z += deltaFloorZ / 950
+    }
+    if (newFloor.position.z > -150 - 100 * 0.05 && newFloor.position.z < -150 + 100 * 0.05) {
+        console.log('BRUH')
+    }
+
+    newFloor.__dirtyPosition = true
+
+    obstacle.position.z += 0.1
     obstacle.__dirtyPosition = true
 
     playerMovement()
