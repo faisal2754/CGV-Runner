@@ -100,7 +100,7 @@ function init() {
     const initObstacle = (function () {
         const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
         const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 })
-        obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial, 0)
+        obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
         obstacle.translateZ(-7)
         obstacle.translateY(0.5)
     })()
