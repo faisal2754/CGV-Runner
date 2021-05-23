@@ -160,8 +160,6 @@ function init() {
 function animate() {
     requestAnimationFrame(animate)
 
-    // console.log(floor.position)
-
     floor.position.z += 0.1
     floor.__dirtyPosition = true
 
@@ -173,9 +171,6 @@ function animate() {
     }
     if (newFloor.position.z < -150 + 950 * 0.1 - 1 || newFloor.position.z > -150 + 950 * 0.1 + 1) {
         newFloor.position.z += deltaFloorZ / 950
-    }
-    if (newFloor.position.z > -150 - 100 * 0.05 && newFloor.position.z < -150 + 100 * 0.05) {
-        console.log('BRUH')
     }
 
     newFloor.__dirtyPosition = true
