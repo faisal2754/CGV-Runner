@@ -159,13 +159,12 @@ function startGame() {
         // scene.add(floorWireframe)
     })()
 
+    camera.lookAt(player.position)
     animate()
 }
 
 function animate() {
     requestAnimationFrame(animate)
-
-    camera.lookAt(player.position)
 
     floor.position.z += 0.1
     floor.__dirtyPosition = true
