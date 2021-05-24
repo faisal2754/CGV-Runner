@@ -8,11 +8,10 @@ let player, obstacle, floor, floorWireframe, group, newFloor
 //miscellaneous
 let skyboxGeometry, skybox, controls, deltaFloorX, deltaFloorY, deltaFloorZ
 
-function init() {}
 
-function startGame() {
-    const btnStart = document.getElementById('btnStart')
-    btnStart.style.display = 'none'
+function init() {
+    // const btnStart = document.getElementById('btnStart')
+    // btnStart.style.display = 'none'
 
     //Setup Physijs
     const initPhysijs = (function () {
