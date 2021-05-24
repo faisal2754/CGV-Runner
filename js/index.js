@@ -8,7 +8,12 @@ let player, obstacle, floor, floorWireframe, group, newFloor
 //miscellaneous
 let skyboxGeometry, skybox, controls, deltaFloorX, deltaFloorY, deltaFloorZ
 
-function init() {
+function init() {}
+
+function startGame() {
+    const btnStart = document.getElementById('btnStart')
+    btnStart.style.display = 'none'
+
     //Setup Physijs
     const initPhysijs = (function () {
         Physijs.scripts.worker = './modules/physijs_worker.js'
@@ -28,7 +33,7 @@ function init() {
         const near = 0.1
         const far = 1000
         camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far)
-        camera.position.set(-1, 3, 15)
+        camera.position.set(-1, 3, 2.5)
     })()
 
     //Renderer: Renders scene and objects
@@ -115,7 +120,7 @@ function init() {
     //create player
     const initPlayer = (function () {
         const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-        const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 })
+        const playerMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 })
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
         player.name = 'Player'
         player.translateZ(-5)
@@ -159,6 +164,8 @@ function init() {
 
 function animate() {
     requestAnimationFrame(animate)
+
+    camera.lookAt(player.position)
 
     floor.position.z += 0.1
     floor.__dirtyPosition = true
