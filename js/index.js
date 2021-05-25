@@ -6,8 +6,27 @@ let ambLight, directionalLight
 //world objects
 let player, obstacle, floor, floorWireframe, group, newFloor
 //miscellaneous
-let skyboxGeometry, skybox, controls, deltaFloorX, deltaFloorY, deltaFloorZ
+let skyboxGeometry, skybox, controls
 
+//floor
+let deltaFloorX,
+    deltaFloorY,
+    deltaFloorZ,
+    numUpdates,
+    updateFloorX,
+    updateFloorY,
+    updateFloorZ
+
+let newFloors = []
+let updateFloorsX = []
+let updateFloorsY = []
+let updateFloorsZ = []
+let newFloorsLowerX = []
+let newFloorsLowerY = []
+let newFloorsLowerZ = []
+let newFloorsUpperX = []
+let newFloorsUpperY = []
+let newFloorsUpperZ = []
 
 function init() {
     // const btnStart = document.getElementById('btnStart')
@@ -54,28 +73,28 @@ function init() {
         const skyboxMaterials = [
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_ft.png'),
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
             }), //front side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_bk.png'),
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
             }), //back side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_up.png'),
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
             }), //up side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_dn.png'),
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
             }), //down side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_rt.png'),
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
             }), //right side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_lf.png'),
-                side: THREE.DoubleSide
-            }) //left side
+                side: THREE.DoubleSide,
+            }), //left side
         ]
         skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
     })()
@@ -83,7 +102,9 @@ function init() {
     //obstacle
     const initObstacle = (function () {
         const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 })
+        const obstacleMaterial = new THREE.MeshPhongMaterial({
+            color: 0x00ff00,
+        })
         obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
         obstacle.name = 'Obstacle'
         obstacle.translateZ(-15)
@@ -101,25 +122,87 @@ function init() {
         //const wire = new THREE.WireframeHelper(floor, 0x000000)
     })()
 
-    const createFloor = (function (x, y, z) {
-        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 100)
+    // const createFloor = (function (x, y, z) {
+    //     const floorGeometry = new THREE.BoxGeometry(3, 0.25, 5)
+    //     const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
+    //     newFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
+    //     newFloor.name = 'Floor'
+
+    //     newFloor.translateY(50)
+    //     newFloor.translateX(50)
+    //     newFloor.translateZ(-50)
+
+    //     endPosX = 0
+    //     endPosY = 0
+    //     endPosZ = -10
+
+    //     deltaFloorX = endPosX - newFloor.position.x
+    //     deltaFloorY = endPosX - newFloor.position.y
+    //     deltaFloorZ = endPosY - newFloor.position.z
+
+    //     numUpdates = 10
+
+    //     updateFloorX = deltaFloorX / numUpdates
+    //     updateFloorY = deltaFloorY / numUpdates
+    //     updateFloorZ = deltaFloorZ / numUpdates
+
+    //     finalXLower = endPosX - 0.5 * Math.abs(updateFloorX)
+    //     finalYLower = endPosY - 0.5 * Math.abs(updateFloorY)
+    //     finalZLower = endPosZ - 0.5 * Math.abs(updateFloorZ)
+
+    //     finalXUpper = endPosX + 0.5 * Math.abs(updateFloorX)
+    //     finalYUpper = endPosY + 0.5 * Math.abs(updateFloorY)
+    //     finalZUpper = endPosZ + 0.5 * Math.abs(updateFloorZ)
+    // })()
+
+    function createFloor(startX, startY, startZ, endX, endY, endZ, nUpdates) {
+        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 10)
         const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
-        newFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
-        newFloor.name = 'Floor'
-        newFloor.translateY(50)
-        newFloor.translateX(50)
-        newFloor.translateZ(-170)
-        deltaFloorX = -newFloor.position.x
-        deltaFloorY = -newFloor.position.y
-        deltaFloorZ = -150 + 950 * 0.1 - newFloor.position.z
-        // floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
-        //const wire = new THREE.WireframeHelper(floor, 0x000000)
-    })()
+        let tempFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
+        tempFloor.name = 'floor'
+
+        tempFloor.translateY(startX)
+        tempFloor.translateX(startY)
+        tempFloor.translateZ(startZ)
+
+        deltaFloorX = endX - tempFloor.position.x
+        deltaFloorY = endX - tempFloor.position.y
+        deltaFloorZ = endY - tempFloor.position.z
+
+        updateFloorX = deltaFloorX / nUpdates
+        updateFloorY = deltaFloorY / nUpdates
+        updateFloorZ = deltaFloorZ / nUpdates
+
+        finalXLower = endX - 0.5 * Math.abs(updateFloorX)
+        finalYLower = endY - 0.5 * Math.abs(updateFloorY)
+        finalZLower = endZ - 0.5 * Math.abs(updateFloorZ)
+
+        finalXUpper = endX + 0.5 * Math.abs(updateFloorX)
+        finalYUpper = endY + 0.5 * Math.abs(updateFloorY)
+        finalZUpper = endZ + 0.5 * Math.abs(updateFloorZ)
+
+        newFloors.push(tempFloor)
+
+        newFloorsLowerX.push(finalXLower)
+        newFloorsLowerY.push(finalYLower)
+        newFloorsLowerZ.push(finalZLower)
+
+        newFloorsUpperX.push(finalXUpper)
+        newFloorsUpperY.push(finalYUpper)
+        newFloorsUpperZ.push(finalZUpper)
+
+        updateFloorsX.push(updateFloorX)
+        updateFloorsY.push(updateFloorY)
+        updateFloorsZ.push(updateFloorZ)
+        scene.add(tempFloor)
+    }
 
     //create player
     const initPlayer = (function () {
         const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-        const playerMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 })
+        const playerMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff0000,
+        })
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
         player.name = 'Player'
         player.translateZ(-5)
@@ -142,6 +225,26 @@ function init() {
         directionalLight.position.set(-1, 2, 0)
     })()
 
+    const testNewFloor = (function () {
+        let startX, startY, startZ, endX, endY, endZ, signX, signY, signZ
+
+        for (var i = 0; i < 10; i++) {
+            signX = Math.random() < 0.5 ? -1 : 1
+            signY = Math.random() < 0.5 ? -1 : 1
+            signZ = Math.random() < 0.5 ? -1 : 1
+
+            startX = signX * (100 + Math.floor(Math.random() * 100))
+            startY = signY * (100 + Math.floor(Math.random() * 100))
+            startZ = signZ * (100 + Math.floor(Math.random() * 100))
+
+            endX = -3
+            endY = 2 * i
+            endZ = -10 * i
+
+            createFloor(startX, startY, startZ, endX, endY, endZ, 100 + i * 50)
+        }
+    })()
+
     /**  light helper
     const spheresize = 0.2
     const pointLightHelper = new THREE.PointLightHelper(light, spheresize)
@@ -154,7 +257,8 @@ function init() {
         scene.add(ambLight)
         scene.add(directionalLight)
         scene.add(floor)
-        scene.add(newFloor)
+        scene.add(newFloors)
+        //scene.add(newFloor)
         // scene.add(floorWireframe)
     })()
 
@@ -165,20 +269,30 @@ function init() {
 function animate() {
     requestAnimationFrame(animate)
 
-    floor.position.z += 0.1
-    floor.__dirtyPosition = true
+    //floor.position.z += 0.1
+    //floor.__dirtyPosition = true
 
-    if (newFloor.position.x < deltaFloorX / 950 || newFloor.position.x > -deltaFloorX / 950) {
-        newFloor.position.x += deltaFloorX / 950
+    for (var i = 0; i < newFloors.length; i++) {
+        if (
+            newFloors[i].position.x < newFloorsLowerX[i] ||
+            newFloors[i].position.x > newFloorsUpperX[i]
+        ) {
+            newFloors[i].position.x += updateFloorsX[i]
+        }
+        if (
+            newFloors[i].position.y < newFloorsLowerY[i] ||
+            newFloors[i].position.y > newFloorsUpperY[i]
+        ) {
+            newFloors[i].position.y += updateFloorsY[i]
+        }
+        if (
+            newFloors[i].position.z < newFloorsLowerZ[i] ||
+            newFloors[i].position.z > newFloorsUpperZ[i]
+        ) {
+            newFloors[i].position.z += updateFloorsZ[i]
+        }
+        newFloors[i].__dirtyPosition = true
     }
-    if (newFloor.position.y < deltaFloorY / 950 || newFloor.position.y > -deltaFloorY / 950) {
-        newFloor.position.y += deltaFloorY / 950
-    }
-    if (newFloor.position.z < -150 + 950 * 0.1 - 1 || newFloor.position.z > -150 + 950 * 0.1 + 1) {
-        newFloor.position.z += deltaFloorZ / 950
-    }
-
-    newFloor.__dirtyPosition = true
 
     obstacle.position.z += 0.1
     obstacle.__dirtyPosition = true
