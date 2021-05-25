@@ -9,23 +9,23 @@ let player, obstacle, floor, floorWireframe, group, newFloor
 let skyboxGeometry, skybox, controls
 
 //floor
-// let newFloors = []
-// let updateFloorsX = []
-// let updateFloorsY = []
-// let updateFloorsZ = []
-// let newFloorsLowerX = []
-// let newFloorsLowerY = []
-// let newFloorsLowerZ = []
-// let newFloorsUpperX = []
-// let newFloorsUpperY = []
-// let newFloorsUpperZ = []
 let movingFloors = []
 let updates = []
 let lowerThresholds = []
 let upperThresholds = []
 let startingPositions = []
 let endPositions = []
-let speed = 500
+let floorStatus = []
+let speed = 200
+let counter = 0
+
+let checkpointOneX = 0
+let checkpointOneY = 0
+let checkpointOneZ = -75
+
+let checkpointTwoX = 0
+let checkpointTwoY = 0
+let checkpointTwoZ = 10
 
 function init() {
     // const btnStart = document.getElementById('btnStart')
@@ -106,17 +106,20 @@ function init() {
         })
         obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
         obstacle.name = 'Obstacle'
-        obstacle.translateZ(-15)
-        obstacle.translateY(0.5)
+        obstacle.translateZ(-2)
+        obstacle.translateX(-3)
+        obstacle.translateY(1)
     })()
 
     //creating floor
     const initFloor = (function () {
-        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 100)
+        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 7)
         const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd00 })
         floor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
-        floor.name = 'Floor'
-        floor.translateZ(-50)
+        floor.name = 'MainFloor'
+        floor.translateZ(-2)
+        floor.translateX(-3)
+
         // floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
         //const wire = new THREE.WireframeHelper(floor, 0x000000)
     })()
@@ -129,8 +132,8 @@ function init() {
         })
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
         player.name = 'Player'
-        player.translateZ(-5)
-        player.translateY(0.5)
+        player.translateY(1)
+        player.translateX(-3)
         player.addEventListener('collision', function (object) {
             if (object.name === 'Obstacle') {
                 console.log('Game Over bruh.')
@@ -148,90 +151,6 @@ function init() {
         directionalLight = new THREE.DirectionalLight(0xffffff, 1)
         directionalLight.position.set(-1, 2, 0)
     })()
-
-    function createMovingFloor(
-        startX,
-        startY,
-        startZ,
-        endX,
-        endY,
-        endZ,
-        sizeX,
-        sizeY,
-        sizeZ,
-        delay
-    ) {
-        const floorGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
-        const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
-        let tempFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
-        tempFloor.name = 'floor'
-
-        tempFloor.position.x = startX
-        tempFloor.position.y = startY
-        tempFloor.position.z = startZ
-
-        updateX = calculateUpdate(startX, endX, speed - delay)
-        updateY = calculateUpdate(startY, endY, speed - delay)
-        updateZ = calculateUpdate(startZ, endZ, speed - delay)
-
-        lowerThreshX = endX - Math.abs(updateX) * 0.05
-        lowerThreshY = endY - Math.abs(updateY) * 0.05
-        lowerThreshZ = endZ - Math.abs(updateZ) * 0.05
-
-        upperThreshX = endX + Math.abs(updateX) * 0.05
-        upperThreshY = endY + Math.abs(updateY) * 0.05
-        upperThreshZ = endZ + Math.abs(updateZ) * 0.05
-
-        movingFloors.push(tempFloor)
-        updates.push([updateX, updateY, updateZ])
-        startingPositions.push([startX, startY, startZ])
-        endPositions.push([endX, endY, endZ])
-        lowerThresholds.push([lowerThreshX, lowerThreshY, lowerThreshZ])
-        upperThresholds.push([upperThreshX, upperThreshY, upperThreshZ])
-        scene.add(tempFloor)
-    }
-
-    function calculateUpdate(a, b, n) {
-        delta = b - a
-        return delta / n
-    }
-
-    const setupMovingFloors = (function () {
-        for (let i = 0; i < 10; i++) {
-            createMovingFloor(
-                20,
-                0,
-                -10 - i * 10,
-                20,
-                0,
-                -10 - i * 10 + 10,
-                3,
-                0.25,
-                5,
-                i * 50
-            )
-        }
-    })()
-
-    // const testNewFloor = (function () {
-    //     let startX, startY, startZ, endX, endY, endZ, signX, signY, signZ
-
-    //     for (var i = 0; i < 10; i++) {
-    //         signX = Math.random() < 0.5 ? -1 : 1
-    //         signY = Math.random() < 0.5 ? -1 : 1
-    //         signZ = Math.random() < 0.5 ? -1 : 1
-
-    //         startX = signX * (100 + Math.floor(Math.random() * 100))
-    //         startY = signY * (100 + Math.floor(Math.random() * 100))
-    //         startZ = signZ * (100 + Math.floor(Math.random() * 100))
-
-    //         endX = -3
-    //         endY = 2 * i
-    //         endZ = -10 * i
-
-    //         createFloor(startX, startY, startZ, endX, endY, endZ, 100 + i * 50)
-    //     }
-    // })()
 
     /**  light helper
     const spheresize = 0.2
@@ -258,8 +177,97 @@ function absoluteDistance(x1, x2) {
     return Math.abs(x1 - x2)
 }
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'
+    var color = '#'
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)]
+    }
+    return color
+}
+
+function createMovingFloor(
+    startX,
+    startY,
+    startZ,
+    endX,
+    endY,
+    endZ,
+    sizeX,
+    sizeY,
+    sizeZ,
+    delay
+) {
+    const color = getRandomColor()
+    const floorGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
+    const floorMaterial = new THREE.MeshLambertMaterial({ color: color })
+    let tempFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
+    tempFloor.name = 'floor'
+
+    tempFloor.position.x = startX
+    tempFloor.position.y = startY
+    tempFloor.position.z = startZ
+
+    updateX = calculateUpdate(startX, endX, speed - delay)
+    updateY = calculateUpdate(startY, endY, speed - delay)
+    updateZ = calculateUpdate(startZ, endZ, speed - delay)
+
+    lowerThreshX = endX - 0.01 //Math.abs(updateX) * 0.001
+    lowerThreshY = endY - 0.01 //Math.abs(updateY) * 0.001
+    lowerThreshZ = endZ - 0.01 //Math.abs(updateZ) * 0.001
+
+    upperThreshX = endX + 0.01 //Math.abs(updateX) * 0.001
+    upperThreshY = endY + 0.01 //Math.abs(updateY) * 0.001
+    upperThreshZ = endZ + 0.01 //Math.abs(updateZ) * 0.001
+
+    movingFloors.push(tempFloor)
+    updates.push([updateX, updateY, updateZ])
+    startingPositions.push([startX, startY, startZ])
+    endPositions.push([endX, endY, endZ])
+    lowerThresholds.push([lowerThreshX, lowerThreshY, lowerThreshZ])
+    upperThresholds.push([upperThreshX, upperThreshY, upperThreshZ])
+    floorStatus.push(0)
+    scene.add(tempFloor)
+}
+
+function calculateUpdate(a, b, n) {
+    delta = b - a
+    return delta / n
+}
+
+function getRandomPointOnSphere(minRad) {
+    let u = Math.random()
+    let v = Math.random()
+    let theta = 2 * Math.PI * u
+    let phi = Math.acos(1 * v - 1)
+    let radius = minRad + Math.random() * 100
+    let x = checkpointOneX + radius * Math.sin(phi) * Math.cos(theta)
+    let y = checkpointOneY + radius * Math.sin(phi) * Math.sin(theta)
+    let z = checkpointOneZ + radius * Math.cos(phi)
+    return [x, y, z]
+}
+
 function animate() {
     requestAnimationFrame(animate)
+
+    // make counter % 20 to have less path pieces
+    if (counter < 1000 && counter % 5 == 0) {
+        let startVec = getRandomPointOnSphere(100)
+
+        createMovingFloor(
+            startVec[0],
+            startVec[1],
+            startVec[2],
+            checkpointOneX,
+            checkpointOneY,
+            checkpointOneZ,
+            3,
+            0.25,
+            5,
+            0
+        )
+    }
+    counter += 1
 
     for (var i = 0; i < movingFloors.length; i++) {
         var f = movingFloors[i]
@@ -268,36 +276,49 @@ function animate() {
         var lowerT = lowerThresholds[i]
         var upperT = upperThresholds[i]
         var deltas = updates[i]
-        var didSomething = false
+        var status = floorStatus[i]
 
-        if (f.position.x < lowerT[0] || f.position.x > upperT[0]) {
-            f.position.x += deltas[0]
-            didSomething = true
-        }
+        if (status == 0) {
+            if (f.position.x < lowerT[0] || f.position.x > upperT[0]) {
+                f.position.x += deltas[0]
+            }
 
-        if (f.position.y < lowerT[1] || f.position.y > upperT[1]) {
-            f.position.y += deltas[1]
-            didSomething = true
-        }
+            if (f.position.y < lowerT[1] || f.position.y > upperT[1]) {
+                f.position.y += deltas[1]
+            }
 
-        if (f.position.z < lowerT[2] || f.position.z > upperT[2]) {
-            f.position.z += deltas[2]
-            didSomething = true
-        }
+            if (f.position.z < lowerT[2] || f.position.z > upperT[2]) {
+                f.position.z += deltas[2]
+            }
 
-        dx = absoluteDistance(f.position.x, endPos[0])
-        dy = absoluteDistance(f.position.y, endPos[1])
-        dz = absoluteDistance(f.position.z, endPos[2])
+            dx = absoluteDistance(f.position.x, checkpointOneX)
+            dy = absoluteDistance(f.position.y, checkpointOneY)
+            dz = absoluteDistance(f.position.z, checkpointOneZ)
 
-        if (dx < 5 && dy < 5 && dz < 5) {
-            f.position.x = startPos[0]
-            f.position.y = startPos[1]
-            f.position.z = startPos[2]
-            didSomething = true
-        }
+            if (dx < 0.1 && dy < 0.1 && dz < 0.1) {
+                f.material.color.setHex(0xff00d4)
+                floorStatus[i] = 1
+            }
+        } else {
+            f.position.x += 0
+            f.position.y += 0
+            f.position.z += 0.2
 
-        if (!didSomething) {
-            console.log(dx, dy, dz)
+            dx = absoluteDistance(f.position.x, checkpointTwoX)
+            dy = absoluteDistance(f.position.y, checkpointTwoY)
+            dz = absoluteDistance(f.position.z, checkpointTwoZ)
+
+            if (dx < 0.1 && dy < 0.1 && dz < 0.1) {
+                f.position.x = startPos[0]
+                f.position.y = startPos[1]
+                f.position.z = startPos[2]
+                f.material.color.setRGB(
+                    Math.random(),
+                    Math.random(),
+                    Math.random()
+                )
+                floorStatus[i] = 0
+            }
         }
 
         f.__dirtyPosition = true
@@ -306,30 +327,8 @@ function animate() {
     //floor.position.z += 0.1
     //floor.__dirtyPosition = true
 
-    // for (var i = 0; i < newFloors.length; i++) {
-    //     if (
-    //         newFloors[i].position.x < newFloorsLowerX[i] ||
-    //         newFloors[i].position.x > newFloorsUpperX[i]
-    //     ) {
-    //         newFloors[i].position.x += updateFloorsX[i]
-    //     }
-    //     if (
-    //         newFloors[i].position.y < newFloorsLowerY[i] ||
-    //         newFloors[i].position.y > newFloorsUpperY[i]
-    //     ) {
-    //         newFloors[i].position.y += updateFloorsY[i]
-    //     }
-    //     if (
-    //         newFloors[i].position.z < newFloorsLowerZ[i] ||
-    //         newFloors[i].position.z > newFloorsUpperZ[i]
-    //     ) {
-    //         newFloors[i].position.z += updateFloorsZ[i]
-    //     }
-    //     newFloors[i].__dirtyPosition = true
-    // }
-
-    obstacle.position.z += 0.1
-    obstacle.__dirtyPosition = true
+    // obstacle.position.z += 0.1
+    // obstacle.__dirtyPosition = true
 
     playerMovement()
     cameraMovement()
