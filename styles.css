@@ -1,3 +1,10 @@
+
+/* @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@100&display=swap'); */
+@font-face {
+	font-family: spaceAge;
+	src: url(font/space\ age.ttf);
+ }
+ 
 * {
 	margin: 0;
 	padding: 0;
@@ -8,8 +15,11 @@ html,
 body {
 	width: 100%;
 	height: 100vh;
-	font-family: "Bridge Head Con Medium";
+	font-family: spaceAge;
+
 }
+
+
 
 .menu {
 	position: fixed;
@@ -49,17 +59,20 @@ body {
 	right: -50%;
 }
 
-.menu-link a {
+a {
 	text-decoration: none;
-	color: #fff;
+	color: #ffffff;
 	font-size: 100px;
+	
+}
+a:hover{
+	color: rgb(164, 0, 185);
 }
 
 .menu-link:first-child a::before {
 	display: block;
 	position: relative;
 	content: "";
-	background-image: url("brush-stroke.png");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	top: 80px;
@@ -69,7 +82,7 @@ body {
 }
 
 .menu-link a span {
-	font-family: "Bigilla";
+	font-family: spaceAge;
 	font-size: 24px;
 }
 
@@ -78,7 +91,7 @@ body {
 }
 
 .contact .info {
-	font-family: Helvetica, sans-serif;
+	font-family: spaceAge;
 	font-weight: lighter;
 }
 
