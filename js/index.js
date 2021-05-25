@@ -9,24 +9,23 @@ let player, obstacle, floor, floorWireframe, group, newFloor
 let skyboxGeometry, skybox, controls
 
 //floor
-let deltaFloorX,
-    deltaFloorY,
-    deltaFloorZ,
-    numUpdates,
-    updateFloorX,
-    updateFloorY,
-    updateFloorZ
-
-let newFloors = []
-let updateFloorsX = []
-let updateFloorsY = []
-let updateFloorsZ = []
-let newFloorsLowerX = []
-let newFloorsLowerY = []
-let newFloorsLowerZ = []
-let newFloorsUpperX = []
-let newFloorsUpperY = []
-let newFloorsUpperZ = []
+// let newFloors = []
+// let updateFloorsX = []
+// let updateFloorsY = []
+// let updateFloorsZ = []
+// let newFloorsLowerX = []
+// let newFloorsLowerY = []
+// let newFloorsLowerZ = []
+// let newFloorsUpperX = []
+// let newFloorsUpperY = []
+// let newFloorsUpperZ = []
+let movingFloors = []
+let updates = []
+let lowerThresholds = []
+let upperThresholds = []
+let startingPositions = []
+let endPositions = []
+let speed = 500
 
 function init() {
     // const btnStart = document.getElementById('btnStart')
@@ -122,81 +121,6 @@ function init() {
         //const wire = new THREE.WireframeHelper(floor, 0x000000)
     })()
 
-    // const createFloor = (function (x, y, z) {
-    //     const floorGeometry = new THREE.BoxGeometry(3, 0.25, 5)
-    //     const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
-    //     newFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
-    //     newFloor.name = 'Floor'
-
-    //     newFloor.translateY(50)
-    //     newFloor.translateX(50)
-    //     newFloor.translateZ(-50)
-
-    //     endPosX = 0
-    //     endPosY = 0
-    //     endPosZ = -10
-
-    //     deltaFloorX = endPosX - newFloor.position.x
-    //     deltaFloorY = endPosX - newFloor.position.y
-    //     deltaFloorZ = endPosY - newFloor.position.z
-
-    //     numUpdates = 10
-
-    //     updateFloorX = deltaFloorX / numUpdates
-    //     updateFloorY = deltaFloorY / numUpdates
-    //     updateFloorZ = deltaFloorZ / numUpdates
-
-    //     finalXLower = endPosX - 0.5 * Math.abs(updateFloorX)
-    //     finalYLower = endPosY - 0.5 * Math.abs(updateFloorY)
-    //     finalZLower = endPosZ - 0.5 * Math.abs(updateFloorZ)
-
-    //     finalXUpper = endPosX + 0.5 * Math.abs(updateFloorX)
-    //     finalYUpper = endPosY + 0.5 * Math.abs(updateFloorY)
-    //     finalZUpper = endPosZ + 0.5 * Math.abs(updateFloorZ)
-    // })()
-
-    function createFloor(startX, startY, startZ, endX, endY, endZ, nUpdates) {
-        const floorGeometry = new THREE.BoxGeometry(3, 0.25, 10)
-        const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
-        let tempFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
-        tempFloor.name = 'floor'
-
-        tempFloor.translateY(startX)
-        tempFloor.translateX(startY)
-        tempFloor.translateZ(startZ)
-
-        deltaFloorX = endX - tempFloor.position.x
-        deltaFloorY = endX - tempFloor.position.y
-        deltaFloorZ = endY - tempFloor.position.z
-
-        updateFloorX = deltaFloorX / nUpdates
-        updateFloorY = deltaFloorY / nUpdates
-        updateFloorZ = deltaFloorZ / nUpdates
-
-        finalXLower = endX - 0.5 * Math.abs(updateFloorX)
-        finalYLower = endY - 0.5 * Math.abs(updateFloorY)
-        finalZLower = endZ - 0.5 * Math.abs(updateFloorZ)
-
-        finalXUpper = endX + 0.5 * Math.abs(updateFloorX)
-        finalYUpper = endY + 0.5 * Math.abs(updateFloorY)
-        finalZUpper = endZ + 0.5 * Math.abs(updateFloorZ)
-
-        newFloors.push(tempFloor)
-
-        newFloorsLowerX.push(finalXLower)
-        newFloorsLowerY.push(finalYLower)
-        newFloorsLowerZ.push(finalZLower)
-
-        newFloorsUpperX.push(finalXUpper)
-        newFloorsUpperY.push(finalYUpper)
-        newFloorsUpperZ.push(finalZUpper)
-
-        updateFloorsX.push(updateFloorX)
-        updateFloorsY.push(updateFloorY)
-        updateFloorsZ.push(updateFloorZ)
-        scene.add(tempFloor)
-    }
-
     //create player
     const initPlayer = (function () {
         const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
@@ -225,25 +149,89 @@ function init() {
         directionalLight.position.set(-1, 2, 0)
     })()
 
-    const testNewFloor = (function () {
-        let startX, startY, startZ, endX, endY, endZ, signX, signY, signZ
+    function createMovingFloor(
+        startX,
+        startY,
+        startZ,
+        endX,
+        endY,
+        endZ,
+        sizeX,
+        sizeY,
+        sizeZ,
+        delay
+    ) {
+        const floorGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
+        const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xff00ff })
+        let tempFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
+        tempFloor.name = 'floor'
 
-        for (var i = 0; i < 10; i++) {
-            signX = Math.random() < 0.5 ? -1 : 1
-            signY = Math.random() < 0.5 ? -1 : 1
-            signZ = Math.random() < 0.5 ? -1 : 1
+        tempFloor.position.x = startX
+        tempFloor.position.y = startY
+        tempFloor.position.z = startZ
 
-            startX = signX * (100 + Math.floor(Math.random() * 100))
-            startY = signY * (100 + Math.floor(Math.random() * 100))
-            startZ = signZ * (100 + Math.floor(Math.random() * 100))
+        updateX = calculateUpdate(startX, endX, speed - delay)
+        updateY = calculateUpdate(startY, endY, speed - delay)
+        updateZ = calculateUpdate(startZ, endZ, speed - delay)
 
-            endX = -3
-            endY = 2 * i
-            endZ = -10 * i
+        lowerThreshX = endX - Math.abs(updateX) * 0.05
+        lowerThreshY = endY - Math.abs(updateY) * 0.05
+        lowerThreshZ = endZ - Math.abs(updateZ) * 0.05
 
-            createFloor(startX, startY, startZ, endX, endY, endZ, 100 + i * 50)
+        upperThreshX = endX + Math.abs(updateX) * 0.05
+        upperThreshY = endY + Math.abs(updateY) * 0.05
+        upperThreshZ = endZ + Math.abs(updateZ) * 0.05
+
+        movingFloors.push(tempFloor)
+        updates.push([updateX, updateY, updateZ])
+        startingPositions.push([startX, startY, startZ])
+        endPositions.push([endX, endY, endZ])
+        lowerThresholds.push([lowerThreshX, lowerThreshY, lowerThreshZ])
+        upperThresholds.push([upperThreshX, upperThreshY, upperThreshZ])
+        scene.add(tempFloor)
+    }
+
+    function calculateUpdate(a, b, n) {
+        delta = b - a
+        return delta / n
+    }
+
+    const setupMovingFloors = (function () {
+        for (let i = 0; i < 10; i++) {
+            createMovingFloor(
+                20,
+                0,
+                -10 - i * 10,
+                20,
+                0,
+                -10 - i * 10 + 10,
+                3,
+                0.25,
+                5,
+                i * 50
+            )
         }
     })()
+
+    // const testNewFloor = (function () {
+    //     let startX, startY, startZ, endX, endY, endZ, signX, signY, signZ
+
+    //     for (var i = 0; i < 10; i++) {
+    //         signX = Math.random() < 0.5 ? -1 : 1
+    //         signY = Math.random() < 0.5 ? -1 : 1
+    //         signZ = Math.random() < 0.5 ? -1 : 1
+
+    //         startX = signX * (100 + Math.floor(Math.random() * 100))
+    //         startY = signY * (100 + Math.floor(Math.random() * 100))
+    //         startZ = signZ * (100 + Math.floor(Math.random() * 100))
+
+    //         endX = -3
+    //         endY = 2 * i
+    //         endZ = -10 * i
+
+    //         createFloor(startX, startY, startZ, endX, endY, endZ, 100 + i * 50)
+    //     }
+    // })()
 
     /**  light helper
     const spheresize = 0.2
@@ -257,7 +245,7 @@ function init() {
         scene.add(ambLight)
         scene.add(directionalLight)
         scene.add(floor)
-        scene.add(newFloors)
+        //scene.add(newFloors)
         //scene.add(newFloor)
         // scene.add(floorWireframe)
     })()
@@ -266,33 +254,79 @@ function init() {
     animate()
 }
 
+function absoluteDistance(x1, x2) {
+    return Math.abs(x1 - x2)
+}
+
 function animate() {
     requestAnimationFrame(animate)
+
+    for (var i = 0; i < movingFloors.length; i++) {
+        var f = movingFloors[i]
+        var startPos = startingPositions[i]
+        var endPos = endPositions[i]
+        var lowerT = lowerThresholds[i]
+        var upperT = upperThresholds[i]
+        var deltas = updates[i]
+        var didSomething = false
+
+        if (f.position.x < lowerT[0] || f.position.x > upperT[0]) {
+            f.position.x += deltas[0]
+            didSomething = true
+        }
+
+        if (f.position.y < lowerT[1] || f.position.y > upperT[1]) {
+            f.position.y += deltas[1]
+            didSomething = true
+        }
+
+        if (f.position.z < lowerT[2] || f.position.z > upperT[2]) {
+            f.position.z += deltas[2]
+            didSomething = true
+        }
+
+        dx = absoluteDistance(f.position.x, endPos[0])
+        dy = absoluteDistance(f.position.y, endPos[1])
+        dz = absoluteDistance(f.position.z, endPos[2])
+
+        if (dx < 5 && dy < 5 && dz < 5) {
+            f.position.x = startPos[0]
+            f.position.y = startPos[1]
+            f.position.z = startPos[2]
+            didSomething = true
+        }
+
+        if (!didSomething) {
+            console.log(dx, dy, dz)
+        }
+
+        f.__dirtyPosition = true
+    }
 
     //floor.position.z += 0.1
     //floor.__dirtyPosition = true
 
-    for (var i = 0; i < newFloors.length; i++) {
-        if (
-            newFloors[i].position.x < newFloorsLowerX[i] ||
-            newFloors[i].position.x > newFloorsUpperX[i]
-        ) {
-            newFloors[i].position.x += updateFloorsX[i]
-        }
-        if (
-            newFloors[i].position.y < newFloorsLowerY[i] ||
-            newFloors[i].position.y > newFloorsUpperY[i]
-        ) {
-            newFloors[i].position.y += updateFloorsY[i]
-        }
-        if (
-            newFloors[i].position.z < newFloorsLowerZ[i] ||
-            newFloors[i].position.z > newFloorsUpperZ[i]
-        ) {
-            newFloors[i].position.z += updateFloorsZ[i]
-        }
-        newFloors[i].__dirtyPosition = true
-    }
+    // for (var i = 0; i < newFloors.length; i++) {
+    //     if (
+    //         newFloors[i].position.x < newFloorsLowerX[i] ||
+    //         newFloors[i].position.x > newFloorsUpperX[i]
+    //     ) {
+    //         newFloors[i].position.x += updateFloorsX[i]
+    //     }
+    //     if (
+    //         newFloors[i].position.y < newFloorsLowerY[i] ||
+    //         newFloors[i].position.y > newFloorsUpperY[i]
+    //     ) {
+    //         newFloors[i].position.y += updateFloorsY[i]
+    //     }
+    //     if (
+    //         newFloors[i].position.z < newFloorsLowerZ[i] ||
+    //         newFloors[i].position.z > newFloorsUpperZ[i]
+    //     ) {
+    //         newFloors[i].position.z += updateFloorsZ[i]
+    //     }
+    //     newFloors[i].__dirtyPosition = true
+    // }
 
     obstacle.position.z += 0.1
     obstacle.__dirtyPosition = true
