@@ -51,7 +51,7 @@
 				</div>
 			</div>
 		<!-- </div> -->
-		<div class="menu-open" style="color: white;" onclick="playButtonWhoosh(); openMenu()">menu</div>
+		<div id="menuBtn" class="menu-open" style="color: white;" onclick="playButtonWhoosh(); openMenu()">menu</div>
 		<script>
 			tl = new TimelineMax({ paused: true });
 
@@ -120,6 +120,7 @@
 			 
 			$(document).ready(function () {
 				tl.reversed(!tl.reversed());
+				openMenu();
 			});
 			$(document).on("click", ".menu-open", function () {
 				tl.reversed(!tl.reversed());
@@ -146,16 +147,21 @@
 		//Menu's
 		function hideMenu() {
 		var menu = document.getElementById("menuContainer");
+		var menuBtn = document.getElementById("menuBtn");
 		setTimeout(function () {
         
             menu.style.display = "none";
+			menuBtn.style.display = "block"
         
     	}, 2000);
 		
 		}
 		function openMenu() {
 		var menu = document.getElementById("menuContainer");
+		var menuBtn = document.getElementById("menuBtn");
 		menu.style.display = "block";
+		menuBtn.style.display = "none";
+		
 		}
   	</script>
 
