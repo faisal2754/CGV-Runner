@@ -12,24 +12,34 @@
         <script src="./modules/physi.js"></script>
         <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
         <script src="./js/index.js"></script>
+		
 	</head>
 	<body>
+
+		<!--Sounds-->
+		<audio id="buttonSound" src="sfx/buttonSound1.mp3"></audio>
+		<audio id="buttonWhoosh" src="sfx/buttonSoundWhoosh.mp3"></audio>
+
+
+
+
 		<div class="container">
 			<div class="menu-close">
-				<div class="menu-close-img"><img src="close-icon.png" alt="" /></div>
+				<div class="menu-close-img" onclick="playButtonWhoosh()"><img src="close-icon.png" alt="" /></div>
 			</div>
 			<div class="hr"></div>
 			<div class="menu">
 				<div class="menu-left">
 					<div class="menu-links">
 						<div class="menu-link" style="padding: 10px;">
-							<a href="#" style="font-size: xxx-large;">LEADERBOARDS</a>
+							<a href="#" style="font-size: xxx-large;" onclick="playButton()">LEADERBOARDS</a>
+
 						</div>
 						<div class="menu-link" style="padding: 10px;">
-							<a href="#" style="font-size: xxx-large;">CREDITS</a>
+							<a href="#" style="font-size: xxx-large;" onclick="playButton()">CREDITS</a>
 						</div>
 						<div class="menu-link" style="padding: 10px;">
-							<a href="#" style="font-size: xxx-large;">SETTINGS</a>
+							<a href="#" style="font-size: xxx-large;" onclick="playButton()">SETTINGS</a>
 						</div>
 						<!-- <div class="menu-link">
 							<a href="#">Contact <span>04</span></a>
@@ -41,7 +51,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="menu-open" style="color: white;">menu</div>
+		<div class="menu-open" style="color: white;" onclick="playButtonWhoosh()">menu</div>
 		<script>
 			tl = new TimelineMax({ paused: true });
 
@@ -115,6 +125,18 @@
 				tl.reversed(!tl.reversed());
 			});
 		</script>
+
+	<!---Sound Effects -->
+	<script>
+		function playButton() {
+		var audio = document.getElementById("buttonSound");
+		audio.play();
+		}
+		function playButtonWhoosh() {
+		var audio = document.getElementById("buttonWhoosh");
+		audio.play();
+		}
+  	</script>
 	</body>
 </html>
 
