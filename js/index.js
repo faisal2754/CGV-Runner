@@ -142,7 +142,7 @@ function init() {
     })()
 //astronaut
     loader = new THREE.GLTFLoader();
-    loader.load("Astronaut/scene.gltf", function(gltf){
+    loader.load("/models/astronaut/scene.gltf", function(gltf){
         scene.add(gltf.scene);
         astronaut = gltf.scene.children[0];
         mixer = new THREE.AnimationMixer(gltf.scene);
