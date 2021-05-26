@@ -27,6 +27,9 @@ let checkpointTwoX = 0
 let checkpointTwoY = 0
 let checkpointTwoZ = 10
 
+//obstacles
+let obstacles = []
+
 function init() {
     // const btnStart = document.getElementById('btnStart')
     // btnStart.style.display = 'none'
@@ -106,10 +109,20 @@ function init() {
         })
         obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
         obstacle.name = 'Obstacle'
-        obstacle.translateZ(-2)
-        obstacle.translateX(-3)
-        obstacle.translateY(1)
+        obstacle.translateZ(-90)
+        obstacle.translateX(0)
+        obstacle.translateY(10)
+        
+
+
+        setTimeout(function () {
+            scene.add(obstacle);
+    	}, 6000);
+    
+
     })()
+
+
 
     //creating floor
     const initFloor = (function () {
@@ -140,6 +153,7 @@ function init() {
             }
         })
     })()
+
 //astronaut
     loader = new THREE.GLTFLoader();
     loader.load("/models/astronaut/scene.gltf", function(gltf){
@@ -173,7 +187,7 @@ function init() {
 
     const initSceneChildren = (function () {
         scene.add(player)
-        scene.add(obstacle)
+        // scene.add(obstacle)
         scene.add(skybox)
         scene.add(ambLight)
         scene.add(directionalLight)
@@ -264,6 +278,8 @@ function getRandomPointOnSphere(minRad) {
 function animate() {
     requestAnimationFrame(animate)
 
+
+
     // make counter % 20 to have less path pieces
     if (counter < 1000 && counter % 5 == 0) {
         let startVec = getRandomPointOnSphere(100)
@@ -341,8 +357,14 @@ function animate() {
     //floor.position.z += 0.1
     //floor.__dirtyPosition = true
 
-    // obstacle.position.z += 0.1
-    // obstacle.__dirtyPosition = true
+     obstacle.position.z += 0.1
+     obstacle.__dirtyPosition = true
+
+     if(obstacle.position.z > 0){
+        obstacle.position.z = -70
+        obstacle.position.x = 0
+        obstacle.position.y = 5
+     }
 
     playerMovement()
     cameraMovement()
