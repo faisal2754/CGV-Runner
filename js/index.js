@@ -1,10 +1,10 @@
 const keyboard = {}
 //essentials
-let scene, camera, renderer
+let scene, camera, renderer, loader, mixer
 //lights
 let ambLight, directionalLight
 //world objects
-let player, obstacle, floor, floorWireframe, group, newFloor
+let player, obstacle, floor, floorWireframe, group, newFloor, astronaut
 //miscellaneous
 let skyboxGeometry, skybox, controls
 
@@ -140,6 +140,20 @@ function init() {
             }
         })
     })()
+//astronaut
+    loader = new THREE.GLTFLoader();
+    loader.load("Astronaut/scene.gltf", function(gltf){
+        scene.add(gltf.scene);
+        astronaut = gltf.scene.children[0];
+        mixer = new THREE.AnimationMixer(gltf.scene);
+        mixer.clipAction(gltf.animations[0]).play();
+        astronaut.name = 'Astronaut'
+        astronaut.addEventListener('collision', function (object) {
+            if (object.name === 'Obstacle') {
+                console.log('Game Over bruh.')
+            }
+        })
+    });
 
     //ambient light
     const initAmbientLight = (function () {
@@ -342,24 +356,30 @@ function playerMovement() {
     if (keyboard[87]) {
         // W key
         player.position.z -= 0.05
+        astronaut.position.z -= 0.05
     }
     if (keyboard[83]) {
         // S key
         player.position.z += 0.05
+        astronaut.position.z += 0.05
     }
     if (keyboard[65]) {
         // A key
         player.position.x -= 0.075
+        astronaut.position.x -= 0.075
     }
     if (keyboard[68]) {
         // D key
         player.position.x += 0.075
+        astronaut.position.x += 0.075
     }
     if (keyboard[32]) {
         // Space key
         player.position.y += 0.1
+        astronaut.position.y += 0.1
     }
     player.__dirtyPosition = true
+
 }
 
 function cameraMovement() {
