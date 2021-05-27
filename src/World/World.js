@@ -4,6 +4,7 @@ import { createDirectionalLight, createAmbientLight } from './components/lights.
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
 
+import { createControls } from './systems/controls.js'
 import { createRenderer } from './systems/renderer.js'
 import { Resizer } from './systems/Resizer.js'
 import { Loop } from './systems/Loop.js'
@@ -22,8 +23,7 @@ class World {
         renderer = createRenderer()
 
         container.append(renderer.domElement)
-        const controls = new THREE.OrbitControls(camera, renderer.domElement)
-        controls.enabled = true
+        const controls = new createControls(camera, renderer.domElement)
 
         loop = new Loop(camera, scene, renderer)
 

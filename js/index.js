@@ -6,7 +6,7 @@ let scene, camera, renderer, loader, mixer
 //lights
 let ambLight, directionalLight
 //world objects
-let player, obstacle, floor, floorWireframe, group, newFloor, astronaut
+let player, obstacle, floor, floorWireframe, group, newFloor, astronaut, testFloor, astroMesh
 //miscellaneous
 let skyboxGeometry, skybox, controls
 
@@ -139,9 +139,9 @@ function init() {
         obstacle.translateX(0)
         obstacle.translateY(10)
 
-        setTimeout(function () {
-            scene.add(obstacle)
-        }, 6000)
+        // setTimeout(function () {
+        //     scene.add(obstacle)
+        // }, 6000)
     })()
 
     //creating floor
@@ -153,6 +153,19 @@ function init() {
         floor.translateZ(-2)
         floor.translateX(-3)
 
+        // floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
+        //const wire = new THREE.WireframeHelper(floor, 0x000000)
+    })()
+
+    //testing floor
+    const initAnotherFloor = (function () {
+        const floorGeometry = new THREE.BoxGeometry(20, 0.25, 20)
+        const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd00 })
+        testFloor = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
+        testFloor.name = 'TestFloor'
+        testFloor.translateZ(-2)
+        testFloor.translateX(-20)
+        scene.add(testFloor)
         // floorWireframe = new THREE.BoxHelper(floor, 0xff0000)
         //const wire = new THREE.WireframeHelper(floor, 0x000000)
     })()
@@ -174,20 +187,36 @@ function init() {
         })
     })()
 
+    let astroGroup
+
     //astronaut
     loader = new THREE.GLTFLoader()
-    loader.load('/models/astronaut/scene.gltf', function (gltf) {
-        scene.add(gltf.scene)
-        astronaut = gltf.scene.children[0]
-        mixer = new THREE.AnimationMixer(gltf.scene)
-        mixer.clipAction(gltf.animations[0]).play()
-        astronaut.name = 'Astronaut'
-        astronaut.addEventListener('collision', function (object) {
-            if (object.name === 'Obstacle') {
-                console.log('Game Over bruh.')
-            }
-        })
-    })
+    loader.load(
+        'models/astronaut-glb/astro.glb',
+        function (gltf) {
+            console.log(gltf)
+            // scene.add(gltf.scene)
+            const astroGeo = new THREE.CylinderGeometry(0.5, 0.5, 2)
+            const material = Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true }))
+            astroMesh = new Physijs.CapsuleMesh(astroGeo, material)
+            astroMesh.translateX(-20)
+            astroMesh.translateY(1.5)
+            scene.add(astroMesh)
+            const physiAstro = new Physijs.ConcaveMesh(gltf.scene, material)
+            const astro = gltf.scene
+            astro.translateX(-20)
+            astro.translateY(0)
+            scene.add(astro)
+            console.log('done')
+            astroGroup = new THREE.Group()
+            astroGroup.add([astroMesh, gltf.scene])
+            console.log(astroGroup)
+        },
+        undefined,
+        function (error) {
+            console.error(error)
+        }
+    )
 
     //ambient light
     const initAmbientLight = (function () {
@@ -286,6 +315,8 @@ function getRandomPointOnSphere(minRad) {
 
 function animate() {
     requestAnimationFrame(animate)
+
+    astroMesh.rotation.set(0, 0, 0)
 
     // make counter % 20 to have less path pieces
     if (counter < 1000 && counter % 5 == 0) {
@@ -389,14 +420,14 @@ function animate() {
     //     obstacle.position.x = 0
     //     obstacle.position.y = 5
     //  }
-    obstacle.position.z += 0.1
-    obstacle.__dirtyPosition = true
+    // obstacle.position.z += 0.1
+    // obstacle.__dirtyPosition = true
 
-    if (obstacle.position.z > 0) {
-        obstacle.position.z = -70
-        obstacle.position.x = 0
-        obstacle.position.y = 5
-    }
+    // if (obstacle.position.z > 0) {
+    //     obstacle.position.z = -70
+    //     obstacle.position.x = 0
+    //     obstacle.position.y = 5
+    // }
 
     playerMovement()
     cameraMovement()
@@ -410,28 +441,29 @@ function playerMovement() {
     if (keyboard[87]) {
         // W key
         player.position.z -= 0.05
-        astronaut.position.z -= 0.05
+        astroMesh.position.z -= 0.05
     }
     if (keyboard[83]) {
         // S key
         player.position.z += 0.05
-        astronaut.position.z += 0.05
+        astroMesh.position.z += 0.05
     }
     if (keyboard[65]) {
         // A key
         player.position.x -= 0.075
-        astronaut.position.x -= 0.075
+        astroMesh.position.x -= 0.075
     }
     if (keyboard[68]) {
         // D key
         player.position.x += 0.075
-        astronaut.position.x += 0.075
+        astroMesh.position.x += 0.075
     }
     if (keyboard[32]) {
         // Space key
         player.position.y += 0.1
-        astronaut.position.y += 0.1
+        astroMesh.position.y += 0.1
     }
+    astroMesh.__dirtyPosition = true
     player.__dirtyPosition = true
 }
 
