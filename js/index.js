@@ -219,17 +219,17 @@ function createMovingFloor(startX, startY, startZ, endX, endY, endZ, sizeX, size
     tempFloor.position.y = startY
     tempFloor.position.z = startZ
 
-    updateX = calculateUpdate(startX, endX, speed - delay)
-    updateY = calculateUpdate(startY, endY, speed - delay)
-    updateZ = calculateUpdate(startZ, endZ, speed - delay)
+    const updateX = calculateUpdate(startX, endX, speed - delay)
+    const updateY = calculateUpdate(startY, endY, speed - delay)
+    const updateZ = calculateUpdate(startZ, endZ, speed - delay)
 
-    lowerThreshX = endX - 0.01 //Math.abs(updateX) * 0.001
-    lowerThreshY = endY - 0.01 //Math.abs(updateY) * 0.001
-    lowerThreshZ = endZ - 0.01 //Math.abs(updateZ) * 0.001
+    const lowerThreshX = endX - 0.01 //Math.abs(updateX) * 0.001
+    const lowerThreshY = endY - 0.01 //Math.abs(updateY) * 0.001
+    const lowerThreshZ = endZ - 0.01 //Math.abs(updateZ) * 0.001
 
-    upperThreshX = endX + 0.01 //Math.abs(updateX) * 0.001
-    upperThreshY = endY + 0.01 //Math.abs(updateY) * 0.001
-    upperThreshZ = endZ + 0.01 //Math.abs(updateZ) * 0.001
+    const upperThreshX = endX + 0.01 //Math.abs(updateX) * 0.001
+    const upperThreshY = endY + 0.01 //Math.abs(updateY) * 0.001
+    const upperThreshZ = endZ + 0.01 //Math.abs(updateZ) * 0.001
 
     movingFloors.push(tempFloor)
     updates.push([updateX, updateY, updateZ])
@@ -242,7 +242,7 @@ function createMovingFloor(startX, startY, startZ, endX, endY, endZ, sizeX, size
 }
 
 function calculateUpdate(a, b, n) {
-    delta = b - a
+    const delta = b - a
     return delta / n
 }
 
@@ -265,7 +265,18 @@ function animate() {
     if (counter < 1000 && counter % 5 == 0) {
         let startVec = getRandomPointOnSphere(100)
 
-        createMovingFloor(startVec[0], startVec[1], startVec[2], checkpointOneX, checkpointOneY, checkpointOneZ, 3, 0.25, 5, 0)
+        createMovingFloor(
+            startVec[0],
+            startVec[1],
+            startVec[2],
+            checkpointOneX,
+            checkpointOneY,
+            checkpointOneZ,
+            3,
+            0.25,
+            5,
+            0
+        )
     }
     counter += 1
 
@@ -291,9 +302,9 @@ function animate() {
                 f.position.z += deltas[2]
             }
 
-            dx = absoluteDistance(f.position.x, checkpointOneX)
-            dy = absoluteDistance(f.position.y, checkpointOneY)
-            dz = absoluteDistance(f.position.z, checkpointOneZ)
+            const dx = absoluteDistance(f.position.x, checkpointOneX)
+            const dy = absoluteDistance(f.position.y, checkpointOneY)
+            const dz = absoluteDistance(f.position.z, checkpointOneZ)
 
             if (dx < 0.1 && dy < 0.1 && dz < 0.1) {
                 f.material.color.setHex(0xff00d4)
@@ -304,9 +315,9 @@ function animate() {
             f.position.y += 0
             f.position.z += 0.2
 
-            dx = absoluteDistance(f.position.x, checkpointTwoX)
-            dy = absoluteDistance(f.position.y, checkpointTwoY)
-            dz = absoluteDistance(f.position.z, checkpointTwoZ)
+            const dx = absoluteDistance(f.position.x, checkpointTwoX)
+            const dy = absoluteDistance(f.position.y, checkpointTwoY)
+            const dz = absoluteDistance(f.position.z, checkpointTwoZ)
 
             if (dx < 0.1 && dy < 0.1 && dz < 0.1) {
                 f.position.x = startPos[0]
