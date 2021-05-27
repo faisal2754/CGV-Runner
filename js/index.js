@@ -108,36 +108,27 @@ function init() {
 
     //obstacle
     const initObstacle = (function () {
-<<<<<<< HEAD
-        for(var i = 0; i < 5; i++){
-
+        for (var i = 0; i < 5; i++) {
             const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
             const obstacleMaterial = new THREE.MeshPhongMaterial({
-                color: 0x00ff00,
+                color: 0x00ff00
             })
 
-
-
-            
-
             // var randomTime = Math.random()*7000 + 3000;
-            
+
             obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
             obstacle.name = 'Obstacle'
-            obstacle.translateZ(i*-1-1)
+            obstacle.translateZ(i * -1 - 1)
             obstacle.translateX(-3)
             obstacle.translateY(1)
-            
+
             obstacles.push(obstacle)
             obstaclesOnPath[i] = false
-            obstaclesInitialPos[i] = (i*-1-1)
+            obstaclesInitialPos[i] = i * -1 - 1
 
-            scene.add(obstacle);
-             
+            scene.add(obstacle)
         }
-    
 
-=======
         const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
         const obstacleMaterial = new THREE.MeshPhongMaterial({
             color: 0x00ff00
@@ -151,7 +142,6 @@ function init() {
         setTimeout(function () {
             scene.add(obstacle)
         }, 6000)
->>>>>>> c91c353a2ce873d9f226039084f707d81c6a9a65
     })()
 
     //creating floor
@@ -370,32 +360,28 @@ function animate() {
     // floor.position.z += 0.1
     // floor.__dirtyPosition = true
 
-    var randomVar = Math.random() *5000
+    var randomVar = Math.random() * 5000
     // console.log(randomVar)
 
-    if(randomVar > 4995 && obstaclesOnPath[0] == false){
+    if (randomVar > 4995 && obstaclesOnPath[0] == false) {
         obstacles[0].position.z = -70
         obstacles[0].position.x = 0
         obstacles[0].position.y = 5
 
-<<<<<<< HEAD
-
-
-        obstaclesOnPath[0] = true;
-        console.log("BROOOOOOOO")
+        obstaclesOnPath[0] = true
+        console.log('BROOOOOOOO')
     }
 
-    if(obstaclesOnPath[0] == true){
-      obstacles[0].position.z += 0.1
-      obstacles[0].__dirtyPosition = true
+    if (obstaclesOnPath[0] == true) {
+        obstacles[0].position.z += 0.1
+        obstacles[0].__dirtyPosition = true
 
-      if(obstacles[0].position.z > 0){
-        obstaclesOnPath[0] = false
-        obstacles[0].position.z = obstaclesInitialPos[0]
-        obstacles[0].position.x = -3
-        obstacles[0].position.y = 1
-
-      }
+        if (obstacles[0].position.z > 0) {
+            obstaclesOnPath[0] = false
+            obstacles[0].position.z = obstaclesInitialPos[0]
+            obstacles[0].position.x = -3
+            obstacles[0].position.y = 1
+        }
     }
 
     //  if(obstacle.position.z > 0){
@@ -403,7 +389,6 @@ function animate() {
     //     obstacle.position.x = 0
     //     obstacle.position.y = 5
     //  }
-=======
     obstacle.position.z += 0.1
     obstacle.__dirtyPosition = true
 
@@ -412,7 +397,6 @@ function animate() {
         obstacle.position.x = 0
         obstacle.position.y = 5
     }
->>>>>>> c91c353a2ce873d9f226039084f707d81c6a9a65
 
     playerMovement()
     cameraMovement()
