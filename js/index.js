@@ -1,3 +1,5 @@
+import * as um from './test.js'
+
 const keyboard = {}
 //essentials
 let scene, camera, renderer, loader, mixer
@@ -31,6 +33,7 @@ let checkpointTwoZ = 10
 let obstacles = []
 
 function init() {
+    console.log(um.bruh())
     // const btnStart = document.getElementById('btnStart')
     // btnStart.style.display = 'none'
 
