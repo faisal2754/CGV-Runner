@@ -75,28 +75,28 @@ function init() {
         const skyboxMaterials = [
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_ft.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //front side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_bk.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //back side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_up.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //up side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_dn.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //down side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_rt.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //right side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_lf.png'),
-                side: THREE.DoubleSide,
-            }), //left side
+                side: THREE.DoubleSide
+            }) //left side
         ]
         skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
     })()
@@ -105,24 +105,18 @@ function init() {
     const initObstacle = (function () {
         const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
         const obstacleMaterial = new THREE.MeshPhongMaterial({
-            color: 0x00ff00,
+            color: 0x00ff00
         })
         obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
         obstacle.name = 'Obstacle'
         obstacle.translateZ(-90)
         obstacle.translateX(0)
         obstacle.translateY(10)
-        
-
 
         setTimeout(function () {
-            scene.add(obstacle);
-    	}, 6000);
-    
-
+            scene.add(obstacle)
+        }, 6000)
     })()
-
-
 
     //creating floor
     const initFloor = (function () {
@@ -141,7 +135,7 @@ function init() {
     const initPlayer = (function () {
         const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
         const playerMaterial = new THREE.MeshStandardMaterial({
-            color: 0xff0000,
+            color: 0xff0000
         })
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
         player.name = 'Player'
@@ -154,20 +148,20 @@ function init() {
         })
     })()
 
-//astronaut
-    loader = new THREE.GLTFLoader();
-    loader.load("/models/astronaut/scene.gltf", function(gltf){
-        scene.add(gltf.scene);
-        astronaut = gltf.scene.children[0];
-        mixer = new THREE.AnimationMixer(gltf.scene);
-        mixer.clipAction(gltf.animations[0]).play();
+    //astronaut
+    loader = new THREE.GLTFLoader()
+    loader.load('/models/astronaut/scene.gltf', function (gltf) {
+        scene.add(gltf.scene)
+        astronaut = gltf.scene.children[0]
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        mixer.clipAction(gltf.animations[0]).play()
         astronaut.name = 'Astronaut'
         astronaut.addEventListener('collision', function (object) {
             if (object.name === 'Obstacle') {
                 console.log('Game Over bruh.')
             }
         })
-    });
+    })
 
     //ambient light
     const initAmbientLight = (function () {
@@ -214,18 +208,7 @@ function getRandomColor() {
     return color
 }
 
-function createMovingFloor(
-    startX,
-    startY,
-    startZ,
-    endX,
-    endY,
-    endZ,
-    sizeX,
-    sizeY,
-    sizeZ,
-    delay
-) {
+function createMovingFloor(startX, startY, startZ, endX, endY, endZ, sizeX, sizeY, sizeZ, delay) {
     const color = getRandomColor()
     const floorGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
     const floorMaterial = new THREE.MeshLambertMaterial({ color: color })
@@ -278,24 +261,11 @@ function getRandomPointOnSphere(minRad) {
 function animate() {
     requestAnimationFrame(animate)
 
-
-
     // make counter % 20 to have less path pieces
     if (counter < 1000 && counter % 5 == 0) {
         let startVec = getRandomPointOnSphere(100)
 
-        createMovingFloor(
-            startVec[0],
-            startVec[1],
-            startVec[2],
-            checkpointOneX,
-            checkpointOneY,
-            checkpointOneZ,
-            3,
-            0.25,
-            5,
-            0
-        )
+        createMovingFloor(startVec[0], startVec[1], startVec[2], checkpointOneX, checkpointOneY, checkpointOneZ, 3, 0.25, 5, 0)
     }
     counter += 1
 
@@ -342,11 +312,7 @@ function animate() {
                 f.position.x = startPos[0]
                 f.position.y = startPos[1]
                 f.position.z = startPos[2]
-                f.material.color.setRGB(
-                    Math.random(),
-                    Math.random(),
-                    Math.random()
-                )
+                f.material.color.setRGB(Math.random(), Math.random(), Math.random())
                 floorStatus[i] = 0
             }
         }
@@ -357,14 +323,14 @@ function animate() {
     //floor.position.z += 0.1
     //floor.__dirtyPosition = true
 
-     obstacle.position.z += 0.1
-     obstacle.__dirtyPosition = true
+    obstacle.position.z += 0.1
+    obstacle.__dirtyPosition = true
 
-     if(obstacle.position.z > 0){
+    if (obstacle.position.z > 0) {
         obstacle.position.z = -70
         obstacle.position.x = 0
         obstacle.position.y = 5
-     }
+    }
 
     playerMovement()
     cameraMovement()
@@ -401,7 +367,6 @@ function playerMovement() {
         astronaut.position.y += 0.1
     }
     player.__dirtyPosition = true
-
 }
 
 function cameraMovement() {
