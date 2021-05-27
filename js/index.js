@@ -1,3 +1,5 @@
+import * as um from './test.js'
+
 const keyboard = {}
 //essentials
 let scene, camera, renderer, loader, mixer
@@ -33,6 +35,7 @@ let obstaclesOnPath = []
 let obstaclesInitialPos = []
 
 function init() {
+    console.log(um.bruh())
     // const btnStart = document.getElementById('btnStart')
     // btnStart.style.display = 'none'
 
@@ -77,34 +80,35 @@ function init() {
         const skyboxMaterials = [
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_ft.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //front side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_bk.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //back side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_up.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //up side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_dn.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //down side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_rt.png'),
-                side: THREE.DoubleSide,
+                side: THREE.DoubleSide
             }), //right side
             new THREE.MeshBasicMaterial({
                 map: new THREE.TextureLoader().load('skybox/corona_lf.png'),
-                side: THREE.DoubleSide,
-            }), //left side
+                side: THREE.DoubleSide
+            }) //left side
         ]
         skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
     })()
 
     //obstacle
     const initObstacle = (function () {
+<<<<<<< HEAD
         for(var i = 0; i < 5; i++){
 
             const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
@@ -133,9 +137,22 @@ function init() {
         }
     
 
+=======
+        const obstacleGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
+        const obstacleMaterial = new THREE.MeshPhongMaterial({
+            color: 0x00ff00
+        })
+        obstacle = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
+        obstacle.name = 'Obstacle'
+        obstacle.translateZ(-90)
+        obstacle.translateX(0)
+        obstacle.translateY(10)
+
+        setTimeout(function () {
+            scene.add(obstacle)
+        }, 6000)
+>>>>>>> c91c353a2ce873d9f226039084f707d81c6a9a65
     })()
-
-
 
     //creating floor
     const initFloor = (function () {
@@ -154,7 +171,7 @@ function init() {
     const initPlayer = (function () {
         const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
         const playerMaterial = new THREE.MeshStandardMaterial({
-            color: 0xff0000,
+            color: 0xff0000
         })
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
         player.name = 'Player'
@@ -167,20 +184,20 @@ function init() {
         })
     })()
 
-//astronaut
-    loader = new THREE.GLTFLoader();
-    loader.load("/models/astronaut/scene.gltf", function(gltf){
-        scene.add(gltf.scene);
-        astronaut = gltf.scene.children[0];
-        mixer = new THREE.AnimationMixer(gltf.scene);
-        mixer.clipAction(gltf.animations[0]).play();
+    //astronaut
+    loader = new THREE.GLTFLoader()
+    loader.load('/models/astronaut/scene.gltf', function (gltf) {
+        scene.add(gltf.scene)
+        astronaut = gltf.scene.children[0]
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        mixer.clipAction(gltf.animations[0]).play()
         astronaut.name = 'Astronaut'
         astronaut.addEventListener('collision', function (object) {
             if (object.name === 'Obstacle') {
                 console.log('Game Over bruh.')
             }
         })
-    });
+    })
 
     //ambient light
     const initAmbientLight = (function () {
@@ -227,18 +244,7 @@ function getRandomColor() {
     return color
 }
 
-function createMovingFloor(
-    startX,
-    startY,
-    startZ,
-    endX,
-    endY,
-    endZ,
-    sizeX,
-    sizeY,
-    sizeZ,
-    delay
-) {
+function createMovingFloor(startX, startY, startZ, endX, endY, endZ, sizeX, sizeY, sizeZ, delay) {
     const color = getRandomColor()
     const floorGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
     const floorMaterial = new THREE.MeshLambertMaterial({ color: color })
@@ -249,17 +255,17 @@ function createMovingFloor(
     tempFloor.position.y = startY
     tempFloor.position.z = startZ
 
-    updateX = calculateUpdate(startX, endX, speed - delay)
-    updateY = calculateUpdate(startY, endY, speed - delay)
-    updateZ = calculateUpdate(startZ, endZ, speed - delay)
+    const updateX = calculateUpdate(startX, endX, speed - delay)
+    const updateY = calculateUpdate(startY, endY, speed - delay)
+    const updateZ = calculateUpdate(startZ, endZ, speed - delay)
 
-    lowerThreshX = endX - 0.01 //Math.abs(updateX) * 0.001
-    lowerThreshY = endY - 0.01 //Math.abs(updateY) * 0.001
-    lowerThreshZ = endZ - 0.01 //Math.abs(updateZ) * 0.001
+    const lowerThreshX = endX - 0.01 //Math.abs(updateX) * 0.001
+    const lowerThreshY = endY - 0.01 //Math.abs(updateY) * 0.001
+    const lowerThreshZ = endZ - 0.01 //Math.abs(updateZ) * 0.001
 
-    upperThreshX = endX + 0.01 //Math.abs(updateX) * 0.001
-    upperThreshY = endY + 0.01 //Math.abs(updateY) * 0.001
-    upperThreshZ = endZ + 0.01 //Math.abs(updateZ) * 0.001
+    const upperThreshX = endX + 0.01 //Math.abs(updateX) * 0.001
+    const upperThreshY = endY + 0.01 //Math.abs(updateY) * 0.001
+    const upperThreshZ = endZ + 0.01 //Math.abs(updateZ) * 0.001
 
     movingFloors.push(tempFloor)
     updates.push([updateX, updateY, updateZ])
@@ -272,7 +278,7 @@ function createMovingFloor(
 }
 
 function calculateUpdate(a, b, n) {
-    delta = b - a
+    const delta = b - a
     return delta / n
 }
 
@@ -290,8 +296,6 @@ function getRandomPointOnSphere(minRad) {
 
 function animate() {
     requestAnimationFrame(animate)
-
-
 
     // make counter % 20 to have less path pieces
     if (counter < 1000 && counter % 5 == 0) {
@@ -334,9 +338,9 @@ function animate() {
                 f.position.z += deltas[2]
             }
 
-            dx = absoluteDistance(f.position.x, checkpointOneX)
-            dy = absoluteDistance(f.position.y, checkpointOneY)
-            dz = absoluteDistance(f.position.z, checkpointOneZ)
+            const dx = absoluteDistance(f.position.x, checkpointOneX)
+            const dy = absoluteDistance(f.position.y, checkpointOneY)
+            const dz = absoluteDistance(f.position.z, checkpointOneZ)
 
             if (dx < 0.1 && dy < 0.1 && dz < 0.1) {
                 f.material.color.setHex(0xff00d4)
@@ -347,19 +351,15 @@ function animate() {
             f.position.y += 0
             f.position.z += 0.2
 
-            dx = absoluteDistance(f.position.x, checkpointTwoX)
-            dy = absoluteDistance(f.position.y, checkpointTwoY)
-            dz = absoluteDistance(f.position.z, checkpointTwoZ)
+            const dx = absoluteDistance(f.position.x, checkpointTwoX)
+            const dy = absoluteDistance(f.position.y, checkpointTwoY)
+            const dz = absoluteDistance(f.position.z, checkpointTwoZ)
 
             if (dx < 0.1 && dy < 0.1 && dz < 0.1) {
                 f.position.x = startPos[0]
                 f.position.y = startPos[1]
                 f.position.z = startPos[2]
-                f.material.color.setRGB(
-                    Math.random(),
-                    Math.random(),
-                    Math.random()
-                )
+                f.material.color.setRGB(Math.random(), Math.random(), Math.random())
                 floorStatus[i] = 0
             }
         }
@@ -378,6 +378,7 @@ function animate() {
         obstacles[0].position.x = 0
         obstacles[0].position.y = 5
 
+<<<<<<< HEAD
 
 
         obstaclesOnPath[0] = true;
@@ -402,6 +403,16 @@ function animate() {
     //     obstacle.position.x = 0
     //     obstacle.position.y = 5
     //  }
+=======
+    obstacle.position.z += 0.1
+    obstacle.__dirtyPosition = true
+
+    if (obstacle.position.z > 0) {
+        obstacle.position.z = -70
+        obstacle.position.x = 0
+        obstacle.position.y = 5
+    }
+>>>>>>> c91c353a2ce873d9f226039084f707d81c6a9a65
 
     playerMovement()
     cameraMovement()
@@ -438,7 +449,6 @@ function playerMovement() {
         astronaut.position.y += 0.1
     }
     player.__dirtyPosition = true
-
 }
 
 function cameraMovement() {
