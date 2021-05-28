@@ -3,6 +3,7 @@ import { createCube } from './components/cube.js'
 import { createDirectionalLight, createAmbientLight } from './components/lights.js'
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
+import {createObstacle} from './components/obstacle.js'
 
 import { createControls } from './systems/controls.js'
 import { createRenderer } from './systems/renderer.js'
@@ -28,13 +29,18 @@ class World {
         loop = new Loop(camera, scene, renderer)
 
         const cube = createCube()
+        const obstacles = []
         const directionalLight = createDirectionalLight()
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
+        for(var i = 0; i < 5; i++){
+            obstacles[i] = createObstacle(i*10)
+        }
+
         loop.updatables.push(cube)
 
-        scene.add(directionalLight, ambientLight, cube, skybox)
+        scene.add(directionalLight, ambientLight, cube, skybox, obstacles[1])
 
         const resizer = new Resizer(container, camera, renderer)
     }
