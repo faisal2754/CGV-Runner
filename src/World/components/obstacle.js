@@ -13,7 +13,15 @@ function createObstacle(initialZ) {
     obstacle.onPath = false
 
     obstacle.tick = (delta) => {
-        if(obstacle.onPath == true && obstacle.position.z < 0){
+        var randomTime = Math.floor(Math.random() * 5000);
+        var randomObs = Math.floor(Math.random() * 6);
+
+        if(obstacle.onPath == false && randomTime < 10){
+            obstacle.position.z = -20;
+            obstacle.onPath = true;
+        }
+
+        else if(obstacle.onPath == true && obstacle.position.z < 0){
             obstacle.position.z += delta
         }
         else if(obstacle.onPath == true && obstacle.position.z > 0){
