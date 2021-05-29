@@ -3,7 +3,9 @@ import { createCube } from './components/cube.js'
 import { createDirectionalLight, createAmbientLight } from './components/lights.js'
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
-import {createObstacle} from './components/obstacle.js'
+import { createObstacle } from './components/obstacle.js'
+import { Path } from './components/Path.js'
+import { PathManager } from './components/PathManager.js'
 
 import { createControls } from './systems/controls.js'
 import { createRenderer } from './systems/renderer.js'
@@ -28,21 +30,28 @@ class World {
 
         loop = new Loop(camera, scene, renderer)
 
-        const cube = createCube()
+        //const cube = createCube()
         const obstacles = []
         const directionalLight = createDirectionalLight()
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
-        for(var i = 0; i < 5; i++){
-            obstacles[i] = createObstacle(10+i)
+        for (var i = 0; i < 5; i++) {
+            obstacles[i] = createObstacle(10 + i)
             loop.updatables.push(obstacles[i])
             scene.add(obstacles[i])
         }
-        
-        
-        loop.updatables.push(cube)
-        scene.add(directionalLight, ambientLight, cube, skybox)
+
+        const pathManager = new PathManager(0, 0, -50, 0, 0, 0, 75, 50, 5, 5, 1, 1)
+
+        pathManager.paths.forEach((path) => {
+            scene.add(path.mesh)
+        })
+
+        loop.updatables.push(pathManager)
+
+        //loop.updatables.push(cube)
+        scene.add(directionalLight, ambientLight, skybox)
 
         const resizer = new Resizer(container, camera, renderer)
     }
