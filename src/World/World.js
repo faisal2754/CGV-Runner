@@ -42,15 +42,13 @@ class World {
             scene.add(obstacles[i])
         }
 
-        const pathManager = new PathManager(0, 0, -50, 0, 0, 0, 75, 50, 5, 5, 1, 1)
+        const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5)
 
         pathManager.paths.forEach((path) => {
             scene.add(path.mesh)
         })
-
         loop.updatables.push(pathManager)
 
-        //loop.updatables.push(cube)
         scene.add(directionalLight, ambientLight, skybox)
 
         const resizer = new Resizer(container, camera, renderer)

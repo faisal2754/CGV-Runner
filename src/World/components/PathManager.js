@@ -30,8 +30,10 @@ class PathManager {
         this.paths = []
         this.stepCounter = 0
         this.activeStrategy = 0
+        this.inverseTransformX = 1
+        this.inverseTransformY = 1
 
-        this.stateOneUpdateSize = 0.1
+        this.stateOneUpdateSize = 0.5
 
         this.mainSectionLength = Math.abs(checkpointOneZ - checkpointTwoZ)
 
@@ -40,6 +42,9 @@ class PathManager {
         this.numUpdatesTillStateChange = this.pathSizeZ / this.stateOneUpdateSize
 
         let workingDelay = (numPaths - numPathsBtnCheckpoints + 2) * this.numUpdatesTillStateChange
+
+        console.log(workingDelay)
+        console.log(this.numUpdatesTillStateChange)
         for (let i = 0; i <= numPaths; i++) {
             let pointOnSphere = this.getRandomPointOnSphere()
             let stateZeroPositionX = pointOnSphere[0]
@@ -56,8 +61,8 @@ class PathManager {
                 checkpointTwoX,
                 checkpointTwoY,
                 checkpointTwoZ,
-                1,
-                1,
+                this.pathSizeX,
+                this.pathSizeY,
                 this.pathSizeZ,
                 this.numUpdatesTillStateChange,
                 this.stateOneUpdateSize
@@ -123,9 +128,11 @@ class PathManager {
                 delta = i + 1
             }
 
-            let stateZeroPositionX = this.checkpointOneX - this.numPaths / 2 + delta
+            let startX = this.checkpointOneX - (this.numPaths / 2) * this.pathSizeX
+
+            let stateZeroPositionX = startX + delta * this.pathSizeX
             let stateZeroPositionY = this.checkpointOneY
-            let stateZeroPositionZ = this.checkpointOneZ - 10
+            let stateZeroPositionZ = this.checkpointOneZ - 50
             this.paths[i].requestStateZeroPosition(stateZeroPositionX, stateZeroPositionY, stateZeroPositionZ)
         }
     }
@@ -142,11 +149,12 @@ class PathManager {
                 delta = i + 1
             }
 
-            zStep = Math.abs(this.checkpointOneZ - this.checkpointTwoZ) / this.numPaths
+            let stepZ = (Math.abs(500 - this.checkpointOneZ) / this.numPaths) * 0.9
 
-            let stateZeroPositionX = this.checkpointOneX + 10 * Math.sin(delta * angleDelta)
-            let stateZeroPositionY = this.checkpointOneY + 10 * Math.cos(delta * angleDelta)
-            let stateZeroPositionZ = this.checkpointOneZ + delta * zStep
+            let startZ = this.checkpointOneZ - this.numPaths * 0.9 * this.pathSizeZ
+            let stateZeroPositionX = this.checkpointOneX + 30 + 50 * Math.sin(delta * angleDelta)
+            let stateZeroPositionY = this.checkpointOneY + 30 + 50 * Math.cos(delta * angleDelta)
+            let stateZeroPositionZ = -500 + delta * stepZ
             this.paths[i].requestStateZeroPosition(stateZeroPositionX, stateZeroPositionY, stateZeroPositionZ)
         }
     }
@@ -162,9 +170,9 @@ class PathManager {
                 delta = i + 1
             }
 
-            let stateZeroPositionX = this.checkpointOneX + 30 * Math.cos(delta * angleDelta)
-            let stateZeroPositionY = this.checkpointOneY + 30 * Math.sin(delta * angleDelta)
-            let stateZeroPositionZ = this.checkpointOneZ - 10
+            let stateZeroPositionX = this.checkpointOneX + 100 * Math.cos(delta * angleDelta)
+            let stateZeroPositionY = this.checkpointOneY + 100 * Math.sin(delta * angleDelta)
+            let stateZeroPositionZ = this.checkpointOneZ - 50 - delta * 0.1
             this.paths[i].requestStateZeroPosition(stateZeroPositionX, stateZeroPositionY, stateZeroPositionZ)
         }
     }
@@ -184,12 +192,12 @@ class PathManager {
             }
 
             if (delta < half) {
-                stateZeroPositionX = this.checkpointOneX + half / 2 - delta
-                stateZeroPositionY = this.checkpointOneY + half / 2 - delta
+                stateZeroPositionX = this.checkpointOneX + (half / 2) * this.pathSizeX - delta * this.pathSizeX
+                stateZeroPositionY = this.checkpointOneY + (half / 2) * this.pathSizeY - delta * this.pathSizeY
                 stateZeroPositionZ = this.checkpointOneZ - delta
             } else {
-                stateZeroPositionX = this.checkpointOneX - half * 1.5 + delta
-                stateZeroPositionY = this.checkpointOneY + half * 1.5 - delta
+                stateZeroPositionX = this.checkpointOneX - half * 1.5 * this.pathSizeX + delta * this.pathSizeX
+                stateZeroPositionY = this.checkpointOneY + half * 1.5 * this.pathSizeY - delta * this.pathSizeY
                 stateZeroPositionZ = this.checkpointOneZ - delta
             }
             this.paths[i].requestStateZeroPosition(stateZeroPositionX, stateZeroPositionY, stateZeroPositionZ)
@@ -206,9 +214,27 @@ class PathManager {
         let numCompletedPasses = Math.floor(fractionOfPathsProcessed)
 
         if (numCompletedPasses == numPassesTillStragegyChange) {
+            let newScaleX = Math.random() * 3 + 1
+            let newScaleY = Math.random() * 8 + 0.5
+
+            this.pathSizeX = this.pathSizeX * this.inverseTransformX
+            this.pathSizeY = this.pathSizeY * this.inverseTransformY
+
+            this.pathSizeX = this.pathSizeX * newScaleX
+            this.pathSizeY = this.pathSizeY * newScaleY
+
+            this.inverseTransformX = 1 / newScaleX
+            this.inverseTransformY = 1 / newScaleY
+
+            this.paths.forEach((path) => {
+                path.requestScaleX(newScaleX)
+                path.requestScaleY(newScaleY)
+            })
+
             let strategyNum = Math.floor(Math.random() * 4)
 
-            console.log(strategyNum)
+            //console.log(strategyNum)
+            //strategyNum = 4
 
             switch (strategyNum) {
                 case 0:
@@ -232,7 +258,6 @@ class PathManager {
             }
             this.stepCounter = 0
         }
-
         this.stepCounter += 1
     }
 }

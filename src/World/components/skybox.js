@@ -32,7 +32,7 @@ function createMaterial() {
 }
 
 function createSkybox() {
-    const geometry = new THREE.BoxGeometry(500, 500, 500)
+    const geometry = new THREE.BoxGeometry(1000, 1000, 1000)
     const material = createMaterial()
     const skybox = new THREE.Mesh(geometry, material)
 

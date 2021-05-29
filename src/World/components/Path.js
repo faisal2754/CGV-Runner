@@ -30,6 +30,8 @@ class Path {
         this.numUpdates = numUpdates
         this.stateOneUpdateSize = stateOneUpdateSize
         this.startDelayCounter = 0
+        this.inverseTransformX = 1
+        this.inverseTransformY = 1
 
         const r = Math.random()
         const g = Math.random()
@@ -37,7 +39,11 @@ class Path {
         const color = new THREE.Color(r, g, b)
 
         const floorGeometry = new THREE.BoxGeometry(this.sizeX, this.sizeY, this.sizeZ)
-        const floorMaterial = new THREE.MeshBasicMaterial({ color: color })
+        const floorMaterial = new THREE.MeshPhongMaterial({
+            color: color,
+            opacity: 0.65,
+            transparent: true
+        })
         this.mesh = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
         this.mesh.position.x = this.stateZeroX
         this.mesh.position.y = this.stateZeroY
@@ -67,6 +73,24 @@ class Path {
         this.requestedStateZeroX = x
         this.requestedStateZeroY = y
         this.requestedStateZeroZ = z
+    }
+
+    requestScaleX(scaleX, inverseTransformX) {
+        this.requestedScaleXChange = true
+        this.requestedScaleX = scaleX
+    }
+
+    requestScaleY(scaleY) {
+        this.requestedScaleYChange = true
+        this.requestedScaleY = scaleY
+    }
+
+    undoScalingX() {
+        this.mesh.scale.x = this.inverseTransformX
+    }
+
+    undoScalingY() {
+        this.mesh.scale.y = this.inverseTransformY
     }
 
     toStateZeroPosition() {
@@ -163,6 +187,26 @@ class Path {
                 this.stateZeroY = this.requestedStateZeroY
                 this.stateZeroZ = this.requestedStateZeroZ
                 this.requestingPositionChange = false
+            }
+
+            if (this.requestedScaleXChange) {
+                this.undoScalingX()
+                this.mesh.scale.x = this.requestedScaleX
+                this.inverseTransformX = 1 / this.requestScaleX
+                this.requestedScaleXChange = false
+            }
+
+            if (this.requestedScaleYChange) {
+                this.undoScalingY()
+                this.mesh.scale.y = this.requestedScaleY
+
+                this.stateOneY = -2.5 * this.requestedScaleY
+                this.stateTwoY = -2.5 * this.requestedScaleY
+
+                //console.log(this.stateOneY)
+
+                this.inverseTransformY = 1 / this.requestedScaleY
+                this.requestedScaleYChange = false
             }
 
             this.toStateZeroPosition()
