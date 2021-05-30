@@ -6,7 +6,7 @@ function createCamera() {
         1500 // far clipping plane
     )
 
-    camera.position.set(0, 0, 10)
+    camera.position.set(0, 7, 90)
 
     return camera
 }

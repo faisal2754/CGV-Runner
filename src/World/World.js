@@ -37,7 +37,7 @@ class World {
         const skybox = createSkybox()
 
         for (var i = 0; i < 5; i++) {
-            obstacles[i] = createObstacle(10 + i)
+            obstacles[i] = createObstacle(120 + (i*5))
             loop.updatables.push(obstacles[i])
             scene.add(obstacles[i])
         }
