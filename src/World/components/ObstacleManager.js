@@ -22,12 +22,12 @@ class ObstacleManager {
         let safeZoneLength = Math.abs(safeZoneStartZ - safeZoneEndZ)
         this.safeZoneLength = safeZoneLength
         for (let i = 0; i < this.numObstacles; i++) {
-            let xPos = this.minX + Math.random() * this.pathWidth * 0.5
+            let xPos = this.minX + Math.random() * this.pathWidth * 0.9
             let yPos = 3.5
             let zPos = safeZoneStartZ - Math.random() * safeZoneLength
 
             while (this.isOverlapping(xPos, zPos)) {
-                xPos = this.minX + Math.random() * this.pathWidth * 0.5
+                xPos = this.minX + Math.random() * this.pathWidth * 0.9
                 zPos = this.safeZoneStartZ - Math.random() * this.safeZoneLength
             }
 
@@ -44,12 +44,12 @@ class ObstacleManager {
     tick() {
         for (let i = 0; i < this.numObstacles; i++) {
             if (this.obstacles[i].mesh.position.z > this.pathEndZ) {
-                let xPos = this.minX + Math.random() * this.pathWidth * 0.5
+                let xPos = this.minX + Math.random() * this.pathWidth * 0.9
                 let yPos = 3.5
                 let zPos = this.safeZoneStartZ - Math.random() * this.safeZoneLength
 
                 while (this.isOverlapping(xPos, zPos)) {
-                    xPos = this.minX + Math.random() * this.pathWidth * 0.5
+                    xPos = this.minX + Math.random() * this.pathWidth * 0.9
                     zPos = this.safeZoneStartZ - Math.random() * this.safeZoneLength
                 }
 
