@@ -203,8 +203,6 @@ class Path {
                 this.stateOneY = -2.5 * this.requestedScaleY
                 this.stateTwoY = -2.5 * this.requestedScaleY
 
-                //console.log(this.stateOneY)
-
                 this.inverseTransformY = 1 / this.requestedScaleY
                 this.requestedScaleYChange = false
             }

@@ -43,8 +43,6 @@ class PathManager {
 
         let workingDelay = (numPaths - numPathsBtnCheckpoints + 2) * this.numUpdatesTillStateChange
 
-        console.log(workingDelay)
-        console.log(this.numUpdatesTillStateChange)
         for (let i = 0; i <= numPaths; i++) {
             let pointOnSphere = this.getRandomPointOnSphere()
             let stateZeroPositionX = pointOnSphere[0]
@@ -217,11 +215,15 @@ class PathManager {
             let newScaleX = Math.random() * 3 + 1
             let newScaleY = Math.random() * 8 + 0.5
 
+            console.log('Path size before ' + this.pathSizeX)
+
             this.pathSizeX = this.pathSizeX * this.inverseTransformX
             this.pathSizeY = this.pathSizeY * this.inverseTransformY
 
             this.pathSizeX = this.pathSizeX * newScaleX
             this.pathSizeY = this.pathSizeY * newScaleY
+
+            console.log('Path size after ' + this.pathSizeX)
 
             this.inverseTransformX = 1 / newScaleX
             this.inverseTransformY = 1 / newScaleY
@@ -232,9 +234,6 @@ class PathManager {
             })
 
             let strategyNum = Math.floor(Math.random() * 4)
-
-            //console.log(strategyNum)
-            //strategyNum = 4
 
             switch (strategyNum) {
                 case 0:
