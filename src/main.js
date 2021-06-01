@@ -8,6 +8,7 @@ async function main() {
     await world.init()
 
     world.start()
+
 }
 
 main().catch((err) => {

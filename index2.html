@@ -7,6 +7,8 @@
         <title>Nova Runner</title>
         <link rel="stylesheet" href="./styles/main.css" />
         <link rel="shortcut icon" href="/images/favicon.png" />
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
         <script src="./modules/three.min.js"></script>
         <script src="./modules/GLTFLoader.js"></script>
         <script src="./modules/physi.js"></script>
@@ -14,8 +16,222 @@
         <script type="module" src="./src/main.js"></script>
     </head>
     <body>
-        <h1>NOVA RUNNER</h1>
+        <!---Overlays-->
+        <div id="overlays" style="text-align: center;">
+            <h1>Score: </h1>
+            <div id="pauseBtn" class="pause-open" style="color: white" onclick="playButton(); pause()">pause</div> 
+        </div>
 
-        <div id="scene-container"></div>
+        <div id="pauseMenu" onclick="resume()">
+            <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">Paused</label>
+            <label style="color: antiquewhite; font-size: large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,200%);"> click anywhere to resume</label>
+        </div>
+        
+        <!--Sounds-->
+        <audio id="buttonSound" src="music/sfx/buttonSound1.mp3"></audio>
+        <audio id="buttonWhoosh" src="music/sfx/buttonSoundWhoosh.mp3"></audio>
+
+
+        <!---Menu Close Element-->
+        <div  class="container"> 
+         <div id="menuClose" class="menu-close">
+            <div class="menu-close-img" onclick="playButtonWhoosh(); hideMenu()">
+                <img src="images/play-icon.png" alt="" />
+                </div>
+            </div>
+            
+
+            <!---White Page Divider-->
+            <div id="hr" class="hr"></div>
+            <!---Main Menu Container-->
+            <div id="menuContainer" class="menu">
+                <div class="menu-left">
+                    <div class="menu-links">
+                        <div class="menu-link" style="padding: 10px">
+                            <a href="#" style="font-size: xxx-large" onclick="playButton(); leaderboards()">LEADERBOARDS</a>
+                        </div>
+                        <div class="menu-link" style="padding: 10px">
+                            <a href="#" style="font-size: xxx-large" onclick="playButton(); credits()">CREDITS</a>
+                        </div>
+                        <div class="menu-link" style="padding: 10px">
+                            <a href="#" style="font-size: xxx-large" onclick="playButton(); settings()">SETTINGS</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-right">
+                    <img src="images/logo.png" style="width: initial" />
+                </div>
+
+
+
+
+
+
+                <!-- Leaderboard menu -->
+                <div id="leaderboards" style="display: none; text-align: center; padding: 20px;">
+                    <label style="color: antiquewhite; font-size: xxx-large;"> leaderboards</label>
+                    <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
+                </div>
+
+                <!-- Credits menu -->
+                <div id="credits" style="display: none; text-align: center; padding: 20px;">
+                    <label style="color: antiquewhite; font-size: xxx-large;"> credits</label>
+                    <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back();playButton()">back</a>
+                </div>
+
+                <!-- Settings menu -->
+                <div id="settings" style="display: none; text-align: center; padding: 20px;">
+                    <label style="color: antiquewhite; font-size: xxx-large;"> settings</label>
+                    <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
+                </div>
+                        
+        </div> 
+        
+         
+
+         <div id="scene-container"></div> 
+
+
+
+
+        <script>
+            tl = new TimelineMax({ paused: true })
+
+            tl.to('.menu-left', 1, {
+                left: 0,
+                ease: Expo.easeInOut
+            })
+
+            tl.to(
+                '.menu-right',
+                1,
+                {
+                    right: 0,
+                    ease: Expo.easeInOut
+                },
+                '-=1'
+            )
+
+            tl.staggerFrom(
+                '.menu-links > div',
+                0.8,
+                {
+                    y: 100,
+                    opacity: 0,
+                    ease: Expo.easeOut
+                },
+                '0.1',
+                '-=0.4'
+            )
+
+            tl.staggerFrom(
+                '.mail > div, .socials > div',
+                0.8,
+                {
+                    y: 100,
+                    opacity: 0,
+                    ease: Expo.easeOut
+                },
+                '0.1',
+                '-=1'
+            )
+
+            tl.from(
+                '.menu-close',
+                1,
+                {
+                    scale: 0,
+                    opacity: 1,
+                    ease: Expo.easeInOut
+                },
+                '-=1'
+            )
+
+            tl.to(
+                '.hr',
+                0.4,
+                {
+                    scaleY: 1,
+                    transformOrigin: '0% 50%',
+                    ease: Power2.ease
+                },
+                '-=2'
+            )
+
+            tl.reverse()
+
+            $(document).ready(function () {
+                tl.reversed(!tl.reversed())
+                openMenu()
+            })
+            $(document).on('click', '.menu-open', function () {
+                tl.reversed(!tl.reversed())
+            })
+            $(document).on('click', '.menu-close', function () {
+                tl.reversed(!tl.reversed())
+            })
+        </script>
+
+        <script>
+            //Sound Effects
+            function playButton() {
+                var audio = document.getElementById('buttonSound')
+                audio.play()
+            }
+            function playButtonWhoosh() {
+                var audio = document.getElementById('buttonWhoosh')
+                audio.play()
+            }
+
+            //Menu's
+            function hideMenu() {
+                var menu = document.getElementById('menuContainer')
+                var overlays = document.getElementById('overlays')
+                var scene = document.getElementById('scene-container')
+                setTimeout(function () {
+                    menu.style.display = 'none'
+                    overlays.style.display = 'block'
+                    scene.style.display = 'block'
+                }, 2000)
+            }
+            function openMenu() {
+                var menu = document.getElementById('menuContainer')
+                var overlays = document.getElementById('overlays')
+                var scene = document.getElementById('scene-container')
+                
+                menu.style.display = 'block'
+                overlays.style.display = 'none'
+                scene.style.display = 'none'
+            }
+            function leaderboards(){
+                document.getElementById("menuClose").style.display = 'none';
+                document.getElementById("hr").style.display = 'none';
+                document.getElementById("leaderboards").style.display = 'block';
+            }
+            function credits(){
+                document.getElementById("menuClose").style.display = 'none';
+                document.getElementById("hr").style.display = 'none';
+                document.getElementById("credits").style.display = 'block';
+            }
+            function settings(){
+                document.getElementById("menuClose").style.display = 'none';
+                document.getElementById("hr").style.display = 'none';
+                document.getElementById("settings").style.display = 'block';
+            }
+            function back(){
+                document.getElementById("menuClose").style.display = 'block';
+                document.getElementById("hr").style.display = 'block';
+                document.getElementById("settings").style.display = 'none';
+                document.getElementById("credits").style.display = 'none';
+                document.getElementById("leaderboards").style.display = 'none';
+
+            }
+            function pause(){
+                document.getElementById("pauseMenu").style.display = 'block';
+            }
+            function resume(){
+                document.getElementById("pauseMenu").style.display = 'none';
+            }
+        </script>
     </body>
 </html>
