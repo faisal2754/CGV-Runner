@@ -38,7 +38,7 @@ class World {
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
-        const obstacleManager = new ObstacleManager(5, 1, 1, 1, 1, 50, -100, 100)
+        const obstacleManager = new ObstacleManager(10, 1, 1, 1, 1, 50, -100, 100)
         this.obstacleManager = obstacleManager
 
         obstacleManager.obstacles.forEach((obstacle) => {
@@ -47,7 +47,7 @@ class World {
 
         loop.updatables.push(obstacleManager)
 
-        const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5)
+        const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5, -100, -80)
         this.pathManager = pathManager
 
         pathManager.paths.forEach((path) => {
@@ -55,7 +55,7 @@ class World {
         })
 
         loop.updatables.push(pathManager)
-        //loop.updatables.push(this)
+        loop.updatables.push(this)
 
         scene.add(directionalLight, ambientLight, skybox)
 
@@ -69,9 +69,9 @@ class World {
         scene.add(enemy)
     }
 
-    // tick() {
-    //     this.obstacleManager.setWidth(this.pathManager.pathSizeX)
-    // }
+    tick() {
+        this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
+    }
 
     render() {
         renderer.render(scene, camera)

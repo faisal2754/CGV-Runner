@@ -13,7 +13,9 @@ class PathManager {
         minDisplacement,
         variationRadius,
         pathSizeX,
-        pathSizeY
+        pathSizeY,
+        spawnRegionZLower,
+        spawnRegionZUpper
     ) {
         this.checkpointOneX = checkpointOneX
         this.checkpointOneY = checkpointOneY
@@ -27,6 +29,8 @@ class PathManager {
         this.variationRadius = variationRadius
         this.pathSizeX = pathSizeX
         this.pathSizeY = pathSizeY
+        this.spawnRegionZLower = spawnRegionZLower
+        this.spawnRegionZUpper = spawnRegionZUpper
         this.paths = []
         this.stepCounter = 0
         this.activeStrategy = 0
@@ -203,7 +207,19 @@ class PathManager {
     }
 
     tick() {
+        let isFirstPathInSpawn = true
+
+        let lastsizeX = this.obstacleSpawnRegionMinWidth
+
         this.paths.forEach((path) => {
+            if (path.mesh.position.z > this.spawnRegionZLower && path.mesh.position.z < this.spawnRegionZUpper) {
+                if (isFirstPathInSpawn) {
+                    this.obstacleSpawnRegionMinWidth = path.sizeX
+                    isFirstPathInSpawn = false
+                } else if (path.sizeX < this.obstacleSpawnRegionMinWidth) {
+                    this.obstacleSpawnRegionMinWidth = path.sizeX
+                }
+            }
             path.tick()
         })
 
@@ -215,15 +231,11 @@ class PathManager {
             let newScaleX = Math.random() * 3 + 1
             let newScaleY = Math.random() * 8 + 0.5
 
-            console.log('Path size before ' + this.pathSizeX)
-
             this.pathSizeX = this.pathSizeX * this.inverseTransformX
             this.pathSizeY = this.pathSizeY * this.inverseTransformY
 
             this.pathSizeX = this.pathSizeX * newScaleX
             this.pathSizeY = this.pathSizeY * newScaleY
-
-            console.log('Path size after ' + this.pathSizeX)
 
             this.inverseTransformX = 1 / newScaleX
             this.inverseTransformY = 1 / newScaleY
@@ -233,7 +245,7 @@ class PathManager {
                 path.requestScaleY(newScaleY)
             })
 
-            let strategyNum = Math.floor(Math.random() * 4)
+            let strategyNum = Math.floor(Math.random() * 5)
 
             switch (strategyNum) {
                 case 0:

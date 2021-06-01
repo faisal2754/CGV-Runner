@@ -36,21 +36,20 @@ class ObstacleManager {
     }
 
     setWidth(width) {
-        this.minX = -0.3 * width
+        this.minX = -0.5 * width
         this.pathWidth = width
-        //console.log('setting min x ' + this.minX + ' setting width: ' + this.pathWidth)
     }
 
     tick() {
         for (let i = 0; i < this.numObstacles; i++) {
             if (this.obstacles[i].mesh.position.z > this.pathEndZ) {
-                let xPos = this.minX + Math.random() * this.pathWidth * 0.9
+                let xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
                 let yPos = 3.5
-                let zPos = this.safeZoneStartZ - Math.random() * this.safeZoneLength
+                let zPos = this.safeZoneEndZ - Math.random() * 5
 
                 while (this.isOverlapping(xPos, zPos)) {
-                    xPos = this.minX + Math.random() * this.pathWidth * 0.9
-                    zPos = this.safeZoneStartZ - Math.random() * this.safeZoneLength
+                    xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
+                    zPos = this.safeZoneStartZ - Math.random() * 5
                 }
 
                 this.obstacles[i].setPosition(xPos, yPos, zPos)

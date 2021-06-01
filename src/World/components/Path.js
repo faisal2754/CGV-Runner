@@ -87,6 +87,7 @@ class Path {
 
     undoScalingX() {
         this.mesh.scale.x = this.inverseTransformX
+        this.sizeX *= this.inverseTransformX
     }
 
     undoScalingY() {
@@ -192,7 +193,8 @@ class Path {
             if (this.requestedScaleXChange) {
                 this.undoScalingX()
                 this.mesh.scale.x = this.requestedScaleX
-                this.inverseTransformX = 1 / this.requestScaleX
+                this.sizeX *= this.requestedScaleX
+                this.inverseTransformX = 1 / this.requestedScaleX
                 this.requestedScaleXChange = false
             }
 
