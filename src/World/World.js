@@ -3,6 +3,8 @@ import { createCube } from './components/cube.js'
 import { createDirectionalLight, createAmbientLight } from './components/lights.js'
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
+import { createEnemy } from './components/enemy.js'
+
 import { Path } from './components/Path.js'
 import { PathManager } from './components/PathManager.js'
 import { ObstacleManager } from './components/ObstacleManager.js'
@@ -26,7 +28,7 @@ class World {
         renderer = createRenderer()
 
         container.append(renderer.domElement)
-        const controls = new createControls(camera, renderer.domElement)
+        const controls = createControls(camera, renderer.domElement)
 
         loop = new Loop(camera, scene, renderer)
 
@@ -59,6 +61,12 @@ class World {
 
         const resizer = new Resizer(container, camera, renderer)
         console.log('starting')
+    }
+
+    async init() {
+        const { enemy } = await createEnemy()
+
+        scene.add(enemy)
     }
 
     // tick() {
