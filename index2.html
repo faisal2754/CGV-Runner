@@ -18,7 +18,7 @@
     <body>
         <!---Overlays-->
         <div id="overlays" style="text-align: center;">
-            <h1>Score: </h1>
+            <h1 id="scoreDisplay">Score: </h1>
             <div id="pauseBtn" class="pause-open" style="color: white" onclick="playButton(); pause()">pause</div> 
         </div>
 
@@ -95,6 +95,7 @@
 
 
         <script>
+
             tl = new TimelineMax({ paused: true })
 
             tl.to('.menu-left', 1, {
@@ -173,6 +174,7 @@
         </script>
 
         <script>
+
             //Sound Effects
             function playButton() {
                 var audio = document.getElementById('buttonSound')
@@ -202,6 +204,7 @@
                 menu.style.display = 'block'
                 overlays.style.display = 'none'
                 scene.style.display = 'none'
+
             }
             function leaderboards(){
                 document.getElementById("menuClose").style.display = 'none';
@@ -232,6 +235,23 @@
             function resume(){
                 document.getElementById("pauseMenu").style.display = 'none';
             }
+
+
+
+
+            var score = 0;
+            var scoreDisplay = document.getElementById('scoreDisplay');
+
+            function incrementScore() {
+                score += 1;
+                scoreDisplay.innerText = "Score: " + score;
+            }
+
+              var increment = setInterval(incrementScore, 500);
+            
+            
+
+
         </script>
     </body>
 </html>
