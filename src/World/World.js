@@ -90,7 +90,7 @@ class World {
         loop.updatables.push(player)
         // loop.updatables.push(enemy)
 
-        scene.add(player)
+        scene.add(player, enemy)
     }
 
     tick(delta) {
