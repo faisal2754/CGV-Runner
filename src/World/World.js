@@ -52,6 +52,7 @@ class World {
 
         obstacleManager.obstacles.forEach((obstacle) => {
             scene.add(obstacle.mesh)
+            scene.add(obstacle.pointLight)
         })
 
         loop.updatables.push(obstacleManager)

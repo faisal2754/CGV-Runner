@@ -55,6 +55,7 @@ class ObstacleManager {
                 this.obstacles[i].setPosition(xPos, yPos, zPos)
             } else {
                 this.obstacles[i].mesh.position.z += 0.5
+                this.obstacles[i].pointLight.position.z += 0.5
             }
         }
     }
