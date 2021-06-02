@@ -121,6 +121,19 @@
                 <!-- Settings menu -->
                 <div id="settings" style="display: none; text-align: center; padding: 20px;">
                     <label style="color: antiquewhite; font-size: xxx-large;"> settings</label>
+                    
+                    <div style="padding-top: 10%;">
+
+                        <div>
+                            <input style="transform: scale(3); margin-right: 20px;" type="checkbox" id="musiccb" name="musiccb" checked>
+                            <label for="musiccb" style="color: antiquewhite; font-size: xxx-large;">Music/SFX</label><br>
+                        </div>
+
+                        <div style="padding-top: 5%;">
+                            <input style="transform: scale(3); margin-right: 20px;" type="checkbox" id="shadowscb" name="shadowscb" checked>
+                            <label for="shadowscb" style="color: antiquewhite; font-size: xxx-large;">Shadows</label><br>
+                        </div>
+                    </div>
                     <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
                 </div>
                         
@@ -216,12 +229,18 @@
 
             //Sound Effects
             function playButton() {
+                var musicOn = document.getElementById('musiccb').checked
+                if(musicOn == true){
                 var audio = document.getElementById('buttonSound')
                 audio.play()
+                }
             }
             function playButtonWhoosh() {
+                var musicOn = document.getElementById('musiccb').checked
+                if(musicOn == true){
                 var audio = document.getElementById('buttonWhoosh')
                 audio.play()
+                }
             }
 
             //Menu's
