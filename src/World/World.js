@@ -38,8 +38,11 @@ class World {
         const laser = createLaser()
         this.laser = laser
         laser.position.set(-5, 10, 75)
+        laser.scale.set(2, 2, 2)
         // laser.rotation.z = Math.PI / 4
         scene.add(laser)
+
+        // controls.target.copy(laser.position)
 
         //const cube = createCube()
         const obstacles = []
@@ -94,6 +97,7 @@ class World {
         this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
 
         this.laser.lookAt(this.player.position)
+        this.laser.rotateY(Math.PI / 2)
         // const playerPos = new THREE.Vector3(Math.sin(this.player.position.x), 0, Math.cos(this.player.position.z))
         // console.log(playerPos)
         // this.laser.position.add(playerPos * delta)

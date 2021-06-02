@@ -8,7 +8,7 @@ class Obstacle {
         this.sizeZ = sizeZ
 
         const obstacleGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
-        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 'blue'})
+        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 'blue' })
         this.pointLight = new THREE.PointLight('blue', 50, 100, 2)
         this.mesh = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
 

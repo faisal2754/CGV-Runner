@@ -3,6 +3,8 @@ function createLaser() {
     const material = new THREE.MeshBasicMaterial({ color: 'red' })
     const laser = new THREE.Mesh(geometry, material)
 
+    laser.tick = (delta) => {}
+
     return laser
 }
 
