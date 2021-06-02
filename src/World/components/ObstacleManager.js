@@ -1,8 +1,22 @@
 import { Obstacle } from './Obstacle.js'
 
 class ObstacleManager {
-    constructor(numObstacles, sizeX, sizeY, sizeZ, stepSize, safeZoneStartZ, safeZoneEndZ, pathEndZ) {
-        this.numObstacles = numObstacles
+    constructor(
+        numObstacles,
+        sizeX,
+        sizeY,
+        sizeZ,
+        stepSize,
+        safeZoneStartZ,
+        safeZoneEndZ,
+        pathEndZ,
+        mesh1,
+        mesh2,
+        mesh3,
+        mesh4,
+        mesh5
+    ) {
+        this.numObstacles = 5
         this.sizeX = sizeX
         this.sizeY = sizeY
         this.sizeZ = sizeZ
@@ -14,10 +28,15 @@ class ObstacleManager {
         this.minX = -5
 
         this.obstacles = []
+        this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh1))
+        this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh2))
+        this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh3))
+        this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh4))
+        this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh5))
 
-        for (let i = 0; i < this.numObstacles; i++) {
-            this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ))
-        }
+        // for (let i = 0; i < this.numObstacles; i++) {
+        //     this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh))
+        // }
 
         let safeZoneLength = Math.abs(safeZoneStartZ - safeZoneEndZ)
         this.safeZoneLength = safeZoneLength
