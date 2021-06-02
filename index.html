@@ -19,11 +19,11 @@
         <!---Overlays-->
         <div id="overlays" style="text-align: center;">
             <h1 id="scoreDisplay">Score: </h1>
-            <div id="pauseBtn" class="pause-open" style="color: white" onclick="playButton(); pause()">pause</div> 
+            <div id="pauseBtn" class="pause-open" style="color: white">pause</div> 
         </div>
 
         <!---Pause Menu-->
-        <div id="pauseMenu" onclick="resume(); playButton()">
+        <div id="pauseMenu">
             <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">Paused</label>
             <label style="color: antiquewhite; font-size: large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,200%);"> click anywhere to resume</label>
         </div>
@@ -269,15 +269,6 @@
                 document.getElementById("credits").style.display = 'none';
                 document.getElementById("leaderboards").style.display = 'none';
 
-            }
-            function pause(){
-                document.getElementById("pauseMenu").style.display = 'block';
-                world.stop()
-                
-            }
-            function resume(){
-                document.getElementById("pauseMenu").style.display = 'none';
-                world.start()
             }
 
 
