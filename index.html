@@ -19,11 +19,11 @@
         <!---Overlays-->
         <div id="overlays" style="text-align: center;">
             <h1 id="scoreDisplay">Score: </h1>
-            <div id="pauseBtn" class="pause-open" style="color: white" onclick="playButton(); pause()">pause</div> 
+            <div id="pauseBtn" class="pause-open" style="color: white">pause</div> 
         </div>
 
         <!---Pause Menu-->
-        <div id="pauseMenu" onclick="resume(); playButton()">
+        <div id="pauseMenu">
             <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">Paused</label>
             <label style="color: antiquewhite; font-size: large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,200%);"> click anywhere to resume</label>
         </div>
@@ -40,6 +40,7 @@
         <!--Sounds-->
         <audio id="buttonSound" src="assets/music/sfx/buttonSound1.mp3"></audio>
         <audio id="buttonWhoosh" src="assets/music/sfx/buttonSoundWhoosh.mp3"></audio>
+        <audio id="fz" src="assets/music/background/fz.mp3"></audio>
 
 
         <!---Menu Close Element-->
@@ -110,12 +111,29 @@
                 <!-- Credits menu -->
                 <div id="credits" style="display: none; text-align: center; padding: 20px;">
                     <label style="color: antiquewhite; font-size: xxx-large;"> credits</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">
+                        "Walking Astronaut" (https://skfb.ly/6X8zX) by ARS 3D is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+                        "Spherical hex force field" (https://skfb.ly/6VpBU) by Adamante is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+                        </label>
                     <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back();playButton()">back</a>
                 </div>
 
                 <!-- Settings menu -->
                 <div id="settings" style="display: none; text-align: center; padding: 20px;">
                     <label style="color: antiquewhite; font-size: xxx-large;"> settings</label>
+                    
+                    <div style="padding-top: 10%;">
+
+                        <div>
+                            <input style="transform: scale(3); margin-right: 20px;" type="checkbox" id="musiccb" name="musiccb" checked>
+                            <label for="musiccb" style="color: antiquewhite; font-size: xxx-large;">Music/SFX</label><br>
+                        </div>
+
+                        <div style="padding-top: 5%;">
+                            <input style="transform: scale(3); margin-right: 20px;" type="checkbox" id="shadowscb" name="shadowscb" checked>
+                            <label for="shadowscb" style="color: antiquewhite; font-size: xxx-large;">Shadows</label><br>
+                        </div>
+                    </div>
                     <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
                 </div>
                         
@@ -211,12 +229,18 @@
 
             //Sound Effects
             function playButton() {
+                var musicOn = document.getElementById('musiccb').checked
+                if(musicOn == true){
                 var audio = document.getElementById('buttonSound')
                 audio.play()
+                }
             }
             function playButtonWhoosh() {
+                var musicOn = document.getElementById('musiccb').checked
+                if(musicOn == true){
                 var audio = document.getElementById('buttonWhoosh')
                 audio.play()
+                }
             }
 
             //Menu's
@@ -224,11 +248,13 @@
                 var menu = document.getElementById('menuContainer')
                 var overlays = document.getElementById('overlays')
                 var scene = document.getElementById('scene-container')
+                
                 setTimeout(function () {
                     menu.style.display = 'none'
                     overlays.style.display = 'block'
                     scene.style.display = 'block'
                 }, 2000)
+                
             }
             function openMenu() {
                 var menu = document.getElementById('menuContainer')
@@ -237,7 +263,6 @@
                 
                 menu.style.display = 'block'
                 overlays.style.display = 'none'
-                scene.style.position = 'initial'
 
             }
             function howtoplay(){
@@ -268,13 +293,6 @@
                 document.getElementById("credits").style.display = 'none';
                 document.getElementById("leaderboards").style.display = 'none';
 
-            }
-            function pause(){
-                document.getElementById("pauseMenu").style.display = 'block';
-                
-            }
-            function resume(){
-                document.getElementById("pauseMenu").style.display = 'none';
             }
 
 
