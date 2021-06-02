@@ -23,42 +23,33 @@ import { Loop } from './systems/Loop.js'
 let camera, renderer, scene, loop
 
 class World {
-    constructor(container, player, enemy, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5) {
+    constructor(container) {
         camera = createCamera()
         scene = createScene()
         renderer = createRenderer()
         container.append(renderer.domElement)
 
-        this.player = player
-        this.enemy = enemy
-        this.obstacle1 = obstacle1
-        this.obstacle2 = obstacle2
-
-        //this.obstacle1.position.set(0, 10, 70)
-        //this.obstacle1.scale.set(0.01, 0.01, 0.01)
-        this.player.rotation.y = Math.PI
-        this.player.position.set(0, 2.5, 83)
-
-        this.enemy.scale.set(0.25, 0.25, 0.25)
-        this.enemy.rotation.z = -Math.PI / 4
-        this.enemy.position.set(0, 10, 75)
-
-        scene.add(this.player)
-        //scene.add(this.enemy)
-        //scene.add(this.obstacle)
-
         loop = new Loop(camera, scene, renderer)
 
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
-        loop.updatables.push(this.player)
 
-        const laser = createLaser()
-        this.laser = laser
-        laser.position.set(-5, 10, 75)
-        laser.scale.set(2, 2, 2)
-        // laser.rotation.z = Math.PI / 4
-        scene.add(laser)
+        const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5, -100, -80)
+        this.pathManager = pathManager
+
+        this.pathManager.paths.forEach((path) => {
+            scene.add(path.mesh)
+        })
+
+        loop.updatables.push(pathManager)
+        //loop.updatables.push(this)
+
+        // const laser = createLaser()
+        // this.laser = laser
+        // laser.position.set(-5, 10, 75)
+        // laser.scale.set(2, 2, 2)
+        // // laser.rotation.z = Math.PI / 4
+        // scene.add(laser)
 
         // controls.target.copy(laser.position)
 
@@ -68,6 +59,32 @@ class World {
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
+        scene.add(directionalLight, ambientLight, skybox)
+
+        const resizer = new Resizer(container, camera, renderer)
+        console.log('starting')
+    }
+
+    async init() {
+        const { player, enemy, obstacle } = await loadAssets()
+        this.player = player
+        this.enemy = enemy
+        this.obstacle = obstacle
+
+        this.player.rotation.y = Math.PI
+        this.player.position.set(0, 2.5, 83)
+
+        this.enemy.scale.set(0.25, 0.25, 0.25)
+        this.enemy.rotation.z = -Math.PI / 4
+        this.enemy.position.set(0, 10, 75)
+
+        loop.updatables.push(this.player)
+        // loop.updatables.push(enemy)
+
+        scene.add(this.player)
+    }
+
+    init_managers() {
         const obstacleManager = new ObstacleManager(
             10,
             1,
@@ -77,57 +94,21 @@ class World {
             50,
             -100,
             100,
-            obstacle1,
-            obstacle2,
-            obstacle3,
-            obstacle4,
-            obstacle5
+            this.obstacle.clone(),
+            this.obstacle.clone(),
+            this.obstacle.clone(),
+            this.obstacle.clone(),
+            this.obstacle.clone()
         )
         this.obstacleManager = obstacleManager
 
-        obstacleManager.obstacles.forEach((obstacle) => {
+        this.obstacleManager.obstacles.forEach((obstacle) => {
             scene.add(obstacle.mesh)
             scene.add(obstacle.pointLight)
         })
 
         loop.updatables.push(obstacleManager)
-
-        const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5, -100, -80)
-        this.pathManager = pathManager
-
-        pathManager.paths.forEach((path) => {
-            scene.add(path.mesh)
-        })
-
-        loop.updatables.push(pathManager)
-        loop.updatables.push(this)
-
-        scene.add(directionalLight, ambientLight, skybox)
-
-        const resizer = new Resizer(container, camera, renderer)
-        console.log('starting')
     }
-
-    // async init() {
-    //     const { player, enemy, obstacle } = await loadAssets()
-    //     this.player = player
-    //     this.obstacle = obstacle
-
-    //     this.obstacle.position.set(0, 10, 70)
-    //     this.obstacle.scale.set(0.01, 0.01, 0.01)
-    //     player.rotation.y = Math.PI
-    //     player.position.set(0, 2.5, 83)
-
-    //     enemy.scale.set(0.25, 0.25, 0.25)
-    //     enemy.rotation.z = -Math.PI / 4
-    //     enemy.position.set(0, 10, 75)
-
-    //     loop.updatables.push(player)
-    //     // loop.updatables.push(enemy)
-
-    //     scene.add(player)
-    //     scene.add(obstacle)
-    // }
 
     tick(delta) {
         this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
