@@ -224,11 +224,13 @@
                 var menu = document.getElementById('menuContainer')
                 var overlays = document.getElementById('overlays')
                 var scene = document.getElementById('scene-container')
+                
                 setTimeout(function () {
                     menu.style.display = 'none'
                     overlays.style.display = 'block'
                     scene.style.display = 'block'
                 }, 2000)
+                
             }
             function openMenu() {
                 var menu = document.getElementById('menuContainer')
@@ -237,7 +239,6 @@
                 
                 menu.style.display = 'block'
                 overlays.style.display = 'none'
-                scene.style.position = 'initial'
 
             }
             function howtoplay(){
@@ -271,10 +272,12 @@
             }
             function pause(){
                 document.getElementById("pauseMenu").style.display = 'block';
+                world.stop()
                 
             }
             function resume(){
                 document.getElementById("pauseMenu").style.display = 'none';
+                world.start()
             }
 
 

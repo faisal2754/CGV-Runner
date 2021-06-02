@@ -14,7 +14,6 @@ class Obstacle {
         //this.mesh = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
 
         this.onPath = false
-        this.toStart()
     }
 
     setPosition(x, y, z) {
@@ -27,15 +26,6 @@ class Obstacle {
         this.pointLight.position.z = z
     }
 
-    toStart() {
-        this.mesh.position.x = this.startX
-        this.mesh.position.y = this.startY
-        this.mesh.position.z = this.startZ
-
-        this.pointLight.position.x = this.startX
-        this.pointLight.position.y = this.startY
-        this.pointLight.position.z = this.startZ
-    }
 }
 
 export { Obstacle }

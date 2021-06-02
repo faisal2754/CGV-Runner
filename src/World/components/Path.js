@@ -38,12 +38,15 @@ class Path {
         const b = Math.random()
         const color = new THREE.Color(r, g, b)
 
+        const texture = new THREE.TextureLoader().load( '/assets/images/hex.jpg' );
+
         const floorGeometry = new THREE.BoxGeometry(this.sizeX, this.sizeY, this.sizeZ)
-        const floorMaterial = new THREE.MeshPhongMaterial({
-            color: color,
-            opacity: 0.65,
-            transparent: true
-        })
+        const floorMaterial = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 0.85, transparent: true } );
+        // const floorMaterial = new THREE.MeshPhongMaterial({
+        //     color: color,
+        //     opacity: 0.65,
+        //     transparent: true
+        // })
         this.mesh = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
         this.mesh.position.x = this.stateZeroX
         this.mesh.position.y = this.stateZeroY
