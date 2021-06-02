@@ -58,6 +58,9 @@
                 <div class="menu-left">
                     <div class="menu-links">
                         <div class="menu-link" style="padding: 10px">
+                            <a href="#" style="font-size: xxx-large" onclick="playButton(); howtoplay()">HOW TO PLAY</a>
+                        </div>
+                        <div class="menu-link" style="padding: 10px">
                             <a href="#" style="font-size: xxx-large" onclick="playButton(); leaderboards()">LEADERBOARDS</a>
                         </div>
                         <div class="menu-link" style="padding: 10px">
@@ -74,7 +77,14 @@
 
 
 
-
+                <!-- How To Play menu -->
+                <div id="howtoplay" style="display: none; text-align: center; padding: 20px;">
+                    <label style="color: antiquewhite; font-size: xxx-large;"> How To Play</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 20%; left: 50%; transform: translate(-50%,-50%);">Nova Runner is a game where you... run... obviously... as far as you can!</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Easy right? Nah lol, there's some things you're gonna have to avoid but don't worry, here's how:</label>
+                    <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%);">Controls:</label>
+                    <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
+                </div>
 
 
                 <!-- Leaderboard menu -->
@@ -216,6 +226,11 @@
                 scene.style.position = 'initial'
 
             }
+            function howtoplay(){
+                document.getElementById("menuClose").style.display = 'none';
+                document.getElementById("hr").style.display = 'none';
+                document.getElementById("howtoplay").style.display = 'block';
+            }
             function leaderboards(){
                 document.getElementById("menuClose").style.display = 'none';
                 document.getElementById("hr").style.display = 'none';
@@ -235,12 +250,14 @@
                 document.getElementById("menuClose").style.display = 'block';
                 document.getElementById("hr").style.display = 'block';
                 document.getElementById("settings").style.display = 'none';
+                document.getElementById("howtoplay").style.display = 'none';
                 document.getElementById("credits").style.display = 'none';
                 document.getElementById("leaderboards").style.display = 'none';
 
             }
             function pause(){
                 document.getElementById("pauseMenu").style.display = 'block';
+                
             }
             function resume(){
                 document.getElementById("pauseMenu").style.display = 'none';
