@@ -4,6 +4,7 @@ function setupPlayer(data) {
 
     const mixer = new THREE.AnimationMixer(model)
     const action = mixer.clipAction(clip)
+    action.timeScale = 10
     action.play()
 
     model.tick = (delta) => mixer.update(delta)

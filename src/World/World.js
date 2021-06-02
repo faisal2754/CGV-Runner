@@ -77,7 +77,7 @@ class World {
         this.player = player
 
         player.rotation.y = Math.PI
-        player.position.set(0, 5, 60)
+        player.position.set(0, 2.5, 80)
 
         enemy.scale.set(0.25, 0.25, 0.25)
         enemy.rotation.z = -Math.PI / 4
