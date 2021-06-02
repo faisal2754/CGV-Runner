@@ -3,7 +3,8 @@ import { createCube } from './components/cube.js'
 import { createDirectionalLight, createAmbientLight } from './components/lights.js'
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
-import { createPlayer } from './components/player.js'
+import { loadAssets } from './components/assetLoader.js'
+import { createLaser } from './components/laser.js'
 
 import { Path } from './components/Path.js'
 import { PathManager } from './components/PathManager.js'
@@ -33,6 +34,12 @@ class World {
 
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
+
+        // const laser = createLaser()
+        // this.laser = laser
+        // laser.position.set(0, 10, 75)
+        // laser.rotation.z = Math.PI / 2
+        // scene.add(laser)
 
         //const cube = createCube()
         const obstacles = []
@@ -66,15 +73,27 @@ class World {
     }
 
     async init() {
-        const { player } = await createPlayer()
+        const { player, enemy } = await loadAssets()
+        this.player = player
+
+        player.rotation.y = Math.PI
+        player.position.set(0, 5, 60)
+
+        enemy.scale.set(0.25, 0.25, 0.25)
+        enemy.rotation.z = -Math.PI / 4
+        enemy.position.set(0, 10, 75)
 
         loop.updatables.push(player)
+        // loop.updatables.push(enemy)
 
         scene.add(player)
     }
 
-    tick() {
+    tick(delta) {
         this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
+        // const playerPos = new THREE.Vector3(Math.sin(this.player.position.x), 0, Math.cos(this.player.position.z))
+        // console.log(playerPos)
+        // this.laser.position.add(playerPos * delta)
     }
 
     render() {
