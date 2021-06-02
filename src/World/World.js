@@ -23,17 +23,35 @@ import { Loop } from './systems/Loop.js'
 let camera, renderer, scene, loop
 
 class World {
-    constructor(container) {
+    constructor(container, player, enemy, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5) {
         camera = createCamera()
         scene = createScene()
         renderer = createRenderer()
-
         container.append(renderer.domElement)
+
+        this.player = player
+        this.enemy = enemy
+        this.obstacle1 = obstacle1
+        this.obstacle2 = obstacle2
+
+        //this.obstacle1.position.set(0, 10, 70)
+        //this.obstacle1.scale.set(0.01, 0.01, 0.01)
+        this.player.rotation.y = Math.PI
+        this.player.position.set(0, 2.5, 83)
+
+        this.enemy.scale.set(0.25, 0.25, 0.25)
+        this.enemy.rotation.z = -Math.PI / 4
+        this.enemy.position.set(0, 10, 75)
+
+        scene.add(this.player)
+        //scene.add(this.enemy)
+        //scene.add(this.obstacle)
 
         loop = new Loop(camera, scene, renderer)
 
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
+        loop.updatables.push(this.player)
 
         const laser = createLaser()
         this.laser = laser
@@ -50,7 +68,21 @@ class World {
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
-        const obstacleManager = new ObstacleManager(10, 1, 1, 1, 1, 50, -100, 100)
+        const obstacleManager = new ObstacleManager(
+            10,
+            1,
+            1,
+            1,
+            1,
+            50,
+            -100,
+            100,
+            obstacle1,
+            obstacle2,
+            obstacle3,
+            obstacle4,
+            obstacle5
+        )
         this.obstacleManager = obstacleManager
 
         obstacleManager.obstacles.forEach((obstacle) => {
@@ -76,22 +108,26 @@ class World {
         console.log('starting')
     }
 
-    async init() {
-        const { player, enemy } = await loadAssets()
-        this.player = player
+    // async init() {
+    //     const { player, enemy, obstacle } = await loadAssets()
+    //     this.player = player
+    //     this.obstacle = obstacle
 
-        player.rotation.y = Math.PI
-        player.position.set(0, 2.5, 83)
+    //     this.obstacle.position.set(0, 10, 70)
+    //     this.obstacle.scale.set(0.01, 0.01, 0.01)
+    //     player.rotation.y = Math.PI
+    //     player.position.set(0, 2.5, 83)
 
-        enemy.scale.set(0.25, 0.25, 0.25)
-        enemy.rotation.z = -Math.PI / 4
-        enemy.position.set(0, 10, 75)
+    //     enemy.scale.set(0.25, 0.25, 0.25)
+    //     enemy.rotation.z = -Math.PI / 4
+    //     enemy.position.set(0, 10, 75)
 
-        loop.updatables.push(player)
-        // loop.updatables.push(enemy)
+    //     loop.updatables.push(player)
+    //     // loop.updatables.push(enemy)
 
-        scene.add(player)
-    }
+    //     scene.add(player)
+    //     scene.add(obstacle)
+    // }
 
     tick(delta) {
         this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
