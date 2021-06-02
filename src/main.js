@@ -35,6 +35,8 @@ async function main() {
             menu.style.display = 'none'
             overlays.style.display = 'block'
             scene.style.display = 'block'
+            var audio = document.getElementById('fz')
+            audio.play()
         }, 2000)
     }
 }
