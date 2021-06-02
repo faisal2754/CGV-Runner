@@ -35,11 +35,11 @@ class World {
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
 
-        // const laser = createLaser()
-        // this.laser = laser
-        // laser.position.set(0, 10, 75)
-        // laser.rotation.z = Math.PI / 2
-        // scene.add(laser)
+        const laser = createLaser()
+        this.laser = laser
+        laser.position.set(-5, 10, 75)
+        // laser.rotation.z = Math.PI / 4
+        scene.add(laser)
 
         //const cube = createCube()
         const obstacles = []
@@ -92,6 +92,8 @@ class World {
 
     tick(delta) {
         this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
+
+        this.laser.lookAt(this.player.position)
         // const playerPos = new THREE.Vector3(Math.sin(this.player.position.x), 0, Math.cos(this.player.position.z))
         // console.log(playerPos)
         // this.laser.position.add(playerPos * delta)
