@@ -4,9 +4,9 @@ import { loadAssets } from './World/components/assetLoader.js'
 async function main() {
     const container = document.querySelector('#scene-container')
 
-    // const world = new World(container)
+    const world = new World(container)
 
-    // await world.init()
+    await world.init()
 
     world.start()
 
