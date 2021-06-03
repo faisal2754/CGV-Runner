@@ -49,7 +49,7 @@
         <audio id="buttonWhoosh" src="assets/music/sfx/buttonSoundWhoosh.mp3"></audio>
         <audio id="gameOverSound" src="assets/music/sfx/game-over.wav"></audio>
         <audio id="fz" src="assets/music/background/fz.mp3"></audio>
-        <audio muted="muted" id="bg2" src="assets/music/background/bg2.mp3"></audio>
+        <audio autoplay="true" muted="muted" id="bg2" src="assets/music/background/bg2.mp3"></audio>
 
 
         <!---Menu Close Element-->
@@ -236,9 +236,12 @@
             $(document).ready(function () {
                 tl.reversed(!tl.reversed())
                 openMenu()
-                var audio = document.getElementById('bg2')
+                var audio = new Audio ('assets/music/background/bg2.mp3')
                 audio.muted = false
-                audio.play()
+                setTimeout(function(){
+                    var playPromise = audio.play()
+                })
+                
                 
             })
             $(document).on('click', '.menu-open', function () {
