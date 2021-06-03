@@ -15,6 +15,8 @@ import { createRenderer } from './systems/renderer.js'
 import { Resizer } from './systems/Resizer.js'
 import { Loop } from './systems/Loop.js'
 
+import { PLYLoader } from '../../modules/PLYLoader.js'
+
 /**
  *  Module-scoped variables
  *  These should not be accessible to the outside world
@@ -73,14 +75,34 @@ class World {
         scene.add(ambientLight)
         scene.add(directionalLight)
 
-        // //under construction
-        // const r = 'assets/skybox/corona_'
-        // const urls = [r + 'lf.png', r + 'rt.png', r + 'up.png', r + 'dn.png', r + 'ft.png', r + 'bk.png']
+        //under construction
+        const r = 'assets/skybox/corona_'
+        const urls = [r + 'lf.png', r + 'rt.png', r + 'up.png', r + 'dn.png', r + 'ft.png', r + 'bk.png']
 
-        // const textureCube = new THREE.CubeTextureLoader().load(urls)
-        // scene.background = textureCube
-        // textureCube.mapping = THREE.CubeRefractionMapping
-        // //////////////////////////////////////////////
+        const textureCube = new THREE.CubeTextureLoader().load(urls)
+        // textureCube.rotation.set(-0.5, -0.1, 0.8)
+
+        scene.background = textureCube
+        textureCube.mapping = THREE.CubeRefractionMapping
+
+        // const cubeMaterial3 = new THREE.MeshPhongMaterial({
+        //     color: 0xccddff,
+        //     envMap: textureCube,
+        //     refractionRatio: 0.98,
+        //     reflectivity: 0.9
+        // })
+        // const cubeMaterial2 = new THREE.MeshPhongMaterial({
+        //     color: 0xccfffd,
+        //     envMap: textureCube,
+        //     refractionRatio: 0.985
+        // })
+        const cubeMaterial1 = new THREE.MeshPhongMaterial({
+            color: 0x0000ff,
+            envMap: textureCube,
+            refractionRatio: 0.98
+        })
+        this.cubeMaterial1 = cubeMaterial1
+        //////////////////////////////////////////////
 
         const resizer = new Resizer(container, camera, renderer)
         console.log('starting')
@@ -88,6 +110,7 @@ class World {
 
     async init() {
         const { player, enemy, obstacle } = await loadAssets()
+
         this.player = player
         this.enemy = enemy
         this.obstacle = obstacle
@@ -100,21 +123,19 @@ class World {
         loop.updatables.push(this.player)
         // loop.updatables.push(enemy)
 
-        //scene.add(this.player.mesh)
+        //LOading Lucy
+        const m1 = this.cubeMaterial1
+        const plyLoader = new PLYLoader()
+        plyLoader.load('assets/models/Lucy100k.ply', function (geometry) {
+            geometry.computeVertexNormals()
 
-        //let hitBox
+            const s = 0.01
 
-        // const playerGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75)
-        // const playerMaterial = new THREE.MeshStandardMaterial({
-        //     color: 0xff0000
-        // })
-        // this.player = new Physijs.BoxMesh(playerGeometry, playerMaterial)
-        // this.player.name = 'Player'
-        // this.player.translateY(5)
-        // this.player.translateZ(83)
-        // this.player.addEventListener('collision', function (object) {
-        //     console.log('Game Over bruh.')
-        // })
+            let mesh = new THREE.Mesh(geometry, m1)
+            mesh.scale.x = mesh.scale.y = mesh.scale.z = s
+            scene.add(mesh)
+        })
+        //////////////////
 
         var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({}))
         physMaterial.visible = false
@@ -132,22 +153,22 @@ class World {
 
         scene.add(this.player)
 
-        this.player.addEventListener('collision', function (object) {
-            if (object.name === 'obstacle') {
-                console.log('Game Over bruh.')
-                var audio = document.getElementById('fz')
-                audio.pause()
-                audio.currentTime = 0
-                loop.stop()
-                document.getElementById('gameOverMenu').style.display = 'block'
-                document.getElementById('finalScore').innerText = 'Final Score: ' + score
-                isDead = true
-                document.getElementById('overlays').style.display = 'none'
-            }
-            if (object.name === 'floor') {
-                this.hasJumped = false
-            }
-        })
+        // this.player.addEventListener('collision', function (object) {
+        //     if (object.name === 'obstacle') {
+        //         console.log('Game Over bruh.')
+        //         var audio = document.getElementById('fz')
+        //         audio.pause()
+        //         audio.currentTime = 0
+        //         loop.stop()
+        //         document.getElementById('gameOverMenu').style.display = 'block'
+        //         document.getElementById('finalScore').innerText = 'Final Score: ' + score
+        //         isDead = true
+        //         document.getElementById('overlays').style.display = 'none'
+        //     }
+        //     if (object.name === 'floor') {
+        //         this.hasJumped = false
+        //     }
+        // })
     }
 
     init_managers() {
@@ -183,16 +204,17 @@ class World {
         this.player.rotation.z = 0
         this.player.position.z = 83
 
-        if (this.player.position.y < -1) {
-            this.stop()
-            var audio = document.getElementById('fz')
-            audio.pause()
-            audio.currentTime = 0
-            document.getElementById('gameOverMenu').style.display = 'block'
-            document.getElementById('finalScore').innerText = ' Final Score: ' + score
-            isDead = true
-            document.getElementById('overlays').style.display = 'none'
-        }
+        // if (this.player.position.y < -1) {
+        //     this.stop()
+        //     var audio = document.getElementById('fz')
+        //     audio.pause()
+        //     audio.currentTime = 0
+        //     document.getElementById('gameOverMenu').style.display = 'block'
+        //     document.getElementById('finalScore').innerText = ' Final Score: ' + score
+        //     isDead = true
+        //     document.getElementById('overlays').style.display = 'none'
+        // }
+
         //this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
         // this.laser.lookAt(this.player.position)
         // this.laser.rotateY(Math.PI / 2)
