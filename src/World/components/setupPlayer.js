@@ -24,7 +24,7 @@ function setupPlayer(data) {
 
     model.tick = (delta) => {
         mixer.update(delta)
-        console.log(model.position)
+        //console.log(model.position)
         model.mesh.position.set(model.position)
         // model.mesh = mesh
     }

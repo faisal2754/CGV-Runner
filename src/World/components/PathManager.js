@@ -229,7 +229,7 @@ class PathManager {
 
         if (numCompletedPasses == numPassesTillStragegyChange) {
             let newScaleX = Math.random() * 3 + 1
-            let newScaleY = Math.random() * 8 + 0.5
+            let newScaleY = 1 //Math.random() * 8 + 0.5
 
             this.pathSizeX = this.pathSizeX * this.inverseTransformX
             this.pathSizeY = this.pathSizeY * this.inverseTransformY

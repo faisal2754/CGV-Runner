@@ -6,13 +6,17 @@ class Obstacle {
         this.mesh = mesh
 
         this.mesh.scale.set(0.01, 0.01, 0.01)
-        console.log(this.mesh)
 
-        // const obstacleGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
-        // const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 'blue' })
+        this.box_container = new Physijs.BoxMesh(
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 1 })
+        )
+
+        this.box_container.add(this.mesh)
+        this.mesh = this.box_container
+        this.mesh.name = 'obstacle'
+
         this.pointLight = new THREE.PointLight('white', 50, 100, 2)
-        //this.mesh = new Physijs.BoxMesh(obstacleGeometry, obstacleMaterial)
-
         this.onPath = false
     }
 
@@ -25,7 +29,6 @@ class Obstacle {
         this.pointLight.position.y = y
         this.pointLight.position.z = z
     }
-
 }
 
 export { Obstacle }

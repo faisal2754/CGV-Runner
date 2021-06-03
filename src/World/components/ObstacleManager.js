@@ -65,17 +65,17 @@ class ObstacleManager {
                 let xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
                 let yPos = 3.5
                 let zPos = this.safeZoneEndZ - Math.random() * 5
-
                 while (this.isOverlapping(xPos, zPos)) {
                     xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
                     zPos = this.safeZoneStartZ - Math.random() * 5
                 }
-
                 this.obstacles[i].setPosition(xPos, yPos, zPos)
             } else {
                 this.obstacles[i].mesh.position.z += 0.5
                 this.obstacles[i].pointLight.position.z += 0.5
             }
+
+            this.obstacles[i].mesh.__dirtyPosition = true
         }
     }
 
