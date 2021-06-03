@@ -105,7 +105,7 @@ class World {
 
         let box_container = new Physijs.BoxMesh(
             new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshBasicMaterial({ wireframe: true, opacity: 1 })
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
         )
 
         this.player.position.set(0, -0.5, 0)
