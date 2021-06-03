@@ -11,4 +11,10 @@ function createDirectionalLight() {
     return light
 }
 
-export { createDirectionalLight, createAmbientLight }
+function createPointLight() {
+    const light = new THREE.PointLight('white', 100, 20, 1)
+
+    return light
+}
+
+export { createDirectionalLight, createAmbientLight, createPointLight }
