@@ -1,6 +1,6 @@
 import { createCamera } from './components/camera.js'
 import { createCube } from './components/cube.js'
-import { createDirectionalLight, createAmbientLight } from './components/lights.js'
+import { createDirectionalLight, createAmbientLight, createPointLight } from './components/lights.js'
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
 import { loadAssets } from './components/assetLoader.js'
@@ -85,21 +85,11 @@ class World {
         scene.background = textureCube
         textureCube.mapping = THREE.CubeRefractionMapping
 
-        // const cubeMaterial3 = new THREE.MeshPhongMaterial({
-        //     color: 0xccddff,
-        //     envMap: textureCube,
-        //     refractionRatio: 0.98,
-        //     reflectivity: 0.9
-        // })
-        // const cubeMaterial2 = new THREE.MeshPhongMaterial({
-        //     color: 0xccfffd,
-        //     envMap: textureCube,
-        //     refractionRatio: 0.985
-        // })
         const cubeMaterial1 = new THREE.MeshPhongMaterial({
-            color: 0x0000ff,
+            color: 0xffffff,
             envMap: textureCube,
-            refractionRatio: 0.98
+            refractionRatio: 0.98,
+            reflectivity: 0.9
         })
         this.cubeMaterial1 = cubeMaterial1
         //////////////////////////////////////////////
@@ -126,13 +116,26 @@ class World {
         //LOading Lucy
         const m1 = this.cubeMaterial1
         const plyLoader = new PLYLoader()
+
         plyLoader.load('assets/models/Lucy100k.ply', function (geometry) {
             geometry.computeVertexNormals()
 
-            const s = 0.01
+            const s = 0.005
 
-            let mesh = new THREE.Mesh(geometry, m1)
+            const mesh = new THREE.Mesh(geometry, m1)
             mesh.scale.x = mesh.scale.y = mesh.scale.z = s
+            mesh.rotation.y = -Math.PI / 2
+            mesh.position.set(-7.5, 5, 80)
+
+            // mesh.add(createPointLight())
+            const light = createPointLight()
+            light.position.set(-7.5, 5, 80)
+            console.log(light)
+            scene.add(light)
+            const sphereSize = 5
+            const pointLightHelper = new THREE.PointLightHelper(light, sphereSize)
+            scene.add(pointLightHelper)
+
             scene.add(mesh)
         })
         //////////////////
