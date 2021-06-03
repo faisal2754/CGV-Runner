@@ -33,10 +33,13 @@ class Path {
         this.inverseTransformX = 1
         this.inverseTransformY = 1
 
-        const r = Math.random()
-        const g = Math.random()
-        const b = Math.random()
-        const color = new THREE.Color(r, g, b)
+        // const r = Math.random()
+        // const g = Math.random()
+        // const b = Math.random()
+        // const color = new THREE.Color(r, g, b)
+
+        const palette = [0xff3864, 0x2de2e6, 0xfd3777, 0xf706cf, 0x023788, 0x541388, 0x44b0ee, 0x008080]
+        const color = new THREE.Color(palette[Math.floor(Math.random() * 7)])
 
         const texture = new THREE.TextureLoader().load('/assets/images/hex.jpg')
 

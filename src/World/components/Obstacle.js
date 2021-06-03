@@ -5,13 +5,14 @@ class Obstacle {
         this.sizeZ = sizeZ
         this.mesh = mesh
 
-        this.mesh.scale.set(0.01, 0.01, 0.01)
+        this.mesh.scale.set(0.012, 0.012, 0.012)
 
         this.box_container = new Physijs.BoxMesh(
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshBasicMaterial({ transparent: true, opacity: 1 })
+            new THREE.SphereGeometry(1),
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.5 })
         )
 
+        this.box_container.material.flatShading = true
         this.box_container.add(this.mesh)
         this.mesh = this.box_container
         this.mesh.name = 'obstacle'

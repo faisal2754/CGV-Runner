@@ -47,7 +47,9 @@
         <!--Sounds-->
         <audio id="buttonSound" src="assets/music/sfx/buttonSound1.mp3"></audio>
         <audio id="buttonWhoosh" src="assets/music/sfx/buttonSoundWhoosh.mp3"></audio>
+        <audio id="gameOverSound" src="assets/music/sfx/game-over.wav"></audio>
         <audio id="fz" src="assets/music/background/fz.mp3"></audio>
+        <audio muted="muted" id="bg2" src="assets/music/background/bg2.mp3"></audio>
 
 
         <!---Menu Close Element-->
@@ -119,10 +121,13 @@
                 <div id="credits" style="display: none; text-align: center; padding: 20px;">
                     <label style="color: antiquewhite; font-size: xxx-large;"> credits</label>
                     <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 20%; left: 50%; transform: translate(-50%,-50%);">Ctrl Alt Defeat</label>
-                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Tristan Bester (2090454), Jonathan Nunes (2087190), Faisal Saleem (2095208), Ghulame Mujtaba Arbi (2103706)</label>
-                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);">Sound effects and music obtained from www.zapsplat.com under standard license</label>
-                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">Models:</label>
-                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 70%; left: 50%; transform: translate(-50%,-50%);">
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Tristan Bester (2090454)</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 35%; left: 50%; transform: translate(-50%,-50%);">Jonathan Nunes (2087190)</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);">Faisal Saleem (2095208)</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%);">Ghulame Mujtaba Arbi (2103706)</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%);">Sound effects and music obtained from www.zapsplat.com and www.mixkit.co under standard licenses</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 65%; left: 50%; transform: translate(-50%,-50%);">Models:</label>
+                    <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 80%; left: 50%; transform: translate(-50%,-50%);">
                         "Walking Astronaut" (https://skfb.ly/6X8zX) by ARS 3D is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
                         "Spherical hex force field" (https://skfb.ly/6VpBU) by Adamante is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
                         </label>
@@ -231,6 +236,10 @@
             $(document).ready(function () {
                 tl.reversed(!tl.reversed())
                 openMenu()
+                var audio = document.getElementById('bg2')
+                audio.muted = false
+                audio.play()
+                
             })
             $(document).on('click', '.menu-open', function () {
                 tl.reversed(!tl.reversed())

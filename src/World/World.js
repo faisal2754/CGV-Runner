@@ -206,22 +206,24 @@ class World {
 
         scene.add(this.player)
 
-        // this.player.addEventListener('collision', function (object) {
-        //     if (object.name === 'obstacle') {
-        //         console.log('Game Over bruh.')
-        //         var audio = document.getElementById('fz')
-        //         audio.pause()
-        //         audio.currentTime = 0
-        //         loop.stop()
-        //         document.getElementById('gameOverMenu').style.display = 'block'
-        //         document.getElementById('finalScore').innerText = 'Final Score: ' + score
-        //         isDead = true
-        //         document.getElementById('overlays').style.display = 'none'
-        //     }
-        //     if (object.name === 'floor') {
-        //         this.hasJumped = false
-        //     }
-        // })
+        this.player.addEventListener('collision', function (object) {
+            if (object.name === 'obstacle') {
+                console.log('Game Over bruh.')
+                var audio = document.getElementById('fz')
+                audio.pause()
+                audio.currentTime = 0
+                var gameOverSound = document.getElementById('gameOverSound')
+                gameOverSound.play()
+                loop.stop()
+                document.getElementById('gameOverMenu').style.display = 'block'
+                document.getElementById('finalScore').innerText = 'Final Score: ' + score
+                isDead = true
+                document.getElementById('overlays').style.display = 'none'
+            }
+            if (object.name === 'floor') {
+                this.hasJumped = false
+            }
+        })
     }
 
     init_managers() {
@@ -257,16 +259,19 @@ class World {
         this.player.rotation.z = 0
         this.player.position.z = 83
 
-        // if (this.player.position.y < -1) {
-        //     this.stop()
-        //     var audio = document.getElementById('fz')
-        //     audio.pause()
-        //     audio.currentTime = 0
-        //     document.getElementById('gameOverMenu').style.display = 'block'
-        //     document.getElementById('finalScore').innerText = ' Final Score: ' + score
-        //     isDead = true
-        //     document.getElementById('overlays').style.display = 'none'
-        // }
+        if (this.player.position.y < -1) {
+            this.stop()
+
+            var audio = document.getElementById('fz')
+            audio.pause()
+            var gameOverSound = document.getElementById('gameOverSound')
+            gameOverSound.play()
+            audio.currentTime = 0
+            document.getElementById('gameOverMenu').style.display = 'block'
+            document.getElementById('finalScore').innerText = ' Final Score: ' + score
+            isDead = true
+            document.getElementById('overlays').style.display = 'none'
+        }
 
         //this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
         // this.laser.lookAt(this.player.position)

@@ -45,6 +45,12 @@ async function main(restart = false) {
             var audio = document.getElementById('buttonWhoosh')
             audio.play()
         }
+
+        var bg = document.getElementById('bg2')
+        bg.volume = 0
+        bg.pause()
+        bg.currentTime = 0
+
         var menu = document.getElementById('menuContainer')
         var overlays = document.getElementById('overlays')
         var scene = document.getElementById('scene-container')
