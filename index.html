@@ -32,9 +32,8 @@
         <div id="gameOverMenu">
             <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Game Over</label>
             <a href="#" class="menu-open" style="font-size: xx-large; top: 46%; left: 30%; right: 50%;" onclick="playButtonWhoosh();hideGameOverMenu();">Main Menu</a>
-            <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,200%);"> Score: 100</label>
-            <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 35%; left: 50%; transform: translate(-50%,200%);"> High Score: 1000</label>
-            <a href="#" style="font-size: xx-large; top: 50%; left: 55%; right: 30%; position: fixed;" onclick="playButton()">Restart</a>
+            <label id="finalScore" style="color: antiquewhite; font-size: xx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,200%);"> Score: </label>
+            <a id="restart" href="#" style="font-size: xx-large; top: 50%; left: 55%; right: 30%; position: fixed;" onclick="playButton();">Restart</a>
         </div>
         
         <!--Sounds-->
@@ -302,22 +301,7 @@
                 document.getElementById("gameOverMenu").style.display = 'none';
                 document.getElementById("menuContainer").style.display = 'block';
             }
-
-
-
-
-            var score = 0;
-            var scoreDisplay = document.getElementById('scoreDisplay');
-
-            function incrementScore() {
-                score += 1;
-                scoreDisplay.innerText = "Score: " + score;
-            }
-
-            var increment = setInterval(incrementScore, 500);
             
-            
-
 
         </script>
     </body>

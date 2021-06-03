@@ -20,7 +20,7 @@ import { Loop } from './systems/Loop.js'
  *  These should not be accessible to the outside world
  */
 
-let camera, renderer, scene, loop
+let camera, renderer, scene, loop, score, isDead
 var keyboard = {}
 
 class World {
@@ -32,6 +32,9 @@ class World {
         scene = createScene()
         renderer = createRenderer()
         container.append(renderer.domElement)
+
+        score = 0
+        isDead = false
 
         loop = new Loop(camera, scene, renderer)
 
@@ -124,6 +127,9 @@ class World {
                 audio.currentTime = 0
                 loop.stop()
                 document.getElementById('gameOverMenu').style.display = 'block'
+                document.getElementById('finalScore').innerText = 'Final Score: ' + score
+                isDead = true
+                document.getElementById('overlays').style.display = 'none'
             }
             if (object.name === 'floor') {
                 this.hasJumped = false
@@ -170,6 +176,9 @@ class World {
             audio.pause()
             audio.currentTime = 0
             document.getElementById('gameOverMenu').style.display = 'block'
+            document.getElementById('finalScore').innerText = ' Final Score: ' + score
+            isDead = true
+            document.getElementById('overlays').style.display = 'none'
         }
         //this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
         // this.laser.lookAt(this.player.position)
@@ -177,6 +186,12 @@ class World {
         // const playerPos = new THREE.Vector3(Math.sin(this.player.position.x), 0, Math.cos(this.player.position.z))
         // console.log(playerPos)
         // this.laser.position.add(playerPos * delta)
+
+        if (isDead == false) {
+            score += 1
+        }
+
+        document.getElementById('scoreDisplay').innerText = 'Score: ' + score
     }
 
     render() {

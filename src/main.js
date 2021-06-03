@@ -55,10 +55,18 @@ async function main() {
             if (musicOn == true) {
                 var audio = document.getElementById('fz')
                 audio.play()
-                world.start()
             }
+            world.start()
         }, 2000)
     }
+
+    // document.getElementById('restart').onclick = function restart() {
+    //     document.getElementById('gameOverMenu').style.display = 'none'
+    //     var canvas = document.getElementsByTagName('canvas')
+    //     console.log(canvas)
+    //     canvas.remove()
+    //     main()
+    // }
 }
 
 main().catch((err) => {
