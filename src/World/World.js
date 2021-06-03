@@ -4,7 +4,7 @@ import { createDirectionalLight, createAmbientLight } from './components/lights.
 import { createScene } from './components/scene.js'
 import { createSkybox } from './components/skybox.js'
 import { loadAssets } from './components/assetLoader.js'
-import { createLaser } from './components/laser.js'
+import { createLaser } from './components/bruh.js'
 
 import { Path } from './components/Path.js'
 import { PathManager } from './components/PathManager.js'
@@ -21,15 +21,21 @@ import { Loop } from './systems/Loop.js'
  */
 
 let camera, renderer, scene, loop
+var keyboard = {}
 
 class World {
     constructor(container) {
+        Physijs.scripts.worker = './modules/physijs_worker.js'
+        Physijs.scripts.ammo = './ammo.js'
+
         camera = createCamera()
         scene = createScene()
         renderer = createRenderer()
         container.append(renderer.domElement)
 
         loop = new Loop(camera, scene, renderer)
+
+        loop.updatables.push(scene)
 
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
@@ -42,7 +48,7 @@ class World {
         })
 
         loop.updatables.push(pathManager)
-        //loop.updatables.push(this)
+        loop.updatables.push(this)
 
         // const laser = createLaser()
         // this.laser = laser
@@ -59,7 +65,9 @@ class World {
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
-        scene.add(directionalLight, ambientLight, skybox)
+        scene.add(skybox)
+        scene.add(ambientLight)
+        scene.add(directionalLight)
 
         const resizer = new Resizer(container, camera, renderer)
         console.log('starting')
@@ -82,6 +90,7 @@ class World {
         // loop.updatables.push(enemy)
 
         scene.add(this.player)
+        scene.add(this.player.mesh)
     }
 
     init_managers() {
@@ -111,10 +120,10 @@ class World {
     }
 
     tick(delta) {
-        this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
-
-        this.laser.lookAt(this.player.position)
-        this.laser.rotateY(Math.PI / 2)
+        this.playerMovement(delta)
+        // this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
+        // this.laser.lookAt(this.player.position)
+        // this.laser.rotateY(Math.PI / 2)
         // const playerPos = new THREE.Vector3(Math.sin(this.player.position.x), 0, Math.cos(this.player.position.z))
         // console.log(playerPos)
         // this.laser.position.add(playerPos * delta)
@@ -131,6 +140,41 @@ class World {
     stop() {
         loop.stop()
     }
+
+    playerMovement(delta) {
+        // Keyboard movement inputs
+        if (keyboard[87]) {
+            // W key
+            this.player.position.z -= 10 * delta
+        }
+        if (keyboard[83]) {
+            // S key
+            this.player.position.z += 10 * delta
+        }
+        if (keyboard[65]) {
+            // A key
+            this.player.position.x -= 10 * delta
+        }
+        if (keyboard[68]) {
+            // D key
+            this.player.position.x += 10 * delta
+        }
+        if (keyboard[32]) {
+            // Space key
+            this.player.position.y += 10 * delta
+        }
+    }
 }
+
+function keyDown(event) {
+    keyboard[event.keyCode] = true
+}
+
+function keyUp(event) {
+    keyboard[event.keyCode] = false
+}
+
+window.addEventListener('keydown', keyDown)
+window.addEventListener('keyup', keyUp)
 
 export { World }
