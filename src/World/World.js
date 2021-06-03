@@ -78,6 +78,7 @@ class World {
         this.player = player
         this.enemy = enemy
         this.obstacle = obstacle
+        this.player.hasJumped = false
 
         this.enemy.scale.set(0.25, 0.25, 0.25)
         this.enemy.rotation.z = -Math.PI / 4
@@ -107,8 +108,8 @@ class World {
             new THREE.MeshBasicMaterial({ wireframe: true, opacity: 1 })
         )
 
-        this.player.position.set(0, -1.5, 0)
-        //box_container.add(this.player)
+        this.player.position.set(0, -0.5, 0)
+        box_container.add(this.player)
         this.player = box_container
         this.player.rotation.y = Math.PI
         this.player.position.set(0, 5, 83)
@@ -118,6 +119,14 @@ class World {
         this.player.addEventListener('collision', function (object) {
             if (object.name === 'obstacle') {
                 console.log('Game Over bruh.')
+                var audio = document.getElementById('fz')
+                audio.pause()
+                audio.currentTime = 0
+                loop.stop()
+                document.getElementById('gameOverMenu').style.display = 'block'
+            }
+            if (object.name === 'floor') {
+                this.hasJumped = false
             }
         })
     }
@@ -150,6 +159,18 @@ class World {
 
     tick(delta) {
         this.playerMovement(delta)
+        this.player.rotation.y = Math.PI
+        this.player.rotation.x = 0
+        this.player.rotation.z = 0
+        this.player.position.z = 83
+
+        if (this.player.position.y < -1) {
+            this.stop()
+            var audio = document.getElementById('fz')
+            audio.pause()
+            audio.currentTime = 0
+            document.getElementById('gameOverMenu').style.display = 'block'
+        }
         //this.obstacleManager.setWidth(this.pathManager.obstacleSpawnRegionMinWidth)
         // this.laser.lookAt(this.player.position)
         // this.laser.rotateY(Math.PI / 2)
@@ -172,15 +193,21 @@ class World {
 
     playerMovement(delta) {
         // Keyboard movement inputs
+
         if (keyboard[87]) {
             // W key
             //this.player.position.y += 10 * 0.1
-            this.player.setLinearVelocity(new THREE.Vector3(0, 40, 0))
-            let player = this.player
 
-            setTimeout(function () {
-                player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-            }, 100)
+            if (this.player.hasJumped == false) {
+                this.player.setLinearVelocity(new THREE.Vector3(0, 40, 0))
+                let player = this.player
+
+                setTimeout(function () {
+                    player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
+                }, 100)
+
+                this.player.hasJumped = true
+            }
         }
         if (keyboard[65]) {
             // A key
@@ -202,12 +229,16 @@ class World {
         }
         if (keyboard[32]) {
             // Space key
-            this.player.setLinearVelocity(new THREE.Vector3(0, 40, 0))
-            let player = this.player
+            if (this.player.hasJumped == false) {
+                this.player.setLinearVelocity(new THREE.Vector3(0, 40, 0))
+                let player = this.player
 
-            setTimeout(function () {
-                player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-            }, 100)
+                setTimeout(function () {
+                    player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
+                }, 100)
+
+                this.player.hasJumped = true
+            }
         }
         if (keyboard[27]) {
             var musicOn = document.getElementById('musiccb').checked

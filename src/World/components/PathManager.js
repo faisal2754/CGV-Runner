@@ -228,22 +228,22 @@ class PathManager {
         let numCompletedPasses = Math.floor(fractionOfPathsProcessed)
 
         if (numCompletedPasses == numPassesTillStragegyChange) {
-            let newScaleX = Math.random() * 3 + 1
-            let newScaleY = 1 //Math.random() * 8 + 0.5
+            // let newScaleX = Math.random() * 3 + 1
+            // let newScaleY = 1 //Math.random() * 8 + 0.5
 
-            this.pathSizeX = this.pathSizeX * this.inverseTransformX
-            this.pathSizeY = this.pathSizeY * this.inverseTransformY
+            // this.pathSizeX = this.pathSizeX * this.inverseTransformX
+            // this.pathSizeY = this.pathSizeY * this.inverseTransformY
 
-            this.pathSizeX = this.pathSizeX * newScaleX
-            this.pathSizeY = this.pathSizeY * newScaleY
+            // this.pathSizeX = this.pathSizeX * newScaleX
+            // this.pathSizeY = this.pathSizeY * newScaleY
 
-            this.inverseTransformX = 1 / newScaleX
-            this.inverseTransformY = 1 / newScaleY
+            // this.inverseTransformX = 1 / newScaleX
+            // this.inverseTransformY = 1 / newScaleY
 
-            this.paths.forEach((path) => {
-                path.requestScaleX(newScaleX)
-                path.requestScaleY(newScaleY)
-            })
+            // this.paths.forEach((path) => {
+            //     path.requestScaleX(newScaleX)
+            //     path.requestScaleY(newScaleY)
+            // })
 
             let strategyNum = Math.floor(Math.random() * 5)
 

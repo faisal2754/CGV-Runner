@@ -31,7 +31,7 @@
         <!---Game Over Menu-->
         <div id="gameOverMenu">
             <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Game Over</label>
-            <a href="#" class="menu-open" style="font-size: xx-large; top: 46%; left: 30%; right: 50%;" onclick="playButtonWhoosh()">Main Menu</a>
+            <a href="#" class="menu-open" style="font-size: xx-large; top: 46%; left: 30%; right: 50%;" onclick="playButtonWhoosh();hideGameOverMenu();">Main Menu</a>
             <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,200%);"> Score: 100</label>
             <label style="color: antiquewhite; font-size: x-large; position: absolute; top: 35%; left: 50%; transform: translate(-50%,200%);"> High Score: 1000</label>
             <a href="#" style="font-size: xx-large; top: 50%; left: 55%; right: 30%; position: fixed;" onclick="playButton()">Restart</a>
@@ -293,6 +293,10 @@
                 document.getElementById("credits").style.display = 'none';
                 document.getElementById("leaderboards").style.display = 'none';
 
+            }
+            function hideGameOverMenu(){
+                document.getElementById("gameOverMenu").style.display = 'none';
+                document.getElementById("menuContainer").style.display = 'block';
             }
 
 

@@ -42,7 +42,6 @@ class Path {
 
         const floorGeometry = new THREE.BoxGeometry(this.sizeX, this.sizeY, this.sizeZ)
         const floorMaterial = new THREE.MeshBasicMaterial({
-            wireframe: true,
             map: texture,
             color: color,
             opacity: 0.85,
@@ -57,6 +56,7 @@ class Path {
         this.mesh.position.x = this.stateZeroX
         this.mesh.position.y = this.stateZeroY
         this.mesh.position.z = this.stateZeroZ
+        this.mesh.name = 'floor'
     }
 
     setStartDelay(startDelay) {
