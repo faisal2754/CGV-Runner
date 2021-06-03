@@ -24,13 +24,65 @@ let camera, renderer, scene, loop, score, isDead
 var keyboard = {}
 
 class World {
-    constructor(container) {
+    constructor() {
+        // Physijs.scripts.worker = './modules/physijs_worker.js'
+        // Physijs.scripts.ammo = './ammo.js'
+        // camera = createCamera()
+        // scene = createScene()
+        // var aa = document.getElementById('aacb').checked
+        // console.log(aa)
+        // renderer = createRenderer(aa)
+        // container.append(renderer.domElement)
+        // score = 0
+        // isDead = false
+        // loop = new Loop(camera, scene, renderer)
+        // loop.updatables.push(scene)
+        // const controls = createControls(camera, renderer.domElement)
+        // loop.updatables.push(controls)
+        // const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5, -100, -80)
+        // this.pathManager = pathManager
+        // this.pathManager.paths.forEach((path) => {
+        //     scene.add(path.mesh)
+        // })
+        // loop.updatables.push(pathManager)
+        // loop.updatables.push(this)
+        // // const laser = createLaser()
+        // // this.laser = laser
+        // // laser.position.set(-5, 10, 75)
+        // // laser.scale.set(2, 2, 2)
+        // // // laser.rotation.z = Math.PI / 4
+        // // scene.add(laser)
+        // // controls.target.copy(laser.position)
+        // const obstacles = []
+        // const directionalLight = createDirectionalLight()
+        // const ambientLight = createAmbientLight()
+        // const skybox = createSkybox()
+        // loop.updatables.push(skybox)
+        // scene.add(skybox)
+        // scene.add(ambientLight)
+        // scene.add(directionalLight)
+        // // //under construction
+        // // const r = 'assets/skybox/corona_'
+        // // const urls = [r + 'lf.png', r + 'rt.png', r + 'up.png', r + 'dn.png', r + 'ft.png', r + 'bk.png']
+        // // const textureCube = new THREE.CubeTextureLoader().load(urls)
+        // // scene.background = textureCube
+        // // textureCube.mapping = THREE.CubeRefractionMapping
+        // // //////////////////////////////////////////////
+        // const resizer = new Resizer(container, camera, renderer)
+        // console.log('starting')
+    }
+
+    async init(container) {
         Physijs.scripts.worker = './modules/physijs_worker.js'
         Physijs.scripts.ammo = './ammo.js'
 
         camera = createCamera()
         scene = createScene()
-        renderer = createRenderer()
+
+        var aa = document.getElementById('aacb').checked
+        console.log(aa)
+        renderer = createRenderer(aa)
+
         container.append(renderer.domElement)
 
         score = 0
@@ -84,9 +136,7 @@ class World {
 
         const resizer = new Resizer(container, camera, renderer)
         console.log('starting')
-    }
 
-    async init() {
         const { player, enemy, obstacle } = await loadAssets()
         this.player = player
         this.enemy = enemy
@@ -128,7 +178,7 @@ class World {
         box_container.add(this.player)
         this.player = box_container
         this.player.rotation.y = Math.PI
-        this.player.position.set(0, 5, 83)
+        this.player.position.set(0, 3, 83)
 
         scene.add(this.player)
 

@@ -16,8 +16,16 @@
         <script type="module" src="./src/main.js"></script>
     </head>
     <body>
+
+        <!---Loading Screen-->
+        <div id="loadingscreen">
+            <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">Loading ...</label>
+        </div>
+
+
+
         <!---Overlays-->
-        <div id="overlays" style="text-align: center;">
+        <div id="overlays" style="text-align: center; display: none;">
             <h1 id="scoreDisplay">Score: </h1>
             <div id="pauseBtn" class="pause-open" style="color: white">pause</div> 
         </div>
@@ -31,7 +39,7 @@
         <!---Game Over Menu-->
         <div id="gameOverMenu">
             <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Game Over</label>
-            <a href="#" class="menu-open" style="font-size: xx-large; top: 46%; left: 30%; right: 50%;" onclick="playButtonWhoosh();hideGameOverMenu();">Main Menu</a>
+            <a id="mmDeathMenu" href="#" class="menu-open" style="font-size: xx-large; top: 46%; left: 30%; right: 50%;" onclick="playButtonWhoosh();hideGameOverMenu(); window.location.reload()">Main Menu</a>
             <label id="finalScore" style="color: antiquewhite; font-size: xx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,200%);"> Score: </label>
             <a id="restart" href="#" style="font-size: xx-large; top: 50%; left: 55%; right: 30%; position: fixed;" onclick="playButton();">Restart</a>
         </div>
@@ -135,6 +143,10 @@
                         <div style="padding-top: 5%;">
                             <input style="transform: scale(3); margin-right: 20px;" type="checkbox" id="shadowscb" name="shadowscb" checked>
                             <label for="shadowscb" style="color: antiquewhite; font-size: xxx-large;">Shadows</label><br>
+                        </div>
+                        <div style="padding-top: 5%;">
+                            <input style="transform: scale(3); margin-right: 20px;" type="checkbox" id="aacb" name="aacb" checked>
+                            <label for="aacb" style="color: antiquewhite; font-size: xxx-large;">Anti-Aliasing</label><br>
                         </div>
                     </div>
                     <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
@@ -262,10 +274,11 @@
             function openMenu() {
                 var menu = document.getElementById('menuContainer')
                 var overlays = document.getElementById('overlays')
+                overlays.style.display = 'none'
                 var scene = document.getElementById('scene-container')
                 
                 menu.style.display = 'block'
-                overlays.style.display = 'none'
+                
 
             }
             function howtoplay(){

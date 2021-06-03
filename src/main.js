@@ -1,28 +1,30 @@
 import { World } from './World/World.js'
 
-async function main() {
+async function main(restart = false) {
     const container = document.querySelector('#scene-container')
 
-    const world = new World(container)
-    await world.init()
-    world.init_managers()
+    const world = new World()
 
-    world.start()
-
-    setTimeout(function () {
-        world.stop()
-    }, 1000)
+    if (restart == true) {
+        await world.init(container)
+        world.init_managers()
+        world.start()
+        var loadingscreen = document.getElementById('loadingscreen')
+        fade(loadingscreen)
+    }
+    var overlays = document.getElementById('overlays')
+    overlays.style.display = 'block'
 
     document.getElementById('pauseBtn').onclick = function pause() {
         var musicOn = document.getElementById('musiccb').checked
         var audio = document.getElementById('fz')
         audio.pause()
+        world.stop()
+        document.getElementById('pauseMenu').style.display = 'block'
         if (musicOn == true) {
             var audio2 = document.getElementById('buttonSound')
             audio2.play()
         }
-        world.stop()
-        document.getElementById('pauseMenu').style.display = 'block'
     }
 
     document.getElementById('pauseMenu').onclick = function resume() {
@@ -47,18 +49,42 @@ async function main() {
         var overlays = document.getElementById('overlays')
         var scene = document.getElementById('scene-container')
 
-        setTimeout(function () {
+        var loadingscreen = document.getElementById('loadingscreen')
+        loadingscreen.style.display = 'block'
+
+        setTimeout(async function () {
             var musicOn = document.getElementById('musiccb').checked
             menu.style.display = 'none'
             overlays.style.display = 'block'
             scene.style.display = 'block'
+
+            await world.init(container)
+            world.init_managers()
             world.start()
-            musicOn = false
             if (musicOn == true) {
                 var audio = document.getElementById('fz')
                 audio.play()
             }
-        }, 2000)
+            fade(loadingscreen)
+        }, 3000)
+    }
+
+    document.getElementById('restart').onclick = function restart() {
+        document.getElementById('gameOverMenu').style.display = 'none'
+        $('canvas').remove()
+
+        var musicOn = document.getElementById('musiccb').checked
+        if (musicOn == true) {
+            var audio = document.getElementById('buttonSound')
+            audio.play()
+            var audio2 = document.getElementById('fz')
+            audio2.play()
+        }
+        var loadingscreen = document.getElementById('loadingscreen')
+        loadingscreen.style.opacity = 1
+        loadingscreen.style.display = 'block'
+
+        main(true)
     }
 
     //xmlHttp.open('GET', 'https://cgv-middleman.herokuapp.com/', false)
@@ -82,6 +108,19 @@ async function main() {
     //     .catch((err) => {
     //         console.error(err)
     //     })
+}
+
+function fade(element) {
+    var op = 1 // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1) {
+            clearInterval(timer)
+            element.style.display = 'none'
+        }
+        element.style.opacity = op
+        element.style.filter = 'alpha(opacity=' + op * 100 + ')'
+        op -= op * 0.05
+    }, 10)
 }
 
 main().catch((err) => {
