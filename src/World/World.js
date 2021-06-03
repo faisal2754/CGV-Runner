@@ -62,15 +62,25 @@ class World {
 
         // controls.target.copy(laser.position)
 
-        //const cube = createCube()
         const obstacles = []
         const directionalLight = createDirectionalLight()
         const ambientLight = createAmbientLight()
         const skybox = createSkybox()
 
+        loop.updatables.push(skybox)
+
         scene.add(skybox)
         scene.add(ambientLight)
         scene.add(directionalLight)
+
+        // //under construction
+        // const r = 'assets/skybox/corona_'
+        // const urls = [r + 'lf.png', r + 'rt.png', r + 'up.png', r + 'dn.png', r + 'ft.png', r + 'bk.png']
+
+        // const textureCube = new THREE.CubeTextureLoader().load(urls)
+        // scene.background = textureCube
+        // textureCube.mapping = THREE.CubeRefractionMapping
+        // //////////////////////////////////////////////
 
         const resizer = new Resizer(container, camera, renderer)
         console.log('starting')
@@ -106,10 +116,13 @@ class World {
         //     console.log('Game Over bruh.')
         // })
 
-        let box_container = new Physijs.BoxMesh(
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
-        )
+        var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({}))
+        physMaterial.visible = false
+        let box_container = new Physijs.BoxMesh(new THREE.BoxGeometry(1, 1, 1), physMaterial)
+        box_container.setCcdMotionThreshold(1)
+
+        // Set the radius of the embedded sphere such that it is smaller than the object
+        box_container.setCcdSweptSphereRadius(0.5)
 
         this.player.position.set(0, -0.5, 0)
         box_container.add(this.player)
