@@ -145,11 +145,7 @@ class World {
         // Keyboard movement inputs
         if (keyboard[87]) {
             // W key
-            this.player.position.z -= 10 * delta
-        }
-        if (keyboard[83]) {
-            // S key
-            this.player.position.z += 10 * delta
+            this.player.position.y += 10 * delta
         }
         if (keyboard[65]) {
             // A key
@@ -162,6 +158,17 @@ class World {
         if (keyboard[32]) {
             // Space key
             this.player.position.y += 10 * delta
+        }
+        if (keyboard[27]) {
+            var musicOn = document.getElementById('musiccb').checked
+            var audio2 = document.getElementById('fz')
+            audio2.pause()
+            if (musicOn == true) {
+                var audio = document.getElementById('buttonSound')
+                audio.play()
+            }
+            this.stop()
+            document.getElementById('pauseMenu').style.display = 'block'
         }
     }
 }

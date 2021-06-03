@@ -4,7 +4,7 @@ function setupPlayer(data) {
 
     const mixer = new THREE.AnimationMixer(model)
     const action = mixer.clipAction(clip)
-    action.timeScale = 5
+    action.timeScale = 8
     action.play()
 
     // const allGeometries = model.children
