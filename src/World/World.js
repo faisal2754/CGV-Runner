@@ -154,10 +154,10 @@ class World {
 
         //Creating player hitbox
         const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }))
-        const box_container = new Physijs.CapsuleMesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 2.5, 25), physMaterial)
+        const box_container = new Physijs.CapsuleMesh(new THREE.CylinderBufferGeometry(0.3, 0.3, 0.6, 25), physMaterial)
         box_container.castShadow = true
         box_container.setCcdMotionThreshold(1)
-        box_container.setCcdSweptSphereRadius(0.5)
+        box_container.setCcdSweptSphereRadius(0.4)
 
         this.player.position.set(0, -0.5, 0)
         box_container.add(this.player)
@@ -302,7 +302,7 @@ class World {
         if (keyboard[87]) {
             // W key
             if (this.player.hasJumped == false) {
-                this.player.setLinearVelocity(new THREE.Vector3(0, 40, 0))
+                this.player.setLinearVelocity(new THREE.Vector3(0, 50, 0))
                 let player = this.player
 
                 setTimeout(function () {
@@ -333,7 +333,7 @@ class World {
         if (keyboard[32]) {
             // Space key
             if (this.player.hasJumped == false) {
-                this.player.setLinearVelocity(new THREE.Vector3(0, 40, 0))
+                this.player.setLinearVelocity(new THREE.Vector3(0, 50, 0))
                 let player = this.player
 
                 setTimeout(function () {

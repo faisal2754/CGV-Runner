@@ -5,6 +5,7 @@ async function main(restart = false) {
 
     const world = new World()
 
+    //restart game functionality
     if (restart == true) {
         await world.init(container)
         world.init_managers()
@@ -15,6 +16,7 @@ async function main(restart = false) {
     var overlays = document.getElementById('overlays')
     overlays.style.display = 'block'
 
+    //pause menu functionality
     document.getElementById('pauseBtn').onclick = function pause() {
         var musicOn = document.getElementById('musiccb').checked
         var audio = document.getElementById('fz')
@@ -26,6 +28,8 @@ async function main(restart = false) {
             audio2.play()
         }
     }
+
+    //resume functionality
 
     document.getElementById('pauseMenu').onclick = function resume() {
         var musicOn = document.getElementById('musiccb').checked
@@ -39,18 +43,18 @@ async function main(restart = false) {
         world.start()
     }
 
+    //Play game functionality
+
     document.getElementById('menuClose').onclick = function play() {
         var musicOn = document.getElementById('musiccb').checked
-        musicOn = false
         if (musicOn == true) {
             var audio = document.getElementById('buttonWhoosh')
             audio.play()
         }
 
         var bg = document.getElementById('bg2')
-        bg.volume = 0
+        bg.muted = true
         bg.pause()
-        bg.currentTime = 0
 
         var menu = document.getElementById('menuContainer')
         var overlays = document.getElementById('overlays')
@@ -61,7 +65,6 @@ async function main(restart = false) {
 
         setTimeout(async function () {
             var musicOn = document.getElementById('musiccb').checked
-            musicOn = false
             menu.style.display = 'none'
             overlays.style.display = 'block'
             scene.style.display = 'block'
@@ -77,12 +80,12 @@ async function main(restart = false) {
         }, 3000)
     }
 
+    //restart functionality
     document.getElementById('restart').onclick = function restart() {
         document.getElementById('gameOverMenu').style.display = 'none'
         $('canvas').remove()
 
         var musicOn = document.getElementById('musiccb').checked
-        musicOn = false
         if (musicOn == true) {
             var audio = document.getElementById('buttonSound')
             audio.play()
@@ -96,6 +99,7 @@ async function main(restart = false) {
         main(true)
     }
 
+    //fetch leaderboard data
     const jsonData = await fetch('https://cgv-middleman.herokuapp.com/', {
         method: 'GET',
         headers: {}
@@ -133,6 +137,8 @@ async function main(restart = false) {
 
     // console.log(await bruh.json())
 }
+
+//fade loading screen out
 
 function fade(element) {
     var op = 1 // initial opacity
