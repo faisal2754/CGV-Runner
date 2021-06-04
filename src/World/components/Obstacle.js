@@ -21,7 +21,7 @@ class Obstacle {
 
         this.pointLight = new THREE.PointLight('white', 10, 35, 1)
         this.pointLight.position.y += 100
-        this.pointLight.castShadow = true
+        this.pointLight.castShadow = document.getElementById('shadowscb').checked
         this.onPath = false
     }
 

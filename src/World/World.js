@@ -155,7 +155,7 @@ class World {
         //Creating player hitbox
         const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }))
         const box_container = new Physijs.CapsuleMesh(new THREE.CylinderBufferGeometry(0.3, 0.3, 0.6, 25), physMaterial)
-        box_container.castShadow = true
+        box_container.castShadow = document.getElementById('shadowscb').checked
         box_container.setCcdMotionThreshold(1)
         box_container.setCcdSweptSphereRadius(0.4)
 
