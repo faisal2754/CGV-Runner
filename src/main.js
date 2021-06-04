@@ -106,12 +106,10 @@ async function main(restart = false) {
     })
 
     const JSONscores = await jsonData.json()
-    // const scores = JSON.stringify(JSONscores)
-    console.log(JSONscores[0])
 
     const scoreTable = document.getElementById('topScores')
     var lenTopScores = JSONscores.length
-    console.log(lenTopScores)
+
     if (lenTopScores > 10) {
         lenTopScores = 10
     }
@@ -123,19 +121,6 @@ async function main(restart = false) {
         cell1.innerHTML = JSONscores[i].createdAt.substring(0, 10)
         cell2.innerHTML = JSONscores[i].score
     }
-
-    //xmlHttp.open('GET', 'https://cgv-middleman.herokuapp.com/', false)
-    //xmlHttp.send(null)
-    //console.log(xmlHttp.responseText)
-
-    // const score = { score: 300 }
-    // const bruh = await fetch('https://cgv-middleman.herokuapp.com/', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(score)
-    // })
-
-    // console.log(await bruh.json())
 }
 
 //fade loading screen out

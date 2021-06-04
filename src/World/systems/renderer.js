@@ -1,4 +1,5 @@
 function createRenderer(aa) {
+    //setup renderer
     const renderer = new THREE.WebGLRenderer({ antialias: aa })
     renderer.physicallyCorrectLights = true
     renderer.shadowMap.enabled = true

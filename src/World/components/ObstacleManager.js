@@ -27,6 +27,7 @@ class ObstacleManager {
         this.pathWidth = 10
         this.minX = -5
 
+        //add models
         this.obstacles = []
         this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh1))
         this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh2))
@@ -34,10 +35,7 @@ class ObstacleManager {
         this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh4))
         this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh5))
 
-        // for (let i = 0; i < this.numObstacles; i++) {
-        //     this.obstacles.push(new Obstacle(sizeX, sizeY, sizeZ, mesh))
-        // }
-
+        //setup initialisation routine
         let safeZoneLength = Math.abs(safeZoneStartZ - safeZoneEndZ)
         this.safeZoneLength = safeZoneLength
         for (let i = 0; i < this.numObstacles; i++) {
@@ -45,6 +43,7 @@ class ObstacleManager {
             let yPos = 3.5
             let zPos = safeZoneStartZ - Math.random() * safeZoneLength
 
+            //test obstacles dont overlap
             while (this.isOverlapping(xPos, zPos)) {
                 xPos = this.minX + Math.random() * this.pathWidth * 0.9
                 zPos = this.safeZoneStartZ - Math.random() * this.safeZoneLength
@@ -60,11 +59,14 @@ class ObstacleManager {
     }
 
     tick() {
+        //move obstacles
         for (let i = 0; i < this.numObstacles; i++) {
             if (this.obstacles[i].mesh.position.z > this.pathEndZ) {
                 let xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
                 let yPos = 3.5
                 let zPos = this.safeZoneEndZ - Math.random() * 5
+
+                //make sure obstacles dont overlap
                 while (this.isOverlapping(xPos, zPos)) {
                     xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
                     zPos = this.safeZoneStartZ - Math.random() * 5
@@ -79,6 +81,7 @@ class ObstacleManager {
         }
     }
 
+    //test if obstacles are overlapping function
     isOverlapping(x, z) {
         for (let i = 0; i < this.numObstacles; i++) {
             if (

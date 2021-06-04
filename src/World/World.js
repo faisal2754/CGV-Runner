@@ -139,16 +139,11 @@ class World {
         const resizer = new Resizer(container, camera, renderer)
 
         //Loading game assets
-        const { player, enemy, obstacle } = await loadAssets()
+        const { player, obstacle } = await loadAssets()
 
         this.player = player
-        this.enemy = enemy
         this.obstacle = obstacle
         this.player.hasJumped = false
-
-        this.enemy.scale.set(0.25, 0.25, 0.25)
-        this.enemy.rotation.z = -Math.PI / 4
-        this.enemy.position.set(0, 10, 75)
 
         loop.updatables.push(this.player)
 
@@ -178,8 +173,10 @@ class World {
                 var audio = document.getElementById('fz')
                 audio.pause()
                 audio.currentTime = 0
-                var gameOverSound = document.getElementById('gameOverSound')
-                gameOverSound.play()
+                if (document.getElementById('musiccb').checked) {
+                    var gameOverSound = document.getElementById('gameOverSound')
+                    gameOverSound.play()
+                }
                 loop.stop()
                 document.getElementById('gameOverMenu').style.display = 'block'
                 document.getElementById('finalScore').innerText = 'Final Score: ' + score
@@ -246,8 +243,11 @@ class World {
 
             var audio = document.getElementById('fz')
             audio.pause()
-            var gameOverSound = document.getElementById('gameOverSound')
-            gameOverSound.play()
+
+            if (document.getElementById('musiccb').checked) {
+                var gameOverSound = document.getElementById('gameOverSound')
+                gameOverSound.play()
+            }
             audio.currentTime = 0
             document.getElementById('gameOverMenu').style.display = 'block'
             document.getElementById('finalScore').innerText = ' Final Score: ' + score
@@ -282,8 +282,8 @@ class World {
         if (keyboard[86]) {
             // V key
             if (this.thirdPerson) {
-                const pos = new THREE.Vector3(0, 4, 83)
-                camera.position.lerp(pos, 2)
+                const pos = new THREE.Vector3(0, 8, 100)
+                camera.position.lerp(pos, 1)
                 // this.player.add(camera)
                 console.log(camera)
                 // const lookVector = new THREE.Vector3(0, 0, -1)
@@ -294,8 +294,8 @@ class World {
         if (keyboard[66]) {
             // B key
             if (!this.thirdPerson) {
-                const pos = new THREE.Vector3(0, 5, 85)
-                camera.position.lerp(pos, 2)
+                const pos = new THREE.Vector3(0, 6, 90)
+                camera.position.lerp(pos, 1)
                 this.thirdPerson = true
             }
         }

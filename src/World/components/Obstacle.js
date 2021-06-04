@@ -7,16 +7,18 @@ class Obstacle {
 
         this.mesh.scale.set(0.012, 0.012, 0.012)
 
+        //create mesh
         this.box_container = new Physijs.BoxMesh(
             new THREE.SphereGeometry(1),
             new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.5 })
         )
-
+        //use flat shading
         this.box_container.material.flatShading = true
         this.box_container.add(this.mesh)
         this.mesh = this.box_container
         this.mesh.name = 'obstacle'
 
+        //add shadows
         this.mesh.receiveShadow = true
 
         this.pointLight = new THREE.PointLight('white', 10, 35, 1)
@@ -25,6 +27,7 @@ class Obstacle {
         this.onPath = false
     }
 
+    //set obstacle position
     setPosition(x, y, z) {
         this.mesh.position.x = x
         this.mesh.position.y = y

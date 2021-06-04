@@ -8,6 +8,7 @@ class Loop {
         this.updatables = []
     }
 
+    //start updates
     start() {
         this.renderer.setAnimationLoop(() => {
             this.tick()
@@ -15,10 +16,12 @@ class Loop {
         })
     }
 
+    //stop updates
     stop() {
         this.renderer.setAnimationLoop(null)
     }
 
+    //handle updates
     tick() {
         const delta = clock.getDelta()
         for (const object of this.updatables) {

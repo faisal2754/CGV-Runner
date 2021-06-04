@@ -33,11 +33,14 @@ class Path {
         this.inverseTransformX = 1
         this.inverseTransformY = 1
 
+        //setup color palette
         const palette = [0xff3864, 0x2de2e6, 0xfd3777, 0xf706cf, 0x023788, 0x541388, 0x44b0ee, 0x008080]
         const color = new THREE.Color(palette[Math.floor(Math.random() * 7)])
 
+        //setup texture
         const texture = new THREE.TextureLoader().load('/assets/images/hex.jpg')
 
+        //setup mesh
         const floorGeometry = new THREE.BoxGeometry(this.sizeX, this.sizeY, this.sizeZ)
         const floorMaterial = new THREE.MeshPhongMaterial({
             map: texture,
@@ -109,6 +112,7 @@ class Path {
     }
 
     tick() {
+        //determine update strategy
         switch (this.state) {
             case -1:
                 this.stateNegOneUpdate()

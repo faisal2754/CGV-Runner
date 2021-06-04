@@ -47,6 +47,7 @@ class PathManager {
 
         let workingDelay = (numPaths - numPathsBtnCheckpoints + 2) * this.numUpdatesTillStateChange
 
+        //path initialisation routine
         for (let i = 0; i <= numPaths; i++) {
             let pointOnSphere = this.getRandomPointOnSphere()
             let stateZeroPositionX = pointOnSphere[0]
@@ -75,6 +76,7 @@ class PathManager {
             this.paths.push(path)
         }
 
+        //spawn main paths
         for (let i = 0; i <= numPathsBtnCheckpoints - 1; i++) {
             let positionX = checkpointOneX
             let positionY = checkpointOneY
@@ -84,6 +86,7 @@ class PathManager {
             this.paths[i].setState(1)
         }
 
+        //spawn paths in the air
         let counter = 0
         for (let i = numPathsBtnCheckpoints; i <= numPaths; i++) {
             let delay = this.numUpdatesTillStateChange * counter
@@ -211,6 +214,7 @@ class PathManager {
 
         let lastsizeX = this.obstacleSpawnRegionMinWidth
 
+        //move paths
         this.paths.forEach((path) => {
             if (path.mesh.position.z > this.spawnRegionZLower && path.mesh.position.z < this.spawnRegionZUpper) {
                 if (isFirstPathInSpawn) {
@@ -227,24 +231,8 @@ class PathManager {
         let numPassesTillStragegyChange = 1
         let numCompletedPasses = Math.floor(fractionOfPathsProcessed)
 
+        //change strategy when appropriate
         if (numCompletedPasses == numPassesTillStragegyChange) {
-            // let newScaleX = Math.random() * 3 + 1
-            // let newScaleY = 1 //Math.random() * 8 + 0.5
-
-            // this.pathSizeX = this.pathSizeX * this.inverseTransformX
-            // this.pathSizeY = this.pathSizeY * this.inverseTransformY
-
-            // this.pathSizeX = this.pathSizeX * newScaleX
-            // this.pathSizeY = this.pathSizeY * newScaleY
-
-            // this.inverseTransformX = 1 / newScaleX
-            // this.inverseTransformY = 1 / newScaleY
-
-            // this.paths.forEach((path) => {
-            //     path.requestScaleX(newScaleX)
-            //     path.requestScaleY(newScaleY)
-            // })
-
             let strategyNum = Math.floor(Math.random() * 5)
 
             switch (strategyNum) {
