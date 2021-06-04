@@ -1,3 +1,5 @@
+//Test Cube
+
 function createMaterial() {
     const textureLoader = new THREE.TextureLoader()
 
@@ -6,7 +8,7 @@ function createMaterial() {
 }
 
 function createCube() {
-    const geometry = new THREE.BoxBufferGeometry(2, 2, 2)
+    const geometry = new THREE.BoxGeometry(2, 2, 2)
     const material = createMaterial()
     const cube = new THREE.Mesh(geometry, material)
     cube.rotation.set(-0.5, -0.1, 0.8)

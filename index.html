@@ -54,8 +54,8 @@
 
         <!---Menu Close Element-->
         <div  class="container"> 
-         <div id="menuClose" class="menu-close">
-            <div class="menu-close-img" onclick="playButtonWhoosh(); hideMenu()">
+            <div id="menuClose" class="menu-close">
+                <div class="menu-close-img" onclick="playButtonWhoosh(); hideMenu()">
                 <img src="assets/images/play-icon.png" alt="" />
                 </div>
             </div>
@@ -113,8 +113,23 @@
 
                 <!-- Leaderboard menu -->
                 <div id="leaderboards" style="display: none; text-align: center; padding: 20px;">
-                    <label style="color: antiquewhite; font-size: xxx-large;"> leaderboards</label>
+                    <label style="color: antiquewhite; font-size: xxx-large;"> Top Scores</label>
                     <a href="#" style="font-size: xxx-large; position: absolute; bottom: 0; left: 0; padding: 40px;" onclick="back(); playButton()">back</a>
+                    <style>
+                        td, table {
+                            padding: 10px;
+                            text-align: center;
+                            table-layout: fixed
+                        }
+
+                        .center {
+                            margin-left: auto;
+                            margin-right: auto;
+                        }
+                    </style>
+                    <table id="topScores" style="width:100%; color: antiquewhite; padding-top: 5%; font-size: x-large" class="center">
+
+                    </table>
                 </div>
 
                 <!-- Credits menu -->
@@ -228,7 +243,7 @@
                     transformOrigin: '0% 50%',
                     ease: Power2.ease
                 },
-                '-=2'
+                '-=1'
             )
 
             tl.reverse()
@@ -237,7 +252,7 @@
                 tl.reversed(!tl.reversed())
                 openMenu()
                 var audio = document.getElementById('bg2')
-                audio.muted = false
+                audio.muted = true
                 audio.play()
                 
             })
@@ -267,7 +282,7 @@
                 }
             }
 
-            //Menu's
+            //Menus
             function hideMenu() {
                 var menu = document.getElementById('menuContainer')
                 var overlays = document.getElementById('overlays')

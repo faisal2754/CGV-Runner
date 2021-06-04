@@ -5,14 +5,14 @@ function createAmbientLight() {
 }
 
 function createDirectionalLight() {
-    const light = new THREE.DirectionalLight('white', 8)
-    light.position.set(10, 10, 10)
+    const light = new THREE.DirectionalLight('white', 1)
+    light.position.set(5, 10, 5)
 
     return light
 }
 
 function createPointLight() {
-    const light = new THREE.PointLight('white', 100, 20, 1)
+    const light = new THREE.PointLight('white', 50, 10)
 
     return light
 }

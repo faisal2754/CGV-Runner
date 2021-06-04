@@ -41,6 +41,7 @@ async function main(restart = false) {
 
     document.getElementById('menuClose').onclick = function play() {
         var musicOn = document.getElementById('musiccb').checked
+        musicOn = false
         if (musicOn == true) {
             var audio = document.getElementById('buttonWhoosh')
             audio.play()
@@ -60,6 +61,7 @@ async function main(restart = false) {
 
         setTimeout(async function () {
             var musicOn = document.getElementById('musiccb').checked
+            musicOn = false
             menu.style.display = 'none'
             overlays.style.display = 'block'
             scene.style.display = 'block'
@@ -80,6 +82,7 @@ async function main(restart = false) {
         $('canvas').remove()
 
         var musicOn = document.getElementById('musiccb').checked
+        musicOn = false
         if (musicOn == true) {
             var audio = document.getElementById('buttonSound')
             audio.play()
@@ -93,27 +96,42 @@ async function main(restart = false) {
         main(true)
     }
 
-    //xmlHttp.open('GET', 'https://cgv-middleman.herokuapp.com/', false)
-    //xmlHttp.send(null)
-    //console.log(xmlHttp.responseText)
-
     const jsonData = await fetch('https://cgv-middleman.herokuapp.com/', {
         method: 'GET',
         headers: {}
     })
 
-    console.log(await jsonData.json())
+    const JSONscores = await jsonData.json()
+    // const scores = JSON.stringify(JSONscores)
+    console.log(JSONscores[0])
 
-    // fetch('https://cgv-middleman.herokuapp.com/', {
-    //     method: 'GET',
-    //     headers: {}
+    const scoreTable = document.getElementById('topScores')
+    var lenTopScores = JSONscores.length
+    console.log(lenTopScores)
+    if (lenTopScores > 10) {
+        lenTopScores = 10
+    }
+
+    for (let i = 0; i < lenTopScores; i++) {
+        var row = scoreTable.insertRow()
+        var cell1 = row.insertCell(0)
+        var cell2 = row.insertCell(1)
+        cell1.innerHTML = JSONscores[i].createdAt.substring(0, 10)
+        cell2.innerHTML = JSONscores[i].score
+    }
+
+    //xmlHttp.open('GET', 'https://cgv-middleman.herokuapp.com/', false)
+    //xmlHttp.send(null)
+    //console.log(xmlHttp.responseText)
+
+    // const score = { score: 300 }
+    // const bruh = await fetch('https://cgv-middleman.herokuapp.com/', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(score)
     // })
-    //     .then((response) => {
-    //         console.log(response.json())
-    //     })
-    //     .catch((err) => {
-    //         console.error(err)
-    //     })
+
+    // console.log(await bruh.json())
 }
 
 function fade(element) {
@@ -132,12 +150,3 @@ function fade(element) {
 main().catch((err) => {
     console.error(err)
 })
-
-// mode: 'cors',
-//         headers: {
-//             'Access-Control-Allow-Origin': '*',
-//             'Access-Control-Allow-Credentials': 'true',
-//             'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
-//             'Access-Control-Allow-Headers':
-//                 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'
-//         }

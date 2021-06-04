@@ -9,7 +9,7 @@ class Obstacle {
 
         this.box_container = new Physijs.BoxMesh(
             new THREE.SphereGeometry(1),
-            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.5 })
+            new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.5 })
         )
 
         this.box_container.material.flatShading = true
@@ -17,7 +17,11 @@ class Obstacle {
         this.mesh = this.box_container
         this.mesh.name = 'obstacle'
 
-        this.pointLight = new THREE.PointLight('white', 50, 100, 2)
+        this.mesh.receiveShadow = true
+
+        this.pointLight = new THREE.PointLight('white', 10, 35, 1)
+        this.pointLight.position.y += 100
+        this.pointLight.castShadow = true
         this.onPath = false
     }
 
@@ -26,8 +30,8 @@ class Obstacle {
         this.mesh.position.y = y
         this.mesh.position.z = z
 
-        this.pointLight.position.x = x
-        this.pointLight.position.y = y
+        this.pointLight.position.x = x + 1
+        this.pointLight.position.y = y + 3
         this.pointLight.position.z = z
     }
 }

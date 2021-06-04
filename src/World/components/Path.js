@@ -33,28 +33,18 @@ class Path {
         this.inverseTransformX = 1
         this.inverseTransformY = 1
 
-        // const r = Math.random()
-        // const g = Math.random()
-        // const b = Math.random()
-        // const color = new THREE.Color(r, g, b)
-
         const palette = [0xff3864, 0x2de2e6, 0xfd3777, 0xf706cf, 0x023788, 0x541388, 0x44b0ee, 0x008080]
         const color = new THREE.Color(palette[Math.floor(Math.random() * 7)])
 
         const texture = new THREE.TextureLoader().load('/assets/images/hex.jpg')
 
         const floorGeometry = new THREE.BoxGeometry(this.sizeX, this.sizeY, this.sizeZ)
-        const floorMaterial = new THREE.MeshBasicMaterial({
+        const floorMaterial = new THREE.MeshPhongMaterial({
             map: texture,
             color: color,
-            opacity: 0.85,
-            transparent: true
+            shininess: 50
         })
-        // const floorMaterial = new THREE.MeshPhongMaterial({
-        //     color: color,
-        //     opacity: 0.65,
-        //     transparent: true
-        // })
+
         this.mesh = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
         this.mesh.position.x = this.stateZeroX
         this.mesh.position.y = this.stateZeroY
