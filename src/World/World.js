@@ -19,7 +19,7 @@ import { PLYLoader } from '../../modules/PLYLoader.js'
  *  These should not be accessible to the outside world
  */
 
-let camera, renderer, scene, loop, score, isDead
+let camera, renderer, scene, loop, score, isDead, skyboxSpeed
 var keyboard = {}
 
 class World {
@@ -76,6 +76,12 @@ class World {
 
         //Skybox
         const skybox = createSkybox()
+        skyboxSpeed = THREE.MathUtils.degToRad(5)
+        skybox.tick = (delta) => {
+            skybox.rotation.z += skyboxSpeed * delta
+            skybox.rotation.x += skyboxSpeed * delta
+            skybox.rotation.y += skyboxSpeed * delta
+        }
         loop.updatables.push(skybox)
         scene.add(skybox)
 
@@ -148,7 +154,7 @@ class World {
         loop.updatables.push(this.player)
 
         //Creating player hitbox
-        const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }))
+        const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ wireframe: true }))
         const box_container = new Physijs.CapsuleMesh(new THREE.CylinderBufferGeometry(0.3, 0.3, 0.6, 25), physMaterial)
         box_container.castShadow = document.getElementById('shadowscb').checked
         box_container.setCcdMotionThreshold(1)
@@ -169,7 +175,8 @@ class World {
         // Check player collision
         const xhr = this.xhr
         this.player.addEventListener('collision', function (object) {
-            if (object.name === 'obstacle') {
+            console.log(object)
+            if (object.name === 'obstacle' && object.position.z > 81) {
                 var audio = document.getElementById('fz')
                 audio.pause()
                 audio.currentTime = 0
@@ -262,6 +269,14 @@ class World {
             score += 1
         }
 
+        if (score == 500) {
+            skyboxSpeed *= -1.25
+        }
+
+        if (score == 750) {
+            skyboxSpeed *= -2
+        }
+
         document.getElementById('scoreDisplay').innerText = 'Score: ' + score
     }
 
@@ -302,43 +317,33 @@ class World {
         if (keyboard[87]) {
             // W key
             if (this.player.hasJumped == false) {
-                this.player.setLinearVelocity(new THREE.Vector3(0, 50, 0))
-                let player = this.player
+                this.player.setLinearVelocity(new THREE.Vector3(0, 15, 0))
 
+                const player = this.player
                 setTimeout(function () {
                     player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-                }, 100)
+                }, 200)
 
                 this.player.hasJumped = true
             }
         }
         if (keyboard[65]) {
             // A key
-            this.player.setLinearVelocity(new THREE.Vector3(-20, 0, 0))
-            let player = this.player
-
-            setTimeout(function () {
-                player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-            }, 100)
+            this.player.applyCentralForce(new THREE.Vector3(-10, 0, 0))
         }
         if (keyboard[68]) {
             // D key
-            this.player.setLinearVelocity(new THREE.Vector3(20, 0, 0))
-            let player = this.player
-
-            setTimeout(function () {
-                player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-            }, 100)
+            this.player.applyCentralForce(new THREE.Vector3(10, 0, 0))
         }
         if (keyboard[32]) {
             // Space key
             if (this.player.hasJumped == false) {
-                this.player.setLinearVelocity(new THREE.Vector3(0, 50, 0))
-                let player = this.player
+                this.player.setLinearVelocity(new THREE.Vector3(0, 15, 0))
 
+                const player = this.player
                 setTimeout(function () {
                     player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-                }, 100)
+                }, 250)
 
                 this.player.hasJumped = true
             }

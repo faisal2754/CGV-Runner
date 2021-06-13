@@ -37,15 +37,6 @@ function createSkybox() {
     const skybox = new THREE.Mesh(geometry, material)
     skybox.rotation.set(-0.5, -0.1, 0.8)
 
-    const radiansPerSecond = THREE.MathUtils.degToRad(5)
-
-    //called once per frame
-    skybox.tick = (delta) => {
-        skybox.rotation.z += radiansPerSecond * delta
-        skybox.rotation.x += radiansPerSecond * delta
-        skybox.rotation.y += radiansPerSecond * delta
-    }
-
     return skybox
 }
 
