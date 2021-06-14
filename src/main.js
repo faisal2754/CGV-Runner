@@ -118,7 +118,7 @@ async function main(restart = false) {
         var row = scoreTable.insertRow()
         var cell1 = row.insertCell(0)
         var cell2 = row.insertCell(1)
-        cell1.innerHTML = JSONscores[i].createdAt.substring(0, 10)
+        cell1.innerHTML = JSONscores[i].username
         cell2.innerHTML = JSONscores[i].score
     }
 }

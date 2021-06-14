@@ -60,11 +60,29 @@
         </div>
 
         <script>
-            const yourmom = document.getElementById('userForm')
-            yourmom.addEventListener("submit", function(event){
+            const form = document.getElementById('userForm')
+            form.addEventListener("submit", function(event){
                 event.preventDefault()
-                console.log(document.getElementById("finalScore").innerText.substring(13))
-                console.log(document.getElementById("username").value)
+                var username = document.getElementById("username").value
+                const score = document.getElementById("finalScore").innerText.substring(13)
+
+                if (username === '') {
+                    username = 'Anon'
+                }
+
+                const xhr = new XMLHttpRequest()
+                xhr.withCredentials = false
+                xhr.addEventListener('readystatechange', function () {
+                    if (this.readyState === this.DONE) {
+                        console.log(this.responseText)
+                    }
+                })
+                xhr.open('POST', 'https://cgv-middleman.herokuapp.com/')
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+                const data = 'username=' + username + '&score=' + score
+                xhr.send(data)
+                // console.log(document.getElementById("finalScore").innerText.substring(13))
+                // console.log(document.getElementById("username").value)
             })
         </script>
         

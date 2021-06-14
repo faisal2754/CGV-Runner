@@ -19,25 +19,11 @@ import { PLYLoader } from '../../modules/PLYLoader.js'
  *  These should not be accessible to the outside world
  */
 
-let camera, renderer, scene, loop, score, isDead, skyboxSpeed
+let camera, renderer, scene, loop, score, isDead, skyboxSpeed, minimap
 var keyboard = {}
 
 class World {
-    constructor() {
-        //instantiate XMLHttp Request for sending post request to db
-        const xhr = new XMLHttpRequest()
-        xhr.withCredentials = false
-
-        xhr.addEventListener('readystatechange', function () {
-            if (this.readyState === this.DONE) {
-                console.log(this.responseText)
-            }
-        })
-
-        xhr.open('POST', 'https://cgv-middleman.herokuapp.com/')
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        this.xhr = xhr
-    }
+    constructor() {}
 
     //Takes in canvas container
     async init(container) {
@@ -46,8 +32,13 @@ class World {
         Physijs.scripts.ammo = './ammo.js'
 
         //Initialise base scene
+        minimap = new THREE.OrthographicCamera(-10, 10, 10, 10, 0.1, 100)
+        minimap.position.set(0, 10, 90)
+        minimap.up.set(0, 0, -1)
+        minimap.lookAt(new THREE.Vector3())
         camera = createCamera()
         this.thirdPerson = true
+
         scene = createScene()
         const isAntialias = document.getElementById('aacb').checked
         renderer = createRenderer(isAntialias)
@@ -66,7 +57,7 @@ class World {
         //Orbit controls (for dev)
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
-        controls.enabled = false
+        controls.enabled = true
 
         //World lights
         const directionalLight = createDirectionalLight()
@@ -189,8 +180,6 @@ class World {
                 document.getElementById('finalScore').innerText = 'Final Score: ' + score
                 isDead = true
                 document.getElementById('overlays').style.display = 'none'
-                const postScore = `score=${score}`
-                xhr.send(postScore)
             }
             if (object.name === 'floor') {
                 this.hasJumped = false
@@ -260,9 +249,6 @@ class World {
             document.getElementById('finalScore').innerText = ' Final Score: ' + score
             isDead = true
             document.getElementById('overlays').style.display = 'none'
-
-            const postScore = `score=${score}`
-            this.xhr.send(postScore)
         }
 
         if (isDead == false) {
@@ -282,6 +268,11 @@ class World {
 
     render() {
         renderer.render(scene, camera)
+        // renderer.setViewport(10, 10, 10, 10)
+        // renderer.setScissor(10, 10, 10, 10)
+        // // no need to set aspect (since it is still ONE)
+        // renderer.clear() // important!
+        // renderer.render(scene, minimap) // topview
     }
 
     start() {
