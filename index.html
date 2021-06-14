@@ -14,6 +14,11 @@
         <script src="./modules/physi.js"></script>
         <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
         <script type="module" src="./src/main.js"></script>
+
+        <style>
+            input[type='text'] {font-family: spaceAge; src: url(font/space\ age.ttf);}
+
+        </style>
     </head>
     <body>
 
@@ -36,13 +41,32 @@
             <label style="color: antiquewhite; font-size: large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,200%);"> click anywhere to resume</label>
         </div>
 
+        
+
         <!---Game Over Menu-->
         <div id="gameOverMenu">
             <label style="color: antiquewhite; font-size: xxx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);">Game Over</label>
-            <a id="mmDeathMenu" href="#" class="menu-open" style="font-size: xx-large; top: 46%; left: 30%; right: 50%;" onclick="playButtonWhoosh();hideGameOverMenu(); window.location.reload()">Main Menu</a>
+            <a id="mmDeathMenu" href="#" class="menu-open" style="font-size: xx-large; top: 57%; left: 33%; right: 50%;" onclick="playButtonWhoosh();hideGameOverMenu(); window.location.reload()">Main Menu</a>
             <label id="finalScore" style="color: antiquewhite; font-size: xx-large; position: absolute; top: 30%; left: 50%; transform: translate(-50%,200%);"> Score: </label>
-            <a id="restart" href="#" style="font-size: xx-large; top: 50%; left: 55%; right: 30%; position: fixed;" onclick="playButton();">Restart</a>
+            <a id="restart" href="#" style="font-size: xx-large; top: 60%; left: 55%; right: 30%; position: fixed;" onclick="playButton();">Restart</a>
+
+            <form id="userForm" autocomplete="off">
+                <fieldset>
+                    <legend style="color: antiquewhite; font-size: xx-large; position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%);"> Enter your username:</legend>
+                    <input autocomplete="off" type="text" maxlength="6" size="6" style="text-align:center; background-color: black; color: white; font-size: xx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);" id="username" value="">
+                </fieldset>
+            </form>
+            
         </div>
+
+        <script>
+            const yourmom = document.getElementById('userForm')
+            yourmom.addEventListener("submit", function(event){
+                event.preventDefault()
+                console.log(document.getElementById("finalScore").innerText.substring(13))
+                console.log(document.getElementById("username").value)
+            })
+        </script>
         
         <!--Sounds-->
         <audio id="buttonSound" src="assets/music/sfx/buttonSound1.mp3"></audio>
