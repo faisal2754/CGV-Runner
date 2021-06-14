@@ -17,6 +17,7 @@
 
         <style>
             input[type='text'] {font-family: spaceAge; src: url(font/space\ age.ttf); } 
+}
 
         </style>
     </head>
@@ -51,10 +52,8 @@
             <a id="restart" href="#" style="font-size: xx-large; top: 60%; left: 55%; right: 30%; position: fixed;" onclick="playButton();">Restart</a>
 
             <form id="userForm" autocomplete="off">
-                <fieldset>
-                    <legend style="color: antiquewhite; font-size: xx-large; position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%);"> Enter your username:</legend>
-                    <input autocomplete="off" type="text" maxlength="6" size="6" style="text-align:center; border: antiquewhite; opacity: 0.7; background-color: black; color: white; font-size: xx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);" id="username" value="">
-                </fieldset>
+                <legend style="color: antiquewhite; font-size: xx-large; position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%);"> Enter your username:</legend>
+                <input autocomplete="off" type="text" maxlength="6" size="6" style="text-align:center; border: antiquewhite; opacity: 0.7; background-color: black; color: white; font-size: xx-large; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);" id="username" value="">
             </form>
             
         </div>
@@ -62,6 +61,7 @@
         <script>
             const form = document.getElementById('userForm')
             form.addEventListener("submit", function(event){
+                event.preventDefault()
                 var username = document.getElementById("username").value
                 const score = document.getElementById("finalScore").innerText.substring(13)
 
