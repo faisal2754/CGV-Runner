@@ -35,7 +35,7 @@ class World {
         minimap = new THREE.OrthographicCamera(-10, 10, 10, 10, 0.1, 100)
         minimap.position.set(0, 10, 90)
         minimap.up.set(0, 0, -1)
-        minimap.lookAt(new THREE.Vector3())
+        // minimap.lookAt(new THREE.Vector3())
         camera = createCamera()
         this.thirdPerson = true
 
@@ -49,7 +49,7 @@ class World {
         isDead = false
 
         //Game loop
-        loop = new Loop(camera, scene, renderer)
+        loop = new Loop(camera, minimap, scene, renderer)
 
         //Add scene to loop to update physics
         loop.updatables.push(scene)
@@ -166,7 +166,7 @@ class World {
         // Check player collision
         const xhr = this.xhr
         this.player.addEventListener('collision', function (object) {
-            console.log(object)
+            // console.log(object)
             if (object.name === 'obstacle' && object.position.z > 81) {
                 var audio = document.getElementById('fz')
                 audio.pause()
@@ -269,23 +269,19 @@ class World {
     render() {
         var WW = window.innerWidth
         var HH = window.innerHeight
-
         renderer.setScissorTest(true)
-
         renderer.setViewport(0, 0, WW, HH)
         camera.aspect = WW / HH
         camera.updateProjectionMatrix()
-
         renderer.setScissor(0, 0, WW, HH)
         renderer.clear()
         renderer.render(scene, camera)
-
         renderer.setViewport(WW / 2, HH / 2, WW / 3, HH / 3)
         renderer.setScissor(WW / 2, HH / 2, WW / 3, HH / 3)
         // no need to set aspect (since it is still ONE)
         renderer.clear() // important!
         renderer.render(scene, minimap) // topview
-
+        console.log(minimap)
         renderer.setScissorTest(false)
     }
 
