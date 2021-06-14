@@ -267,12 +267,26 @@ class World {
     }
 
     render() {
+        var WW = window.innerWidth
+        var HH = window.innerHeight
+
+        renderer.setScissorTest(true)
+
+        renderer.setViewport(0, 0, WW, HH)
+        camera.aspect = WW / HH
+        camera.updateProjectionMatrix()
+
+        renderer.setScissor(0, 0, WW, HH)
+        renderer.clear()
         renderer.render(scene, camera)
-        // renderer.setViewport(10, 10, 10, 10)
-        // renderer.setScissor(10, 10, 10, 10)
-        // // no need to set aspect (since it is still ONE)
-        // renderer.clear() // important!
-        // renderer.render(scene, minimap) // topview
+
+        renderer.setViewport(WW / 2, HH / 2, WW / 3, HH / 3)
+        renderer.setScissor(WW / 2, HH / 2, WW / 3, HH / 3)
+        // no need to set aspect (since it is still ONE)
+        renderer.clear() // important!
+        renderer.render(scene, minimap) // topview
+
+        renderer.setScissorTest(false)
     }
 
     start() {
