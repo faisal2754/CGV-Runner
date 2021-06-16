@@ -99,7 +99,7 @@ a:hover {
 .menu-close {
     position: fixed;
     top: 50%;
-    left: 50%;
+    left: 50.15%;
     transform: translate(-50%, -50%);
     cursor: pointer;
     opacity: 1;
@@ -108,9 +108,8 @@ a:hover {
 
 .menu-close-img {
     width: 140px;
-    height: 140px;
+    height: 136px;
     border-radius: 100%;
-    border: 10px solid #000;
 }
 
 img {
