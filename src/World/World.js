@@ -19,7 +19,20 @@ import { PLYLoader } from '../../modules/PLYLoader.js'
  *  These should not be accessible to the outside world
  */
 
-let camera, renderer, scene, loop, score, isDead, skyboxSpeed, minimap
+let camera,
+    renderer,
+    scene,
+    loop,
+    score,
+    isDead,
+    skyboxSpeed,
+    minimap,
+    pathManager,
+    obstacleManager,
+    skybox,
+    material1,
+    material2,
+    material3
 var keyboard = {}
 
 class World {
@@ -31,15 +44,20 @@ class World {
         Physijs.scripts.worker = './modules/physijs_worker.js'
         Physijs.scripts.ammo = './ammo.js'
 
+        const width = window.innerWidth
+        const height = window.innerHeight
+
         //Initialise base scene
-        minimap = new THREE.OrthographicCamera(-10, 10, 10, 10, 0.1, 100)
-        minimap.position.set(0, 10, 90)
+        minimap = new THREE.OrthographicCamera(-width / 32, width / 32, height / 32, -height / 32, 0.1, 1500)
+        minimap.position.set(2.5, 10, 77.5)
         minimap.up.set(0, 0, -1)
-        // minimap.lookAt(new THREE.Vector3())
+        minimap.lookAt(new THREE.Vector3(0, -450, 0))
+
         camera = createCamera()
         this.thirdPerson = true
 
         scene = createScene()
+
         const isAntialias = document.getElementById('aacb').checked
         renderer = createRenderer(isAntialias)
         container.append(renderer.domElement)
@@ -66,7 +84,7 @@ class World {
         scene.add(ambientLight)
 
         //Skybox
-        const skybox = createSkybox()
+        skybox = createSkybox()
         skyboxSpeed = THREE.MathUtils.degToRad(5)
         skybox.tick = (delta) => {
             skybox.rotation.z += skyboxSpeed * delta
@@ -132,6 +150,89 @@ class World {
             scene.add(modelLucy)
         })
 
+        const textureLoader = new THREE.TextureLoader()
+
+        material3 = [
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level3/bkg1_right.png'),
+                side: THREE.DoubleSide
+            }), //front side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level3/bkg1_left.png'),
+                side: THREE.DoubleSide
+            }), //back side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level3/bkg1_top.png'),
+                side: THREE.DoubleSide
+            }), //up side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level3/bkg1_bot.png'),
+                side: THREE.DoubleSide
+            }), //down side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level3/bkg1_front.png'),
+                side: THREE.DoubleSide
+            }), //right side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level3/bkg1_back.png'),
+                side: THREE.DoubleSide
+            }) //left side
+        ]
+
+        material2 = [
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level2/bkg2_right1.png'),
+                side: THREE.DoubleSide
+            }), //front side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level2/bkg2_left2.png'),
+                side: THREE.DoubleSide
+            }), //back side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level2/bkg2_top3.png'),
+                side: THREE.DoubleSide
+            }), //up side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level2/bkg2_bottom4.png'),
+                side: THREE.DoubleSide
+            }), //down side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level2/bkg2_front5.png'),
+                side: THREE.DoubleSide
+            }), //right side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level2/bkg2_back6.png'),
+                side: THREE.DoubleSide
+            }) //left side
+        ]
+
+        material1 = [
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level1/corona_ft.png'),
+                side: THREE.DoubleSide
+            }), //front side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level1/corona_bk.png'),
+                side: THREE.DoubleSide
+            }), //back side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level1/corona_up.png'),
+                side: THREE.DoubleSide
+            }), //up side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level1/corona_dn.png'),
+                side: THREE.DoubleSide
+            }), //down side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level1/corona_rt.png'),
+                side: THREE.DoubleSide
+            }), //right side
+            new THREE.MeshBasicMaterial({
+                map: textureLoader.load('assets/skybox/level1/corona_lf.png'),
+                side: THREE.DoubleSide
+            }) //left side
+        ]
+
         //Window resizer
         const resizer = new Resizer(container, camera, renderer)
 
@@ -145,17 +246,16 @@ class World {
         loop.updatables.push(this.player)
 
         //Creating player hitbox
-        const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ wireframe: true }))
-        const box_container = new Physijs.CapsuleMesh(new THREE.CylinderBufferGeometry(0.3, 0.3, 0.6, 25), physMaterial)
+        const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }))
+        const box_container = new Physijs.BoxMesh(new THREE.BoxBufferGeometry(0.3, 0.3, 0.6, 25), physMaterial)
         box_container.castShadow = document.getElementById('shadowscb').checked
-        box_container.setCcdMotionThreshold(1)
-        box_container.setCcdSweptSphereRadius(0.4)
+        box_container.setCcdMotionThreshold(0.5)
+        box_container.setCcdSweptSphereRadius(0.2)
 
-        this.player.position.set(0, -0.5, 0)
         box_container.add(this.player)
         this.player = box_container
         this.player.rotation.y = Math.PI
-        this.player.position.set(0, 3, 83)
+        this.player.position.set(0, 3, 77.5)
 
         //Hitbox constraints
         this.player.setAngularFactor(new THREE.Vector3(0, 0, 0))
@@ -164,23 +264,22 @@ class World {
         scene.add(this.player)
 
         // Check player collision
-        const xhr = this.xhr
         this.player.addEventListener('collision', function (object) {
             // console.log(object)
-            if (object.name === 'obstacle' && object.position.z > 81) {
-                var audio = document.getElementById('fz')
-                audio.pause()
-                audio.currentTime = 0
-                if (document.getElementById('musiccb').checked) {
-                    var gameOverSound = document.getElementById('gameOverSound')
-                    gameOverSound.play()
-                }
-                loop.stop()
-                document.getElementById('gameOverMenu').style.display = 'block'
-                document.getElementById('finalScore').innerText = 'Final Score: ' + score
-                isDead = true
-                document.getElementById('overlays').style.display = 'none'
-            }
+            // if (object.name === 'obstacle' && object.position.z > 81) {
+            //     var audio = document.getElementById('fz')
+            //     audio.pause()
+            //     audio.currentTime = 0
+            //     if (document.getElementById('musiccb').checked) {
+            //         var gameOverSound = document.getElementById('gameOverSound')
+            //         gameOverSound.play()
+            //     }
+            //     loop.stop()
+            //     document.getElementById('gameOverMenu').style.display = 'block'
+            //     document.getElementById('finalScore').innerText = 'Final Score: ' + score
+            //     isDead = true
+            //     document.getElementById('overlays').style.display = 'none'
+            // }
             if (object.name === 'floor') {
                 this.hasJumped = false
             }
@@ -189,16 +288,17 @@ class World {
 
     init_managers() {
         //Path management
-        const pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5, -100, -80)
+        pathManager = new PathManager(0, 0, -100, 0, 0, 100, 50, 20, 50, 50, 10, 5, -100, -80)
 
         pathManager.paths.forEach((path) => {
             path.mesh.receiveShadow = true
+            console.log(path)
             scene.add(path.mesh)
         })
         loop.updatables.push(pathManager)
 
         //Obstacle management
-        const obstacleManager = new ObstacleManager(
+        obstacleManager = new ObstacleManager(
             10,
             1,
             1,
@@ -234,22 +334,22 @@ class World {
         this.player.position.z = 83
 
         //Check player fall death
-        if (this.player.position.y < -1) {
-            this.stop()
+        // if (this.player.position.y < -1) {
+        //     this.stop()
 
-            var audio = document.getElementById('fz')
-            audio.pause()
+        //     var audio = document.getElementById('fz')
+        //     audio.pause()
 
-            if (document.getElementById('musiccb').checked) {
-                var gameOverSound = document.getElementById('gameOverSound')
-                gameOverSound.play()
-            }
-            audio.currentTime = 0
-            document.getElementById('gameOverMenu').style.display = 'block'
-            document.getElementById('finalScore').innerText = ' Final Score: ' + score
-            isDead = true
-            document.getElementById('overlays').style.display = 'none'
-        }
+        //     if (document.getElementById('musiccb').checked) {
+        //         var gameOverSound = document.getElementById('gameOverSound')
+        //         gameOverSound.play()
+        //     }
+        //     audio.currentTime = 0
+        //     document.getElementById('gameOverMenu').style.display = 'block'
+        //     document.getElementById('finalScore').innerText = ' Final Score: ' + score
+        //     isDead = true
+        //     document.getElementById('overlays').style.display = 'none'
+        // }
 
         if (isDead == false) {
             score += 1
@@ -257,10 +357,30 @@ class World {
 
         if (score == 500) {
             skyboxSpeed *= -1.25
+            pathManager.paths.forEach((path) => {
+                path.mesh.material.color.setHex(0xff0000)
+            })
+            obstacleManager.obstacles.forEach((obstacle) => {
+                obstacle.mesh.material.color.setHex(0x0000ff)
+                obstacle.pointLight.color.setHex(0x0000ff)
+                obstacle.pointLight.intensity = 50
+            })
+            obstacleManager.speed = 0.75
+            skybox.material = material2
         }
 
-        if (score == 750) {
+        if (score == 900) {
             skyboxSpeed *= -2
+            pathManager.paths.forEach((path) => {
+                path.mesh.material.color.setHex(0x0000ff)
+            })
+            obstacleManager.obstacles.forEach((obstacle) => {
+                obstacle.mesh.material.color.setHex(0xff0000)
+                obstacle.pointLight.color.setHex(0xff0000)
+                obstacle.pointLight.intensity = 75
+            })
+            obstacleManager.speed = 1
+            skybox.material = material3
         }
 
         document.getElementById('scoreDisplay').innerText = 'Score: ' + score
@@ -295,6 +415,7 @@ class World {
 
     playerMovement() {
         // Keyboard movement inputs
+
         if (keyboard[86]) {
             // V key
             if (this.thirdPerson) {
@@ -330,11 +451,11 @@ class World {
         }
         if (keyboard[65]) {
             // A key
-            this.player.applyCentralForce(new THREE.Vector3(-10, 0, 0))
+            this.player.applyCentralForce(new THREE.Vector3(-2, 0, 0))
         }
         if (keyboard[68]) {
             // D key
-            this.player.applyCentralForce(new THREE.Vector3(10, 0, 0))
+            this.player.applyCentralForce(new THREE.Vector3(2, 0, 0))
         }
         if (keyboard[32]) {
             // Space key

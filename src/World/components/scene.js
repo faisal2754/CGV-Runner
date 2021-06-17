@@ -1,6 +1,6 @@
 function createScene() {
     //create scene
-    const scene = new Physijs.Scene()
+    const scene = new Physijs.Scene({ fixedTimeStep: 1 / 60 })
     scene.setGravity(new THREE.Vector3(0, -30, 0))
     scene.background = new THREE.Color('purple')
 

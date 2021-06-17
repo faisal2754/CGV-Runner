@@ -12,6 +12,7 @@ class Loop {
     customRender() {
         var WW = window.innerWidth
         var HH = window.innerHeight
+
         this.renderer.setScissorTest(true)
         this.renderer.setViewport(0, 0, WW, HH)
         this.camera.aspect = WW / HH
@@ -19,12 +20,13 @@ class Loop {
         this.renderer.setScissor(0, 0, WW, HH)
         this.renderer.clear()
         this.renderer.render(this.scene, this.camera)
-        this.renderer.setViewport(WW / 2, HH / 2, WW / 3, HH / 3)
-        this.renderer.setScissor(WW / 2, HH / 2, WW / 3, HH / 3)
-        // no need to set aspect (since it is still ONE)
-        this.renderer.clear() // important!
-        this.renderer.render(this.scene, this.minimap) // topview
-        console.log(this.minimap)
+
+        this.renderer.setViewport(WW - WW / 4 + 51, 0, WW / 4, HH / 4)
+        this.renderer.setScissor(WW - WW / 4 + 51, 0, WW / 4 - 50, HH / 4)
+        this.minimap.aspect = WW / HH
+        this.camera.updateProjectionMatrix()
+        this.renderer.clear()
+        this.renderer.render(this.scene, this.minimap)
         this.renderer.setScissorTest(false)
     }
 
@@ -32,6 +34,7 @@ class Loop {
     start() {
         this.renderer.setAnimationLoop(() => {
             this.tick()
+            // this.renderer.render(this.scene, this.camera)
             this.customRender()
         })
     }

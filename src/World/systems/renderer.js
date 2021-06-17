@@ -4,7 +4,7 @@ function createRenderer(aa) {
     renderer.physicallyCorrectLights = true
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
-    renderer.outputEncoding = THREE.sRGBEncoding
+    // renderer.outputEncoding = THREE.sRGBEncoding
     return renderer
 }
 

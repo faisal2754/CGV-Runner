@@ -17,6 +17,7 @@ class ObstacleManager {
         mesh5
     ) {
         this.numObstacles = 5
+        this.speed = 0.5
         this.sizeX = sizeX
         this.sizeY = sizeY
         this.sizeZ = sizeZ
@@ -40,7 +41,7 @@ class ObstacleManager {
         this.safeZoneLength = safeZoneLength
         for (let i = 0; i < this.numObstacles; i++) {
             let xPos = this.minX + Math.random() * this.pathWidth * 0.9
-            let yPos = 3.5
+            let yPos = 4
             let zPos = safeZoneStartZ - Math.random() * safeZoneLength
 
             //test obstacles dont overlap
@@ -63,7 +64,7 @@ class ObstacleManager {
         for (let i = 0; i < this.numObstacles; i++) {
             if (this.obstacles[i].mesh.position.z > this.pathEndZ) {
                 let xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
-                let yPos = 3.5
+                let yPos = 4
                 let zPos = this.safeZoneEndZ - Math.random() * 5
 
                 //make sure obstacles dont overlap
@@ -73,8 +74,8 @@ class ObstacleManager {
                 }
                 this.obstacles[i].setPosition(xPos, yPos, zPos)
             } else {
-                this.obstacles[i].mesh.position.z += 0.5
-                this.obstacles[i].pointLight.position.z += 0.5
+                this.obstacles[i].mesh.position.z += this.speed
+                this.obstacles[i].pointLight.position.z += this.speed
             }
 
             this.obstacles[i].mesh.__dirtyPosition = true

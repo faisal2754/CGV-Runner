@@ -1,34 +1,34 @@
 function createMaterial() {
     const textureLoader = new THREE.TextureLoader()
 
-    const material = [
+    const material1 = [
         new THREE.MeshBasicMaterial({
-            map: textureLoader.load('assets/skybox/corona_ft.png'),
+            map: textureLoader.load('assets/skybox/level1/corona_ft.png'),
             side: THREE.DoubleSide
         }), //front side
         new THREE.MeshBasicMaterial({
-            map: textureLoader.load('assets/skybox/corona_bk.png'),
+            map: textureLoader.load('assets/skybox/level1/corona_bk.png'),
             side: THREE.DoubleSide
         }), //back side
         new THREE.MeshBasicMaterial({
-            map: textureLoader.load('assets/skybox/corona_up.png'),
+            map: textureLoader.load('assets/skybox/level1/corona_up.png'),
             side: THREE.DoubleSide
         }), //up side
         new THREE.MeshBasicMaterial({
-            map: textureLoader.load('assets/skybox/corona_dn.png'),
+            map: textureLoader.load('assets/skybox/level1/corona_dn.png'),
             side: THREE.DoubleSide
         }), //down side
         new THREE.MeshBasicMaterial({
-            map: textureLoader.load('assets/skybox/corona_rt.png'),
+            map: textureLoader.load('assets/skybox/level1/corona_rt.png'),
             side: THREE.DoubleSide
         }), //right side
         new THREE.MeshBasicMaterial({
-            map: textureLoader.load('assets/skybox/corona_lf.png'),
+            map: textureLoader.load('assets/skybox/level1/corona_lf.png'),
             side: THREE.DoubleSide
         }) //left side
     ]
 
-    return material
+    return material1
 }
 
 function createSkybox() {
