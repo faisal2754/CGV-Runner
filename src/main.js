@@ -29,8 +29,21 @@ async function main(restart = false) {
         }
     }
 
-    //resume functionality
+    document.addEventListener('keydown', function (event) {
+        if (event.key == 'Escape') {
+            var musicOn = document.getElementById('musiccb').checked
+            var audio = document.getElementById('fz')
+            audio.pause()
+            world.stop()
+            document.getElementById('pauseMenu').style.display = 'block'
+            if (musicOn == true) {
+                var audio2 = document.getElementById('buttonSound')
+                audio2.play()
+            }
+        }
+    })
 
+    //resume functionality
     document.getElementById('pauseMenu').onclick = function resume() {
         var musicOn = document.getElementById('musiccb').checked
         if (musicOn == true) {
@@ -44,7 +57,6 @@ async function main(restart = false) {
     }
 
     //Play game functionality
-
     document.getElementById('menuClose').onclick = function play() {
         var musicOn = document.getElementById('musiccb').checked
         if (musicOn == true) {
@@ -79,6 +91,45 @@ async function main(restart = false) {
             fade(loadingscreen)
         }, 3000)
     }
+
+    //set username
+    const form = document.getElementById('userForm')
+    form.addEventListener('submit', function (event) {
+        var username = document.getElementById('username').value
+        const score = document.getElementById('finalScore').innerText.substring(13)
+
+        if (username === '') {
+            username = 'Anon'
+        }
+
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = false
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === this.DONE) {
+                console.log(this.responseText)
+            }
+        })
+        xhr.open('POST', 'https://cgv-middleman.herokuapp.com/')
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        const data = 'username=' + username + '&score=' + score
+        xhr.send(data)
+
+        document.getElementById('gameOverMenu').style.display = 'none'
+        $('canvas').remove()
+
+        var musicOn = document.getElementById('musiccb').checked
+        if (musicOn == true) {
+            var audio = document.getElementById('buttonSound')
+            audio.play()
+            var audio2 = document.getElementById('fz')
+            audio2.play()
+        }
+        var loadingscreen = document.getElementById('loadingscreen')
+        loadingscreen.style.opacity = 1
+        loadingscreen.style.display = 'block'
+
+        main(true)
+    })
 
     //restart functionality
     document.getElementById('restart').onclick = function restart() {

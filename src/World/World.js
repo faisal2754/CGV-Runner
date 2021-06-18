@@ -9,7 +9,6 @@ import { ObstacleManager } from './components/ObstacleManager.js'
 
 import { createControls } from './systems/controls.js'
 import { createRenderer } from './systems/renderer.js'
-import { Resizer } from './systems/Resizer.js'
 import { Loop } from './systems/Loop.js'
 
 import { PLYLoader } from '../../modules/PLYLoader.js'
@@ -30,9 +29,9 @@ let camera,
     pathManager,
     obstacleManager,
     skybox,
-    material1,
     material2,
-    material3
+    material3,
+    superJump = false
 var keyboard = {}
 
 class World {
@@ -75,7 +74,7 @@ class World {
         //Orbit controls (for dev)
         const controls = createControls(camera, renderer.domElement)
         loop.updatables.push(controls)
-        controls.enabled = true
+        controls.enabled = false
 
         //World lights
         const directionalLight = createDirectionalLight()
@@ -94,10 +93,11 @@ class World {
         loop.updatables.push(skybox)
         scene.add(skybox)
 
+        //push current world to updatables
         loop.updatables.push(this)
 
         //Create environment map
-        const path = 'assets/skybox/corona_'
+        const path = 'assets/skybox/level1/corona_'
         const urls = [
             path + 'lf.png',
             path + 'rt.png',
@@ -115,17 +115,18 @@ class World {
             refractionRatio: 1
         })
 
+        let light, modelLucy
         //Loading Lucy the Levitating model
         const plyLoader = new PLYLoader()
         plyLoader.load('assets/models/Lucy100k.ply', function (geometry) {
             geometry.computeVertexNormals()
             const s = 0.005
-            const modelLucy = new THREE.Mesh(geometry, cubeMaterial1)
+            modelLucy = new THREE.Mesh(geometry, cubeMaterial1)
             modelLucy.scale.x = modelLucy.scale.y = modelLucy.scale.z = s
             modelLucy.rotation.y = -Math.PI / 2
-            modelLucy.position.set(-10, 5, 80)
+            modelLucy.position.set(-10, 5, 80.5)
 
-            const light = createPointLight()
+            light = createPointLight()
             light.position.copy(modelLucy.position)
             light.position.y += 1
 
@@ -140,14 +141,19 @@ class World {
             loop.updatables.push(light)
 
             scene.add(light)
-
-            // Point light helper
-            // const sphereSize = 0.1
-            // const pointLightHelper = new THREE.PointLightHelper(light, sphereSize)
-            // console.log(pointLightHelper)
-            // scene.add(pointLightHelper)
-
             scene.add(modelLucy)
+        })
+        const lucyHitboxMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
+        const lucyHitboxGeo = new THREE.BoxBufferGeometry(5, 10, 5)
+        const lucyHitbox = new Physijs.BoxMesh(lucyHitboxGeo, lucyHitboxMat, 0)
+        lucyHitbox.position.set(-9, 5, 83)
+        scene.add(lucyHitbox)
+
+        lucyHitbox.addEventListener('collision', function (object) {
+            console.log(object)
+            superJump = true
+            light.color.setHex(0xff0000)
+            lucyHitbox.removeEventListener()
         })
 
         const textureLoader = new THREE.TextureLoader()
@@ -206,36 +212,6 @@ class World {
             }) //left side
         ]
 
-        material1 = [
-            new THREE.MeshBasicMaterial({
-                map: textureLoader.load('assets/skybox/level1/corona_ft.png'),
-                side: THREE.DoubleSide
-            }), //front side
-            new THREE.MeshBasicMaterial({
-                map: textureLoader.load('assets/skybox/level1/corona_bk.png'),
-                side: THREE.DoubleSide
-            }), //back side
-            new THREE.MeshBasicMaterial({
-                map: textureLoader.load('assets/skybox/level1/corona_up.png'),
-                side: THREE.DoubleSide
-            }), //up side
-            new THREE.MeshBasicMaterial({
-                map: textureLoader.load('assets/skybox/level1/corona_dn.png'),
-                side: THREE.DoubleSide
-            }), //down side
-            new THREE.MeshBasicMaterial({
-                map: textureLoader.load('assets/skybox/level1/corona_rt.png'),
-                side: THREE.DoubleSide
-            }), //right side
-            new THREE.MeshBasicMaterial({
-                map: textureLoader.load('assets/skybox/level1/corona_lf.png'),
-                side: THREE.DoubleSide
-            }) //left side
-        ]
-
-        //Window resizer
-        const resizer = new Resizer(container, camera, renderer)
-
         //Loading game assets
         const { player, obstacle } = await loadAssets()
 
@@ -246,16 +222,14 @@ class World {
         loop.updatables.push(this.player)
 
         //Creating player hitbox
-        const physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }))
-        const box_container = new Physijs.BoxMesh(new THREE.BoxBufferGeometry(0.3, 0.3, 0.6, 25), physMaterial)
+        const physMaterial = new THREE.MeshBasicMaterial({ wireframe: true })
+        const box_container = new Physijs.BoxMesh(new THREE.BoxBufferGeometry(0.5, 1, 0.5), physMaterial)
         box_container.castShadow = document.getElementById('shadowscb').checked
-        box_container.setCcdMotionThreshold(0.5)
-        box_container.setCcdSweptSphereRadius(0.2)
 
         box_container.add(this.player)
         this.player = box_container
         this.player.rotation.y = Math.PI
-        this.player.position.set(0, 3, 77.5)
+        this.player.position.set(0, 3, 83)
 
         //Hitbox constraints
         this.player.setAngularFactor(new THREE.Vector3(0, 0, 0))
@@ -265,21 +239,21 @@ class World {
 
         // Check player collision
         this.player.addEventListener('collision', function (object) {
-            // console.log(object)
-            // if (object.name === 'obstacle' && object.position.z > 81) {
-            //     var audio = document.getElementById('fz')
-            //     audio.pause()
-            //     audio.currentTime = 0
-            //     if (document.getElementById('musiccb').checked) {
-            //         var gameOverSound = document.getElementById('gameOverSound')
-            //         gameOverSound.play()
-            //     }
-            //     loop.stop()
-            //     document.getElementById('gameOverMenu').style.display = 'block'
-            //     document.getElementById('finalScore').innerText = 'Final Score: ' + score
-            //     isDead = true
-            //     document.getElementById('overlays').style.display = 'none'
-            // }
+            console.log(object)
+            if (object.name === 'obstacle' && object.position.z > 77) {
+                var audio = document.getElementById('fz')
+                audio.pause()
+                audio.currentTime = 0
+                if (document.getElementById('musiccb').checked) {
+                    var gameOverSound = document.getElementById('gameOverSound')
+                    gameOverSound.play()
+                }
+                loop.stop()
+                document.getElementById('gameOverMenu').style.display = 'block'
+                document.getElementById('finalScore').innerText = 'Final Score: ' + score
+                isDead = true
+                document.getElementById('overlays').style.display = 'none'
+            }
             if (object.name === 'floor') {
                 this.hasJumped = false
             }
@@ -292,7 +266,6 @@ class World {
 
         pathManager.paths.forEach((path) => {
             path.mesh.receiveShadow = true
-            console.log(path)
             scene.add(path.mesh)
         })
         loop.updatables.push(pathManager)
@@ -334,75 +307,76 @@ class World {
         this.player.position.z = 83
 
         //Check player fall death
-        // if (this.player.position.y < -1) {
-        //     this.stop()
+        if (this.player.position.y < -1) {
+            this.stop()
 
-        //     var audio = document.getElementById('fz')
-        //     audio.pause()
+            var audio = document.getElementById('fz')
+            audio.pause()
 
-        //     if (document.getElementById('musiccb').checked) {
-        //         var gameOverSound = document.getElementById('gameOverSound')
-        //         gameOverSound.play()
-        //     }
-        //     audio.currentTime = 0
-        //     document.getElementById('gameOverMenu').style.display = 'block'
-        //     document.getElementById('finalScore').innerText = ' Final Score: ' + score
-        //     isDead = true
-        //     document.getElementById('overlays').style.display = 'none'
-        // }
+            if (document.getElementById('musiccb').checked) {
+                var gameOverSound = document.getElementById('gameOverSound')
+                gameOverSound.play()
+            }
+            audio.currentTime = 0
+            document.getElementById('gameOverMenu').style.display = 'block'
+            document.getElementById('finalScore').innerText = ' Final Score: ' + score
+            isDead = true
+            document.getElementById('overlays').style.display = 'none'
+        }
 
         if (isDead == false) {
             score += 1
         }
 
-        if (score == 500) {
-            skyboxSpeed *= -1.25
-            pathManager.paths.forEach((path) => {
-                path.mesh.material.color.setHex(0xff0000)
-            })
-            obstacleManager.obstacles.forEach((obstacle) => {
-                obstacle.mesh.material.color.setHex(0x0000ff)
-                obstacle.pointLight.color.setHex(0x0000ff)
-                obstacle.pointLight.intensity = 50
-            })
-            obstacleManager.speed = 0.75
-            skybox.material = material2
+        if (score == 1050) {
+            document.getElementById('level-menu').style.display = 'block'
+            document.getElementById('level-text').innerText = 'Level 2'
+
+            const palette = [0x1b1717, 0x810000, 0xce1212, 0xeeebdd]
+
+            setTimeout(function () {
+                skyboxSpeed *= -1.25
+                pathManager.paths.forEach((path) => {
+                    const color = palette[Math.floor(Math.random() * 4)]
+                    path.mesh.material.color.setHex(color)
+                })
+                obstacleManager.obstacles.forEach((obstacle) => {
+                    obstacle.mesh.material.color.setHex(0x0000ff)
+                    obstacle.pointLight.color.setHex(0x0000ff)
+                    obstacle.pointLight.intensity = 50
+                })
+                obstacleManager.speed = 0.75
+                skybox.material = material2
+                document.getElementById('level-menu').style.display = 'none'
+            }, 75)
         }
 
-        if (score == 900) {
-            skyboxSpeed *= -2
-            pathManager.paths.forEach((path) => {
-                path.mesh.material.color.setHex(0x0000ff)
-            })
-            obstacleManager.obstacles.forEach((obstacle) => {
-                obstacle.mesh.material.color.setHex(0xff0000)
-                obstacle.pointLight.color.setHex(0xff0000)
-                obstacle.pointLight.intensity = 75
-            })
-            obstacleManager.speed = 1
-            skybox.material = material3
+        if (score == 2600) {
+            document.getElementById('level-menu').style.display = 'block'
+            document.getElementById('level-text').innerText = 'Level 3'
+
+            const palette = [0x04009a, 0x77acf1, 0x3edbf0, 0xf0ebcc]
+
+            setTimeout(function () {
+                skyboxSpeed *= -2
+                pathManager.paths.forEach((path) => {
+                    const color = palette[Math.floor(Math.random() * 4)]
+                    path.mesh.material.color.setHex(color)
+                    path.mesh.material.wireframe = true
+                    path.mesh.material.wireframeLinewidth = 50
+                })
+                obstacleManager.obstacles.forEach((obstacle) => {
+                    obstacle.mesh.material.color.setHex(0xff0000)
+                    obstacle.pointLight.color.setHex(0xff0000)
+                    obstacle.pointLight.intensity = 75
+                })
+                obstacleManager.speed = 1
+                skybox.material = material3
+                document.getElementById('level-menu').style.display = 'none'
+            }, 100)
         }
 
         document.getElementById('scoreDisplay').innerText = 'Score: ' + score
-    }
-
-    render() {
-        var WW = window.innerWidth
-        var HH = window.innerHeight
-        renderer.setScissorTest(true)
-        renderer.setViewport(0, 0, WW, HH)
-        camera.aspect = WW / HH
-        camera.updateProjectionMatrix()
-        renderer.setScissor(0, 0, WW, HH)
-        renderer.clear()
-        renderer.render(scene, camera)
-        renderer.setViewport(WW / 2, HH / 2, WW / 3, HH / 3)
-        renderer.setScissor(WW / 2, HH / 2, WW / 3, HH / 3)
-        // no need to set aspect (since it is still ONE)
-        renderer.clear() // important!
-        renderer.render(scene, minimap) // topview
-        console.log(minimap)
-        renderer.setScissorTest(false)
     }
 
     start() {
@@ -415,16 +389,11 @@ class World {
 
     playerMovement() {
         // Keyboard movement inputs
-
         if (keyboard[86]) {
             // V key
             if (this.thirdPerson) {
                 const pos = new THREE.Vector3(0, 8, 100)
                 camera.position.lerp(pos, 1)
-                // this.player.add(camera)
-                console.log(camera)
-                // const lookVector = new THREE.Vector3(0, 0, -1)
-                // camera.lookAt(lookVector)
                 this.thirdPerson = false
             }
         }
@@ -439,28 +408,8 @@ class World {
         if (keyboard[87]) {
             // W key
             if (this.player.hasJumped == false) {
-                this.player.setLinearVelocity(new THREE.Vector3(0, 15, 0))
-
-                const player = this.player
-                setTimeout(function () {
-                    player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
-                }, 200)
-
-                this.player.hasJumped = true
-            }
-        }
-        if (keyboard[65]) {
-            // A key
-            this.player.applyCentralForce(new THREE.Vector3(-2, 0, 0))
-        }
-        if (keyboard[68]) {
-            // D key
-            this.player.applyCentralForce(new THREE.Vector3(2, 0, 0))
-        }
-        if (keyboard[32]) {
-            // Space key
-            if (this.player.hasJumped == false) {
-                this.player.setLinearVelocity(new THREE.Vector3(0, 15, 0))
+                const velocity = superJump == false ? new THREE.Vector3(0, 15, 0) : new THREE.Vector3(0, 20, 0)
+                this.player.setLinearVelocity(velocity)
 
                 const player = this.player
                 setTimeout(function () {
@@ -470,17 +419,27 @@ class World {
                 this.player.hasJumped = true
             }
         }
-        if (keyboard[27]) {
-            // Esc key
-            var musicOn = document.getElementById('musiccb').checked
-            var audio2 = document.getElementById('fz')
-            audio2.pause()
-            if (musicOn == true) {
-                var audio = document.getElementById('buttonSound')
-                audio.play()
+        if (keyboard[65]) {
+            // A key
+            this.player.applyCentralForce(new THREE.Vector3(-6, 0, 0))
+        }
+        if (keyboard[68]) {
+            // D key
+            this.player.applyCentralForce(new THREE.Vector3(6, 0, 0))
+        }
+        if (keyboard[32]) {
+            // Space key
+            if (this.player.hasJumped == false) {
+                const velocity = superJump == false ? new THREE.Vector3(0, 15, 0) : new THREE.Vector3(0, 20, 0)
+                this.player.setLinearVelocity(velocity)
+
+                const player = this.player
+                setTimeout(function () {
+                    player.setLinearVelocity(new THREE.Vector3(0, 0, 0))
+                }, 250)
+
+                this.player.hasJumped = true
             }
-            this.stop()
-            document.getElementById('pauseMenu').style.display = 'block'
         }
     }
 }

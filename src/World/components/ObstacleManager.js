@@ -64,7 +64,7 @@ class ObstacleManager {
         for (let i = 0; i < this.numObstacles; i++) {
             if (this.obstacles[i].mesh.position.z > this.pathEndZ) {
                 let xPos = this.minX + 2 + Math.random() * (this.pathWidth - 2)
-                let yPos = 4
+                let yPos = 3.5
                 let zPos = this.safeZoneEndZ - Math.random() * 5
 
                 //make sure obstacles dont overlap

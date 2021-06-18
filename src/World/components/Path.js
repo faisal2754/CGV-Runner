@@ -45,7 +45,8 @@ class Path {
         const floorMaterial = new THREE.MeshPhongMaterial({
             map: texture,
             color: color,
-            shininess: 50
+            shininess: 50,
+            wireframeLinewidth: 1000
         })
 
         this.mesh = new Physijs.BoxMesh(floorGeometry, floorMaterial, 0)
