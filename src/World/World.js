@@ -9,6 +9,7 @@ import { ObstacleManager } from './components/ObstacleManager.js'
 
 import { createControls } from './systems/controls.js'
 import { createRenderer } from './systems/renderer.js'
+import { Resizer } from './systems/Resizer.js'
 import { Loop } from './systems/Loop.js'
 
 import { PLYLoader } from '../../modules/PLYLoader.js'
@@ -212,6 +213,9 @@ class World {
             }) //left side
         ]
 
+        //Window resizer
+        const resizer = new Resizer(container, camera, renderer)
+
         //Loading game assets
         const { player, obstacle } = await loadAssets()
 
@@ -222,7 +226,7 @@ class World {
         loop.updatables.push(this.player)
 
         //Creating player hitbox
-        const physMaterial = new THREE.MeshBasicMaterial({ wireframe: true })
+        const physMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
         const box_container = new Physijs.BoxMesh(new THREE.BoxBufferGeometry(0.5, 1, 0.5), physMaterial)
         box_container.castShadow = document.getElementById('shadowscb').checked
 
