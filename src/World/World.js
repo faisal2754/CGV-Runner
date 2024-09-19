@@ -72,10 +72,10 @@ class World {
         //Add scene to loop to update physics
         loop.updatables.push(scene)
 
-        //Orbit controls (for dev)
-        const controls = createControls(camera, renderer.domElement)
-        loop.updatables.push(controls)
-        controls.enabled = false
+        // //Orbit controls (for dev)
+        // const controls = createControls(camera, renderer.domElement)
+        // loop.updatables.push(controls)
+        // controls.enabled = false
 
         //World lights
         const directionalLight = createDirectionalLight()

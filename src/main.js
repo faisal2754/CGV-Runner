@@ -102,17 +102,17 @@ async function main(restart = false) {
             username = 'Anon'
         }
 
-        const xhr = new XMLHttpRequest()
-        xhr.withCredentials = false
-        xhr.addEventListener('readystatechange', function () {
-            if (this.readyState === this.DONE) {
-                console.log(this.responseText)
-            }
-        })
-        xhr.open('POST', 'https://cgv-middleman.herokuapp.com/')
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        const data = 'username=' + username + '&score=' + score
-        xhr.send(data)
+        // const xhr = new XMLHttpRequest()
+        // xhr.withCredentials = false
+        // xhr.addEventListener('readystatechange', function () {
+        //     if (this.readyState === this.DONE) {
+        //         console.log(this.responseText)
+        //     }
+        // })
+        // xhr.open('POST', 'https://cgv-middleman.herokuapp.com/')
+        // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        // const data = 'username=' + username + '&score=' + score
+        // xhr.send(data)
 
         document.getElementById('gameOverMenu').style.display = 'none'
         $('canvas').remove()
@@ -150,28 +150,28 @@ async function main(restart = false) {
         main(true)
     }
 
-    //fetch leaderboard data
-    const jsonData = await fetch('https://cgv-middleman.herokuapp.com/', {
-        method: 'GET',
-        headers: {}
-    })
+    // //fetch leaderboard data
+    // const jsonData = await fetch('https://cgv-middleman.herokuapp.com/', {
+    //     method: 'GET',
+    //     headers: {}
+    // })
 
-    const JSONscores = await jsonData.json()
+    // const JSONscores = await jsonData.json()
 
-    const scoreTable = document.getElementById('topScores')
-    var lenTopScores = JSONscores.length
+    // const scoreTable = document.getElementById('topScores')
+    // var lenTopScores = JSONscores.length
 
-    if (lenTopScores > 10) {
-        lenTopScores = 10
-    }
+    // if (lenTopScores > 10) {
+    //     lenTopScores = 10
+    // }
 
-    for (let i = 0; i < lenTopScores; i++) {
-        var row = scoreTable.insertRow()
-        var cell1 = row.insertCell(0)
-        var cell2 = row.insertCell(1)
-        cell1.innerHTML = JSONscores[i].username
-        cell2.innerHTML = JSONscores[i].score
-    }
+    // for (let i = 0; i < lenTopScores; i++) {
+    //     var row = scoreTable.insertRow()
+    //     var cell1 = row.insertCell(0)
+    //     var cell2 = row.insertCell(1)
+    //     cell1.innerHTML = JSONscores[i].username
+    //     cell2.innerHTML = JSONscores[i].score
+    // }
 }
 
 //fade loading screen out
